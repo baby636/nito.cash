@@ -1,10 +1,18 @@
 # Nito Cash
 
-> **TL;DR** To create a web-based, privacy centric wallet for on-boarding first-time crypto users, especially when time is a constraint.
+![Nito Cash — Hush Your Money](https://i.imgur.com/MdeawOJ.png)
 
-**Benefits of a ephemeral wallet**
+> __TL;DR__ To create a web-based, privacy centric wallet for on-boarding first-time crypto users, especially when time is a constraint.
 
-**On-boarding new users to crypto will usually involve the following:**
+__Benefits of a ephemeral wallet__
+
+- [x] Convenience: 9.0
+- [x] Privacy: 8.5
+- [x] Security: 6.0
+
+## On-boarding new users
+
+__A typical experience would involve the following:__
 
 1. Visit your local App Store
 2. Download whatever wallet app your sponsor recommends
@@ -13,7 +21,7 @@
 5. Confirm the 12 words to complete the setup process
 6. Receive crypto from your sponsor
 
-**On-boarding new users SHOULD involve the following:**
+__A better experience SHOULD involve the following:__
 
 1. Open your mobile web browser
 2. Type in an address (eg. [https://nito.cash](https://nito.cash))
@@ -21,7 +29,7 @@
 
 The time difference between the 2 processes is only a few minutes. however imho, a few minutes makes ALL the difference in the world.
 
-**So what's the real world use-case?**
+## So what's the real world use-case?
 
 In my early days of crypto, I on-boarded multiple users on a daily basis, most commonly my Uber drivers. The process only took an average of 5 minutes. However, this time came at the END of the trip, since the driver would obviously be focused on .. DRIVING!
 
@@ -32,7 +40,7 @@ This example could be easily repeated in multiple situations (you're about to le
 1. A noisy bar/restaurant
 2. A social event
 
-**And what's wrong with just using an App Store wallet?**
+## And what's wrong with just using an App Store wallet?
 
 Besides the time factor that I've already detailed above, there is another major problem, specifically with the countless wallets that DO NOT use the traditinoal username/password model. From my experience, users DO NOT properly store those 12 words. Edge wallet (formerly Airbitz) was my go-to for this exact reason.
 
@@ -41,3 +49,7 @@ However, in today's market, I just don't see this model widely used anymore. (wi
 The purpose of Nito Cash is to be an EPHEMERAL wallet, and NOT your daily driver. Its primary purpose is for on-boarding first-time users AND educating them on "How to do crypto correctly!". That's it!
 
 The goal is to make Nito Cash not only a frictionless experience, but an enjoyable one.
+
+## Training wheels (centralization)
+
+As a strong proponent for decentralization, its a tough decision at times for the trade-off. However, when it comes to maximizing convenience and minimizing time, decentralization often fails to deliver.

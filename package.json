@@ -1,24 +1,27 @@
 {
   "name": "nito-cash",
-  "version": "20.1.17",
+  "version": "20.1.21",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "generate-icons": "vsvg -s ./svg-icons -t ./src/compiled-icons"
   },
   "dependencies": {
     "bitbox-sdk": "8.11.2",
-    "core-js": "3.4.4",
-    "vue": "2.6.10"
+    "core-js": "2.6.5",
+    "vue": "2.6.10",
+    "vue-router": "3.1.3"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "4.1.0",
-    "@vue/cli-plugin-eslint": "4.1.0",
-    "@vue/cli-service": "4.1.0",
-    "babel-eslint": "10.0.3",
+    "@vue/cli-plugin-babel": "3.11.0",
+    "@vue/cli-plugin-eslint": "3.11.0",
+    "@vue/cli-service": "3.11.0",
+    "babel-eslint": "10.0.1",
     "eslint": "5.16.0",
     "eslint-plugin-vue": "5.0.0",
+    "vue-svgicon": "3.2.6",
     "vue-template-compiler": "2.6.10"
   },
   "eslintConfig": {
@@ -33,6 +36,11 @@
     "rules": {},
     "parserOptions": {
       "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
     }
   },
   "browserslist": [

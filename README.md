@@ -1,6 +1,6 @@
-# Nito Cash
+# Nito.cash
 
-![Nito Cash — Hush Your Money](https://i.imgur.com/MdeawOJ.png)
+![Nito.cash — Hush Your Money](https://i.imgur.com/MdeawOJ.png)
 
 > __TL;DR__ To create a web-based, privacy centric wallet for on-boarding first-time crypto users, especially when time is a constraint.
 
@@ -33,7 +33,7 @@ The time difference between the 2 processes is only a few minutes. however imho,
 
 In my early days of crypto, I on-boarded multiple users on a daily basis, most commonly my Uber drivers. The process only took an average of 5 minutes. However, this time came at the END of the trip, since the driver would obviously be focused on .. DRIVING!
 
-Nito Cash should only take about 30 seconds from the first mention, through receiving their first crypto. Nito Cash would then provide ALL the necessary education for the recipient, rather than having to overly burden the sponsor. (The sponsor would be free to talk about crypto during the entire ride however).
+Nito.cash should only take about 30 seconds from the first mention, through receiving their first crypto. Nito.cash would then provide ALL the necessary education for the recipient, rather than having to overly burden the sponsor. (The sponsor would be free to talk about crypto during the entire ride however).
 
 This example could be easily repeated in multiple situations (you're about to learn a bit about me here), for example:
 
@@ -46,9 +46,9 @@ Besides the time factor that I've already detailed above, there is another major
 
 However, in today's market, I just don't see this model widely used anymore. (with a few exceptions, the wallets that do employ this model are NOT wallets that I would recommend to anyone, eg. Coinbase -- you know exactly why, so don't ask)
 
-The purpose of Nito Cash is to be an EPHEMERAL wallet, and NOT your daily driver. Its primary purpose is for on-boarding first-time users AND educating them on "How to do crypto correctly!". That's it!
+The purpose of Nito.cash is to be an EPHEMERAL wallet, and NOT your daily driver. Its primary purpose is for on-boarding first-time users AND educating them on "How to do crypto correctly!". That's it!
 
-The goal is to make Nito Cash not only a frictionless experience, but an enjoyable one.
+The goal is to make Nito.cash not only a frictionless experience, but an enjoyable one.
 
 ## Training wheels (centralization)
 

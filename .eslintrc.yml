@@ -1,7 +1,7 @@
 env:
     node: true
 parserOptions:
-    ecmaVersion: 9
+    ecmaVersion: 8
     sourceType: module
 rules:
     indent:

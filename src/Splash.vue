@@ -1,18 +1,17 @@
 <template>
-    <div class="hello">
-        <!-- <Icon icon="logo" primary /> -->
-        <svgicon icon="carnival" width="128" height="128"></svgicon>
-        <svgicon icon="rocket" width="64" height="64" color="#0f2"></svgicon>
-        <!-- <img alt="Vue logo" src="@/assets/logo.png"> -->
+    <div class="splash">
+        <svgicon icon="carnival" width="160" height="160" :fill="false" :original="true"></svgicon>
 
         <h1>
-            An IOTA Labs
+            Nito.cash
             <br />
-            experiment
+            alpha
+            <br />
+            <em>(still in dev)</em>
         </h1>
 
         <div>
-            <!-- <Rocketman /> -->
+            <svgicon icon="rocketman" width="194" height="242" :fill="false" :original="true"></svgicon>
         </div>
 
         <p>
@@ -24,9 +23,9 @@
 
 <script>
 /* Import components. */
-// import Icon from '@/components/Icon.vue'
 import '@/compiled-icons/carnival'
 import '@/compiled-icons/rocket'
+import '@/compiled-icons/rocketman'
 
 export default {
     components: {
@@ -50,27 +49,16 @@ export default {
     mounted: function () {
         /* Start animation loop. */
         this.loop()
-
-        // import { onMount } from 'svelte'
-        //
-        // import { Rocketman, Icon } from '~/components'
-        //
-        // let index = 0
-        // let frame
-        //
-        //
-        // onMount(() => {
-        //     loop()
-        //     return () => {
-        //         cancelAnimationFrame(frame)
-        //     }
-        // })
-
     }
 }
 </script>
 
 <style scoped>
+/* .splash {
+    --primary: #3569d7;
+    --primary-fg: #fff;
+} */
+
 .splash {
     display: flex;
     justify-content: space-between;

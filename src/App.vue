@@ -1,5 +1,5 @@
 <template>
-    <Splash />
+    <Splash class="main" />
 </template>
 
 <script>
@@ -14,15 +14,6 @@ export default {
 </script>
 
 <style>
-#app {
-    /* font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px; */
-}
-
 @font-face {
     font-family: 'Poppins';
     font-style: normal;
@@ -47,7 +38,40 @@ export default {
     src: local('Poppins SemiBold'), local('Poppins-SemiBold'), url('/poppins-semibold.woff2') format('woff2');
 }
 
-body > main {
+*, *:after, *:before {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-weight: 400;
+    box-sizing: border-box;
+    outline: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #e5e5e5;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    background: url('./assets/bg.jpg') no-repeat;
+
+    background-size: cover;
+    transition: background 0.25s;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.dark {
+    background: url('./assets/bg-dark.jpg') no-repeat;
+    background-size: cover;
+}
+
+.main {
     --max-width: 425px;
     --max-height: 680px;
 
@@ -94,7 +118,7 @@ body > main {
     --dropdown-hover: #f4f4f4;
 }
 
-body > main.dark {
+.main.dark {
     --bg: #485776;
     --fg: #fff;
     --fg-hover: #e0e4ec;
@@ -136,43 +160,12 @@ body > main.dark {
     --dropdown-hover: #5c6f98;
 }
 
-*, *:after, *:before {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-weight: 400;
-    box-sizing: border-box;
-    outline: none;
-}
-
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #e5e5e5;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 400;
-    background: url('./assets/bg.jpg') no-repeat;
-
-    background-size: cover;
-    transition: background 0.25s;
-}
-
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-body.dark {
-    background: url('./assets/bg-dark.jpg') no-repeat;
-    background-size: cover;
-}
 button {
     font-family: 'Poppins', sans-serif;
     cursor: pointer;
     color: var(--fg);
 }
+
 input, textarea {
     margin-bottom: 18px;
     padding: 0 14px;
@@ -240,7 +233,7 @@ svg {
     overflow: visible;
 }
 
-body > main {
+.main {
     width: 100%;
     height: 100%;
     margin: 0 auto;
@@ -272,4 +265,5 @@ body > main {
         display: block;
     }
 }
+
 </style>

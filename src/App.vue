@@ -1,15 +1,35 @@
 <template>
-    <Splash class="main" />
+    <!-- <Splash class="app" /> -->
+    <div class="app">
+        <router-view />
+    </div>
 </template>
 
 <script>
 /* Import views. */
-import Splash from './Splash.vue'
+// import Splash from './Splash.vue'
 
 export default {
-    components: {
-        Splash
-    }
+    // components: {
+    //     Splash
+    // },
+    data: () => {
+        return {
+            // TODO
+        }
+    },
+    methods: {
+        //
+    },
+    mounted: function () {
+        console.info('Main application has mounted!')
+
+        setTimeout(() => {
+            console.log('go to setup')
+            this.$router.push('setup')
+        }, 2000)
+
+    },
 }
 </script>
 
@@ -71,7 +91,7 @@ body.dark {
     background-size: cover;
 }
 
-.main {
+.app {
     --max-width: 425px;
     --max-height: 680px;
 
@@ -118,7 +138,7 @@ body.dark {
     --dropdown-hover: #f4f4f4;
 }
 
-.main.dark {
+.app.dark {
     --bg: #485776;
     --fg: #fff;
     --fg-hover: #e0e4ec;
@@ -233,7 +253,7 @@ svg {
     overflow: visible;
 }
 
-.main {
+.app {
     width: 100%;
     height: 100%;
     margin: 0 auto;
@@ -253,7 +273,7 @@ svg {
     html, body {
         background: transparent;
     }
-    main {
+    app {
         max-width: 100%;
         max-height: 100%;
         background: none;

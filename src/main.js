@@ -1,5 +1,10 @@
 /* Import modules. */
 import Vue from 'vue'
+
+/* Import router. */
+import router from './router'
+
+/* Import main application. */
 import App from './App.vue'
 
 /* Import svg icons. */
@@ -13,5 +18,6 @@ Vue.config.productionTip = false
 
 /* Initialize Vue. */
 new Vue({
+    router,
     render: h => h(App),
 }).$mount('#app')

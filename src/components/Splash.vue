@@ -120,7 +120,7 @@ export default {
         this.getCashAccount()
         this.getCashAddress()
         this.getPrice()
-        this.openSocket()
+        // this.openSocket()
     }
 }
 </script>

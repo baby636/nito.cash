@@ -1,9 +1,10 @@
 {
-	"name": "Nito Cash",
-	"short_name": "Nito Cash",
+	"name": "Nito.Cash",
+	"short_name": "Nito",
 	"lang": "en-US",
 	"start_url": "/",
 	"display": "standalone",
+    "orientation": "portrait",
 	"background_color": "#eef1f3",
 	"theme_color": "#eef1f3",
 	"icons": [{

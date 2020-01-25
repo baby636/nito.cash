@@ -2,8 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 /* Import MAIN components. */
-import Splash from '@/components/Splash'
-import Setup from '@/components/Setup'
+import Splash from '@/views/Splash'
+import Setup from '@/views/Setup'
 
 /* Initialize Vue Router. */
 Vue.use(VueRouter)

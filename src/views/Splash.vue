@@ -121,16 +121,16 @@ export default {
         this.getCashAddress()
         this.getPrice()
         // this.openSocket()
+
+        /* Load setup. */
+        setTimeout(() => {
+            this.$router.push('setup')
+        }, 2000)
     }
 }
 </script>
 
 <style scoped>
-/* .splash {
-    --primary: #3569d7;
-    --primary-fg: #fff;
-} */
-
 .splash {
     display: flex;
     justify-content: space-between;

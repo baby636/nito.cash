@@ -23,17 +23,12 @@ export default {
     },
     mounted: function () {
         console.info('Main application has mounted!')
-
-        setTimeout(() => {
-            console.log('go to setup')
-            this.$router.push('setup')
-        }, 2000)
-
     },
 }
 </script>
 
 <style>
+/* Fonts */
 @font-face {
     font-family: 'Poppins';
     font-style: normal;
@@ -58,6 +53,7 @@ export default {
     src: local('Poppins SemiBold'), local('Poppins-SemiBold'), url('/poppins-semibold.woff2') format('woff2');
 }
 
+/* Main Theme */
 *, *:after, *:before {
     margin: 0;
     padding: 0;
@@ -284,6 +280,28 @@ svg {
     body {
         display: block;
     }
+}
+
+/* Footer */
+footer {
+    display: flex;
+    width: 100%;
+    padding: 20px;
+}
+
+@media only screen and (max-height: 600px) {
+    footer {
+        padding: 16px;
+    }
+}
+
+footer.tooltip {
+    display: block;
+    background: var(--box-bg);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    margin: 0;
+    font-size: 12px;
 }
 
 </style>

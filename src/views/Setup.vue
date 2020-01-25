@@ -1,63 +1,32 @@
 <template>
     <div class="setup">
         <!-- <Icon icon="logo-spark" /> -->
+        <svgicon icon="carnival" width="128" height="128" :fill="false" :original="true"></svgicon>
 
         <!-- <Berny size={162} /> -->
 
-        <!-- <Footer tooltip> -->
-            <!-- <article> -->
-                <!-- <Icon icon="warning" warning /> -->
+        <footer class="tooltip">
+            <article>
+                <svgicon icon="fire" width="54" height="54" :fill="false" :original="true"></svgicon>
                 <div>
                     <h6>Warning</h6>
                     <p>Spark is a low-security wallet intended for short-term use and to send small amounts of IOTA only.</p>
                 </div>
-            <!-- </article> -->
-            <!-- <Button onClick={setSeed} label="Generate wallet" /> -->
-        <!-- </Footer> -->
-
-        <!-- <svgicon icon="carnival" width="128" height="128" :fill="false" :original="true"></svgicon>
-
-        <h1>
-            Nito.cash
-        </h1>
-
-        <h2>
-            Hush Your Money™
-        </h2>
-
-        <h3>
-            (Developer Preview)
-        </h3>
-
-        <div>
-            <svgicon icon="rocketman" width="194" height="242" :fill="false" :original="true"></svgicon>
-        </div>
-
-        <p>
-            Launching soon
-            <span>{{ '...'.substr(0, index) }}</span>
-        </p> -->
+            </article>
+            <Button @click.native="setSeed" label="Generate wallet" />
+        </footer>
   </div>
 </template>
 
 <script>
-// import API from '~/lib/api'
-// import { generateSeed } from '~/lib/helpers'
-// import { seed } from '~/lib/account'
-
-// import { Berny, Button, Footer, Icon } from '~/components'
-
-/* Import modules. */
-// import { BITBOX } from 'bitbox-sdk'
+import { Button } from '@/components'
 
 /* Import components. */
-// import '@/compiled-icons/carnival'
-// import '@/compiled-icons/rocket'
-// import '@/compiled-icons/rocketman'
+import '@/compiled-icons/fire'
 
 export default {
     components: {
-        // Icon
+        Button
     },
     data: () => {
         return {
@@ -73,6 +42,8 @@ export default {
                 // const secret = generateSeed()
                 // await API.setSecret({ secret })
                 // seed.set(secret)
+
+                this.$router.push('dashboard')
             } catch (err) {
                 console.error(err)
             }
@@ -86,7 +57,7 @@ export default {
 </script>
 
 <style scoped>
-main {
+.setup {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -97,7 +68,7 @@ main {
 }
 
 @media only screen and (max-height: 600px) {
-    main {
+    .setup {
         padding-top: 40px;
     }
 }

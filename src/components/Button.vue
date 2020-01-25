@@ -1,27 +1,40 @@
 <template>
-    <button>
-        {{loading ? loadingLabel : label}}
+    <button :class="classObject">
+        {{ loading ? loadingLabel : label }}
     </button>
 </template>
 
 <script>
 export default {
     props: {
-        label: String
+        label: String,
+
+        blank: Boolean,
+        disabled: Boolean,
+        double: Boolean,
+        list: Boolean,
+        loading: Boolean,
+        secondary: Boolean,
+        small: Boolean,
+        warning: Boolean,
     },
     data: () => {
         return {
             loadingLabel: '',
-            // onClick,
-
-            secondary: false,
-            warning: false,
-            small: false,
-            double: false,
-            loading: false,
-            disabled: false,
-            list: false,
-            blank: false,
+        }
+    },
+    computed: {
+        classObject: function () {
+            return {
+                blank: this.blank,
+                disabled: this.disabled,
+                double: this.double,
+                list: this.list,
+                loading: this.loading,
+                secondary: this.secondary,
+                small: this.small,
+                warning: this.warning,
+            }
         }
     },
 

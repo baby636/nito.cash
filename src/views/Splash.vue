@@ -1,5 +1,5 @@
 <template>
-    <div class="splash">
+    <main>
         <svgicon icon="carnival" width="128" height="128" :fill="false" :original="true"></svgicon>
 
         <h1>
@@ -22,14 +22,14 @@
             Launching soon
             <span>{{ '...'.substr(0, index) }}</span>
         </p>
-  </div>
+  </main>
 </template>
 
 <script>
 /* Import modules. */
 import { BITBOX } from 'bitbox-sdk'
 
-/* Import components. */
+/* Import icons. */
 import '@/compiled-icons/carnival'
 import '@/compiled-icons/rocket'
 import '@/compiled-icons/rocketman'
@@ -131,7 +131,7 @@ export default {
 </script>
 
 <style scoped>
-.splash {
+main {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -142,7 +142,7 @@ export default {
     padding: 66px 0 55px;
 }
 
-.splash h1 {
+main h1 {
     text-align: center;
     font-size: 28px;
     line-height: 0px;
@@ -151,7 +151,7 @@ export default {
     letter-spacing: 0.4em;
 }
 
-.splash h2 {
+main h2 {
     text-align: center;
     font-size: 14px;
     line-height: 0px;
@@ -160,7 +160,7 @@ export default {
     letter-spacing: 0.4em;
 }
 
-.splash h3 {
+main h3 {
     text-align: center;
     font-size: 14px;
     line-height: 24px;
@@ -168,29 +168,29 @@ export default {
     letter-spacing: 0.4em;
 }
 
-.splash p {
+main p {
     text-align: left;
     width: 125px;
 }
 
-.splash p span {
+main p span {
     letter-spacing: 0.1em;
 }
 
-.splash div {
+main div {
     height: 242px;
 }
 
-.splash div svg {
+main div svg {
     height: 100%;
 }
 
 @media (max-height: 560px) {
-    .splash {
+    main {
         padding: 30px 0;
     }
 
-    .splash div {
+    main div {
         height: 160px;
     }
 }

@@ -2,8 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 /* Import MAIN components. */
-import Splash from '@/views/Splash'
+import Dashboard from '@/views/Dashboard'
 import Setup from '@/views/Setup'
+import Splash from '@/views/Splash'
 
 /* Initialize Vue Router. */
 Vue.use(VueRouter)
@@ -14,6 +15,9 @@ Vue.use(VueRouter)
 const routes = [{
     path: '/',
     component: Splash
+}, {
+    path: '/dashboard',
+    component: Dashboard
 }, {
     path: '/setup',
     component: Setup

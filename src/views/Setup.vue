@@ -1,11 +1,10 @@
 <template>
-    <div class="setup">
-        <!-- <Icon icon="logo-spark" /> -->
-        <svgicon icon="carnival" width="128" height="128" :fill="false" :original="true"></svgicon>
+    <main>
+        <svgicon icon="carnival" width="96" height="96" :fill="false" :original="true"></svgicon>
 
-        <!-- <Berny size={162} /> -->
+        <svgicon icon="rocketman" width="162" height="162" :fill="false" :original="true"></svgicon>
 
-        <footer class="tooltip">
+        <Footer class="tooltip">
             <article>
                 <svgicon icon="fire" width="54" height="54" :fill="false" :original="true"></svgicon>
                 <div>
@@ -14,14 +13,15 @@
                 </div>
             </article>
             <Button @click.native="setSeed" label="Generate wallet" />
-        </footer>
-  </div>
+        </Footer>
+  </main>
 </template>
 
 <script>
+/* Import components. */
 import { Button } from '@/components'
 
-/* Import components. */
+/* Import icons. */
 import '@/compiled-icons/fire'
 
 export default {
@@ -57,7 +57,7 @@ export default {
 </script>
 
 <style scoped>
-.setup {
+main {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -68,7 +68,7 @@ export default {
 }
 
 @media only screen and (max-height: 600px) {
-    .setup {
+    main {
         padding-top: 40px;
     }
 }

@@ -19,14 +19,15 @@
 
 <script>
 /* Import components. */
-import { Button } from '@/components'
+import { Button, Footer } from '@/components'
 
 /* Import icons. */
 import '@/compiled-icons/fire'
 
 export default {
     components: {
-        Button
+        Button,
+        Footer
     },
     data: () => {
         return {
@@ -51,7 +52,7 @@ export default {
 
     },
     mounted: function () {
-        console.log('SETUP LOADED!')
+        //
     }
 }
 </script>

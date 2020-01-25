@@ -52,18 +52,18 @@ export default {
     },
     methods: {
         loadPay() {
-            console.log('loading pay')
+            this.$router.push('pay')
         },
         loadRequest() {
-            console.log('loading request')
+            this.$router.push('request')
         },
         loadSettings() {
-            console.log('loading settings')
+            this.$router.push('settings')
         },
 
     },
     mounted: function () {
-        console.log('SETUP LOADED!')
+        //
     }
 }
 </script>

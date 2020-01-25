@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 /* Import MAIN components. */
 import Dashboard from '@/views/Dashboard'
+import Settings from '@/views/Settings'
 import Setup from '@/views/Setup'
 import Splash from '@/views/Splash'
 
@@ -18,6 +19,9 @@ const routes = [{
 }, {
     path: '/dashboard',
     component: Dashboard
+}, {
+    path: '/settings',
+    component: Settings
 }, {
     path: '/setup',
     component: Setup

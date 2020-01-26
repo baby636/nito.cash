@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "bitbox-sdk": "8.11.2",
+    "chartist": "^0.11.4",
     "core-js": "2.6.5",
+    "currency-codes": "^1.5.1",
     "vue": "2.6.10",
     "vue-router": "3.1.3"
   },

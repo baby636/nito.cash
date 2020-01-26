@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import Modal from '@/components/Modal'
 import Tabs from '@/components/Tabs'
 
+import Amount from '@/components/inputs/Amount'
 import Dropdown from '@/components/inputs/Dropdown'
 import Toggle from '@/components/inputs/Toggle'
 
@@ -14,6 +15,7 @@ export {
     Modal,
     Tabs,
 
+    Amount,
     Dropdown,
     Toggle,
 }

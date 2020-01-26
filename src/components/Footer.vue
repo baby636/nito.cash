@@ -1,14 +1,17 @@
 <template>
-    <footer>
+    <footer :class="{ tooltip: tooltip }">
         <slot />
     </footer>
 </template>
 
 <script>
 export default {
+    props: {
+        tooltip: Boolean,
+    },
     data: () => {
         return {
-            tooltip: ''
+            // tooltip: ''
         }
     },
 

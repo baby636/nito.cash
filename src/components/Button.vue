@@ -8,6 +8,7 @@
 export default {
     props: {
         label: String,
+        loadingLabel: String,
 
         blank: Boolean,
         disabled: Boolean,
@@ -20,7 +21,7 @@ export default {
     },
     data: () => {
         return {
-            loadingLabel: '',
+            // loadingLabel: '',
         }
     },
     computed: {

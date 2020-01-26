@@ -17,7 +17,7 @@ export default {
     },
     data: () => {
         return {
-            selectedTab: '',
+            selectedTab: null,
         }
     },
     computed: {

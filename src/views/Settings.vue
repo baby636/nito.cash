@@ -21,7 +21,7 @@
                 <label class="inline">
                     <span>Dark mode</span>
                     <span>
-                        <!-- <Toggle on={darkMode} /> -->
+                        <Toggle :on="darkMode" />
                     </span>
                 </label>
 
@@ -32,7 +32,7 @@
                 <label class="inline">
                     <span>Notifications</span>
                     <span>
-                        <!-- <Toggle disabled={disabledNotifications} on={showNotifications} /> -->
+                        <Toggle :disabled="disabledNotifications" :on="showNotifications" />
                     </span>
                 </label>
 
@@ -101,7 +101,7 @@
 import cc from 'currency-codes'
 
 /* Import components. */
-import { Button, Dropdown, Footer, Modal, Tabs } from '@/components'
+import { Button, Dropdown, Footer, Modal, Tabs, Toggle } from '@/components'
 
 /* Import icons. */
 // import '@/compiled-icons/fire'
@@ -119,6 +119,7 @@ export default {
         Footer,
         Modal,
         Tabs,
+        Toggle,
     },
     data: () => {
         return {
@@ -199,7 +200,9 @@ export default {
         // FIXME: Add Vuex for state management.
         this.darkMode = false
         this.fiatCurrency = 'USD'
-        this.showNotifications = true
+
+        // FIXME: We need to detect the user's compatibility.
+        this.showNotifications = false
 
     },
     mounted: function () {

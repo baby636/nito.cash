@@ -5,6 +5,7 @@ import Modal from '@/components/Modal'
 import Tabs from '@/components/Tabs'
 
 import Dropdown from '@/components/inputs/Dropdown'
+import Toggle from '@/components/inputs/Toggle'
 
 export {
     Button,
@@ -14,4 +15,5 @@ export {
     Tabs,
 
     Dropdown,
+    Toggle,
 }

@@ -6,15 +6,15 @@
             <section v-if="tab === 'Basic'">
                 <label>Language</label>
 
-                <!-- <Dropdown value="English" flag="United Kingdom" disabled /> -->
+                <Dropdown value="English" flag="United Kingdom" disabled />
 
                 <label>Currency</label>
 
-                <!-- <Dropdown
-                    onSelect={changeCurrency}
-                    flag={cc.code($fiatCurrency).countries[0]}
-                    value={cc.code($fiatCurrency).currency}
-                    items={currencies} /> -->
+                <Dropdown
+                    :onSelect="changeCurrency"
+                    :flag="cc.code(fiatCurrency).countries[0]"
+                    :value="cc.code(fiatCurrency).currency"
+                    items="currencies" />
 
                 <hr />
 
@@ -97,13 +97,15 @@
 </template>
 
 <script>
+/* Import modules. */
+import cc from 'currency-codes'
+
 /* Import components. */
-import { Button, Footer, Modal, Tabs } from '@/components'
+import { Button, Dropdown, Footer, Modal, Tabs } from '@/components'
 
 /* Import icons. */
-import '@/compiled-icons/fire'
+// import '@/compiled-icons/fire'
 
-// import cc from 'currency-codes'
 
 // import { Export, Button, Dropdown, Footer, Header, Icon, Tabs, Toggle, View, Warning } from '~/components'
 // import { account, seed } from '~/lib/account'
@@ -113,12 +115,18 @@ import '@/compiled-icons/fire'
 export default {
     components: {
         Button,
+        Dropdown,
         Footer,
         Modal,
         Tabs,
     },
     data: () => {
         return {
+            cc: null,
+            darkMode: null,
+            fiatCurrency: null,
+            showNotifications: null,
+
             tab: 'Basic',
             tabs: ['Basic', 'Wallet'],
             showWarning: false,
@@ -179,11 +187,23 @@ export default {
         },
 
     },
-    mounted: function () {
+    created: function () {
+        /* Initialize currency codes. */
+        this.cc = cc
+
         // $: currencies = getCurrencies($marketData.rates)
 
         // this.disabledNotifications = typeof Notification !== 'function' || Notification.permission === 'denied'
         this.disabledNotifications = false
+
+        // FIXME: Add Vuex for state management.
+        this.darkMode = false
+        this.fiatCurrency = 'USD'
+        this.showNotifications = true
+
+    },
+    mounted: function () {
+        //
     }
 }
 </script>

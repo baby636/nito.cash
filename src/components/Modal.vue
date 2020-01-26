@@ -1,10 +1,10 @@
 <template>
-    <main>
+    <div>
         <Header v-if="!hideHeader" :label="label" :help="help" :secondary="secondary" />
-        <div class="hideHeader">
+        <div class="view hideHeader">
             <slot />
         </div>
-    </main>
+    </div>
 </template>
 
 <script>
@@ -31,7 +31,7 @@ export default {
 </script>
 
 <style scoped>
-div {
+.view {
     width: 100%;
     height: calc(100% - 65px);
     display: flex;
@@ -40,7 +40,7 @@ div {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
-div.hideHeader {
+.view.hideHeader {
     height: 100%;
 }
 </style>

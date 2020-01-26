@@ -47,7 +47,8 @@ export default {
     },
     methods: {
         close() {
-            console.log('close modal')
+            // FIXME: Use the current state to determine close target.
+            this.$router.push('dashboard')
         },
     }
 

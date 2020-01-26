@@ -14,7 +14,7 @@
             </article>
             <Button @click.native="setSeed" label="Generate wallet" />
         </Footer>
-  </main>
+    </main>
 </template>
 
 <script>

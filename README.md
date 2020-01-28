@@ -1,8 +1,8 @@
-# Nito.cash
+# Nito.cash — Hush Your Money™
 
-![Nito.cash — Hush Your Money](https://i.imgur.com/MdeawOJ.png)
+![Nito.cash Poster](https://nito.cash/poster.jpg)
 
-> __TL;DR__ Nito.cash is the most user-friendly, privacy wallet for newcomers to crypto.
+> __[Nito.cash](https://nito.cash)__ is the __most user-friendly, privacy wallet__ for newcomers to crypto.
 
 __Benefits of a ephemeral wallet__
 
@@ -49,7 +49,3 @@ However, in today's market, I just don't see this model widely used anymore. (wi
 The purpose of Nito.cash is to be an EPHEMERAL wallet, and NOT your daily driver. Its primary purpose is for on-boarding first-time users AND educating them on "How to do crypto correctly!". That's it!
 
 The goal is to make Nito.cash not only a frictionless experience, but an enjoyable one.
-
-## Training wheels (centralization)
-
-As a strong proponent for decentralization, its a tough decision at times for the trade-off. However, when it comes to maximizing convenience and minimizing time, decentralization often fails to deliver.

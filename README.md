@@ -2,13 +2,13 @@
 
 ![Nito.cash — Hush Your Money](https://i.imgur.com/MdeawOJ.png)
 
-> __TL;DR__ To create a web-based, privacy centric wallet for on-boarding first-time crypto users, especially when time is a constraint.
+> __TL;DR__ Nito.cash is the most user-friendly, privacy wallet for newcomers to crypto.
 
 __Benefits of a ephemeral wallet__
 
-- [x] Convenience: 9.0
-- [x] Privacy: 8.5
-- [x] Security: 6.0
+- [x] Convenience: 9.5
+- [x] Privacy: 9.0
+- [x] Security: 7.0
 
 ## On-boarding new users
 
@@ -35,10 +35,10 @@ In my early days of crypto, I on-boarded multiple users on a daily basis, most c
 
 Nito.cash should only take about 30 seconds from the first mention, through receiving their first crypto. Nito.cash would then provide ALL the necessary education for the recipient, rather than having to overly burden the sponsor. (The sponsor would be free to talk about crypto during the entire ride however).
 
-This example could be easily repeated in multiple situations (you're about to learn a bit about me here), for example:
+This example could be easily repeated in multiple situations, for example:
 
-1. A noisy bar/restaurant
-2. A social event
+1. Noisy bar/restaurant
+2. Social event
 
 ## And what's wrong with just using an App Store wallet?
 

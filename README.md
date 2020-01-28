@@ -1,8 +1,8 @@
 # Nito.cash — Hush Your Money™
 
-![Nito.cash Poster](https://nito.cash/poster.jpg)
+![Nito.cash Poster](https://nito.cash/poster.jpg?1580211230)
 
-> __[Nito.cash](https://nito.cash)__ is the __most user-friendly, privacy wallet__ for newcomers to crypto.
+> __[Nito.cash](https://nito.cash)__ is the __most convenient, privacy wallet__ for newcomers to crypto.
 
 __Benefits of a ephemeral wallet__
 

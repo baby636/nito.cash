@@ -6,6 +6,7 @@ import Header from '@/components/Header'
 import Modal from '@/components/Modal'
 import Notification from '@/components/Notification'
 import Tabs from '@/components/Tabs'
+import QR from '@/components/QR'
 
 import Amount from '@/components/inputs/Amount'
 import Dropdown from '@/components/inputs/Dropdown'
@@ -23,6 +24,7 @@ export {
     Modal,
     Notification,
     Tabs,
+    QR,
 
     Amount,
     Dropdown,

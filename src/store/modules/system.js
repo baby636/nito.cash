@@ -39,7 +39,6 @@ const actions = {
         setTimeout(() => {
             commit('setError', null)
         }, 3000)
-
     },
 
     setNotification ({ commit, state }, _notification) {
@@ -47,6 +46,11 @@ const actions = {
 
         /* Commit notification message. */
         commit('setNotification', _notification)
+
+        /* Set automatic dismiss delay. */
+        setTimeout(() => {
+            commit('setNotification', null)
+        }, 3000)
     },
 
     // checkout ({ commit, state }, products) {

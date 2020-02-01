@@ -51,6 +51,7 @@ export default {
     },
     computed: {
         ...mapState({
+            walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
             walletSeeds: state => state.wallets.seeds,
         }),
@@ -61,6 +62,7 @@ export default {
     methods: {
         ...mapActions('wallets', [
             'addNewSeed',
+            'setMasterMnemonic',
             'setMasterSeed',
         ]),
 
@@ -121,6 +123,9 @@ export default {
                 // TODO: Save partial key to Nito cloud.
 
                 console.log('MNEMONIC', mnemonic)
+
+                /* Set new master (private) key to wallet.. */
+                this.setMasterMnemonic(mnemonic)
             } catch (err) {
                 console.error(err)
             }
@@ -169,24 +174,23 @@ export default {
         this.initSponsorWallet()
 
         /* Validate wallet (master) seed. */
-        if (this.walletMasterSeed) {
-            const walletMasterSeed = this.walletMasterSeed
-
-            console.log('WALLET SEED ALREADY EXISTS', walletMasterSeed)
-
-            // walletMasterSeed = this.bitbox.Crypto.sha256(this.walletMasterSeed)
-
-            const language = this.bitbox.Mnemonic.wordLists().english
-
-            /* Initialize mnemonic. */
-            const mnemonic = this.bitbox.Mnemonic
-                .fromEntropy(this.walletMasterSeed, language)
-
-            // TODO: Save partial key to Nito cloud.
-
-            console.log('MNEMONIC', mnemonic)
-
-        }
+        // if (this.walletMasterSeed) {
+        //     const walletMasterSeed = this.walletMasterSeed
+        //
+        //     console.log('WALLET SEED ALREADY EXISTS', walletMasterSeed)
+        //
+        //     // walletMasterSeed = this.bitbox.Crypto.sha256(this.walletMasterSeed)
+        //
+        //     const language = this.bitbox.Mnemonic.wordLists().english
+        //
+        //     /* Initialize mnemonic. */
+        //     const mnemonic = this.bitbox.Mnemonic
+        //         .fromEntropy(this.walletMasterSeed, language)
+        //
+        //     // TODO: Save partial key to Nito cloud.
+        //
+        //     console.log('MNEMONIC', mnemonic)
+        // }
     },
 }
 </script>

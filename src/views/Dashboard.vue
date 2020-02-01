@@ -56,7 +56,7 @@ export default {
     },
     data: () => {
         return {
-            account: null,
+            address: null,
             backupReminder: false,
             bitbox: null,
             showExport: false,
@@ -64,6 +64,7 @@ export default {
     },
     computed: {
         ...mapState({
+            walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
             walletSeeds: state => state.wallets.seeds,
         }),
@@ -107,6 +108,19 @@ export default {
             }
         },
 
+        /**
+         * Get (Wallet) Balance
+         */
+        async getBalance() {
+            try {
+                const details = await this.bitbox.Address.details(this.address)
+                // const balance = await this.bitbox.Price.current('usd')
+                console.log('DETAILS', details)
+            } catch(error) {
+                console.error(error)
+            }
+        },
+
         async getCashAccount() {
             try {
                 let cashAccounts = await this.bitbox.CashAccounts.lookup("nyusternie", 55155)
@@ -142,6 +156,26 @@ export default {
     mounted: function () {
         /* Initialize BITBOX. */
         this.initBitbox()
+
+        console.log('this.walletMasterSeed', this.walletMasterSeed)
+        console.log('this.walletMasterMnemonic', this.walletMasterMnemonic)
+
+        /* Initialize seed buffer. */
+        const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
+        // console.log('SEED BUFFER', seedBuffer)
+
+        const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
+        // console.log('HD NODE', hdNode)
+
+        const address = this.bitbox.HDNode.toCashAddress(hdNode)
+        console.log('ADDRESS', address)
+
+        /* Initialize QRCode link. */
+        if (address) {
+            this.address = address
+        }
+
+        this.getBalance()
 
         // this.getCashAccount()
         // this.getCashAddress()

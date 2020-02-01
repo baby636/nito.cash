@@ -3,6 +3,7 @@ import telr from '../../api/telr'
 
 /* Initialize state. */
 const state = {
+    masterMnemonic: null,
     masterSeed: null,
     // items: [],
     seeds: [],
@@ -36,6 +37,13 @@ const actions = {
 
         /* Commit new seed to wallet. */
         commit('addNewSeed', _seed)
+    },
+
+    setMasterMnemonic ({ commit, state }, _mnemonic) {
+        console.info('Setting master wallet mnemonic', _mnemonic)
+
+        /* Commit wallet's master mnemonic. */
+        commit('setMasterMnemonic', _mnemonic)
     },
 
     setMasterSeed ({ commit, state }, _seed) {
@@ -94,18 +102,28 @@ const mutations = {
     },
 
     /**
-     * Set Master Seed
+     * Set Master Mnemonic
      *
-     * This is the user's primary seed phrase.
+     * This is the user's primary mnemonic phrase.
      *
      * BIP-39 will be used to split the 24-word mnemonic phrase:
      *   1. 12 words will be sent to user's primary email.
      *   2. 6 words will be sent to user's secondary (and/or social) email(s).
      *   3. 6 words will be sent to Nito cloud server (managed by Modenero).
      */
-    setMasterSeed (state, _masterSeed) {
+    setMasterMnemonic (state, _mnemonic) {
         /* Update master seed. */
-        state.masterSeed = _masterSeed
+        state.masterMnemonic = _mnemonic
+    },
+
+    /**
+     * Set Master Seed
+     *
+     * This is the user's primary (private key) seed.
+     */
+    setMasterSeed (state, _seed) {
+        /* Update master seed. */
+        state.masterSeed = _seed
     },
 
     // incrementItemQuantity (state, { id }) {

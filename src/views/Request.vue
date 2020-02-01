@@ -1,45 +1,17 @@
 <template>
     <Modal label="Request a payment" :help="true">
-        <div v-if="!address">
-            <main>
-                <div class="icon">
-                    <Animation type="receive" />
-                </div>
+        <main>
+            <QR :value="address" />
 
-                <label>Amount</label>
-                <Amount :amount="amount" :unit="unit" />
+        </main>
 
-                <label>From</label>
-                <input placeholder="e.g. Jane Doe" type="text" v-model="receiver" />
+        <small class="small">
+            {{address}}
+        </small>
 
-                <label>Transaction note</label>
-                <input maxlength="100" placeholder="e.g. Payment for 2 pizzas" type="text" bind:value={reference} />
-            </main>
-
-            <Footer tooltip>
-                <p>Your request will be valid for 24 hours</p>
-                <Button @click.native="generateRequest" :loading="loading" label="Generate request" loadingLabel="Generating ..." />
-            </Footer>
-        </div>
-
-        <div v-else>
-            <main>
-                <h5>Valid for</h5>
-                <h3>
-                    <strong>{getTimeUnits(time, 'h')}</strong>
-                    <small>h</small>
-                    <strong>{getTimeUnits(time, 'm')}</strong>
-                    <small>m</small>
-                    <strong>{getTimeUnits(time, 's')}</strong>
-                    <small>s</small>
-                </h3>
-                <QR value={link} />
-            </main>
-
-            <Footer>
-                <Button onClick={copyAddress} label="Copy shareable link" />
-            </Footer>
-        </div>
+        <Footer>
+            <Button @click.native="copyAddress" label="Copy shareable link" />
+        </Footer>
     </Modal>
 </template>
 
@@ -48,9 +20,10 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 /* Import components. */
-import { Amount, Animation, Button, Footer, Modal } from '@/components'
-// import { error, notification } from '@/lib/app'
-// import { QR } from '~/components'
+import { Amount, Animation, Button, Footer, Modal, QR } from '@/components'
+
+/* Import modules. */
+import { BITBOX } from 'bitbox-sdk'
 
 // import { address, receiver, setAddress } from '~/lib/account'
 // import { marketPrice } from '~/lib/market'
@@ -63,19 +36,31 @@ export default {
         Button,
         Footer,
         Modal,
+        QR,
     },
     data: () => {
         return {
-            address: '',
+            bitbox: null,
 
+            address: null,
             amount: null,
-            unit: 'bits',
+            loading: false,
             receiver: null,
             reference: '',
-            loading: false,
             timer: null,
             time: 0,
+            unit: 'bits',
         }
+    },
+    computed: {
+        ...mapState({
+            walletMasterMnemonic: state => state.wallets.masterMnemonic,
+            walletMasterSeed: state => state.wallets.masterSeed,
+            walletSeeds: state => state.wallets.seeds,
+        }),
+        ...mapGetters('wallets', {
+            //
+        }),
     },
     methods: {
         ...mapActions('system', [
@@ -83,21 +68,18 @@ export default {
             'setNotification',
         ]),
 
-        startTimer(data) {
-            console.log('START TIMER')
-            // if (!data) {
-            //     if (time) {
-            //         goto('')
-            //     }
-            //     return
-            // }
-            //
-            // time = Math.abs((new Date($address.timeoutAt * 1000).getTime() - new Date().getTime()) / 1000)
-            //
-            // clearInterval(timer)
-            // timer = setInterval(() => {
-            //     time--
-            // }, 1000)
+        /**
+         * Initialize BITBOX
+         */
+        initBitbox() {
+            console.info('Initializing BITBOX..')
+
+            try {
+                /* Initialize BITBOX. */
+                this.bitbox = new BITBOX()
+            } catch (err) {
+                console.error(err)
+            }
         },
 
         async generateRequest() {
@@ -109,7 +91,8 @@ export default {
             this.loading = true
 
             try {
-                await setAddress(getIotas(amount, unit, $marketPrice), reference)
+                // FIXME: What can we do here?
+                // await setAddress(getIotas(amount, unit, $marketPrice), reference)
             } catch (_err) {
                 /* Set loading flag. */
                 this.loading = false
@@ -121,22 +104,34 @@ export default {
         copyAddress() {
             console.log('COPY ADDRESS')
             // setClipboard(link)
-            // notification.set('Link copied to clipboard')
+            this.setNotification('Link copied to clipboard')
         },
-
-        // onDestroy(() => {
-        //     clearInterval(timer)
-        //     address.set(null)
-        // })
     },
     created: function () {
-        // $: startTimer($address)
+        /* Initialize BITBOX. */
+        this.initBitbox()
 
-        // $: link = createLink($address, amount, unit, reference, $receiver, $marketPrice)
+        console.log('this.walletMasterSeed', this.walletMasterSeed)
+        console.log('this.walletMasterMnemonic', this.walletMasterMnemonic)
+
+        /* Initialize seed buffer. */
+        const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
+        // console.log('SEED BUFFER', seedBuffer)
+
+        const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
+        // console.log('HD NODE', hdNode)
+
+        const address = this.bitbox.HDNode.toCashAddress(hdNode)
+        console.log('ADDRESS', address)
+
+        /* Initialize QRCode link. */
+        if (address) {
+            this.address = address
+        }
     },
     mounted: function () {
         //
-    }
+    },
 }
 </script>
 
@@ -146,44 +141,14 @@ main {
     padding: 40px 20px 0;
 }
 
-.icon {
-    display: block;
-    height: 120px;
-    margin: -10px auto 5px;
-}
-
-@media only screen and (max-height: 600px) {
-    .icon {
-        height: 80px;
-    }
-}
-
 p {
     text-align: center;
     margin-bottom: 20px;
 }
 
-h5 {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 14px;
+small {
+    color: rgba(220, 30, 30);
     text-align: center;
-}
-h3 {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    margin-bottom: 26px;
-}
-h3 strong {
-    font-size: 28px;
-    line-height: 28px;
-    font-weight: 600;
-}
-h3 small {
-    font-size: 13px;
-    line-height: 14px;
-    font-weight: 600;
-    margin: 0 8px 1px 2px;
+    margin-top: 20px;
 }
 </style>

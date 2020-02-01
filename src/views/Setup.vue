@@ -64,6 +64,9 @@ export default {
             'setMasterSeed',
         ]),
 
+        /**
+         * Initialize BITBOX
+         */
         initBitbox() {
             console.info('Initializing BITBOX..')
 

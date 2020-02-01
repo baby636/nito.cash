@@ -1,5 +1,7 @@
 <template>
     <main>
+        <Backup v-if="backupReminder" :showExport="showExport" />
+
         <div>
             <header>
                 <button @click="loadSettings">
@@ -33,8 +35,14 @@
 </template>
 
 <script>
+/* Initialize vuex. */
+import { mapActions, mapGetters, mapState } from 'vuex'
+
+/* Import modules. */
+import { BITBOX } from 'bitbox-sdk'
+
 /* Import components. */
-import { Button, Footer } from '@/components'
+import { Backup, Button, Footer } from '@/components'
 
 /* Import icons. */
 import '@/compiled-icons/cog'
@@ -42,23 +50,52 @@ import '@/compiled-icons/fire'
 
 export default {
     components: {
+        Backup,
         Button,
         Footer
     },
     data: () => {
         return {
-            account: null
+            account: null,
+            backupReminder: true,
+            bitbox: null,
+            showExport: false,
         }
     },
     methods: {
+        /**
+         * Load Pay Screen
+         */
         loadPay() {
             this.$router.push('pay')
         },
+
+        /**
+         * Load Request Screen
+         */
         loadRequest() {
             this.$router.push('request')
         },
+
+        /**
+         * Load Settings Screen
+         */
         loadSettings() {
             this.$router.push('settings')
+        },
+
+        /**
+         * Initialize BITBOX
+         */
+        initBitbox() {
+            console.info('Initializing BITBOX..')
+
+            try {
+                /* Initialize BITBOX. */
+                this.bitbox = new BITBOX()
+            } catch (err) {
+                console.error(err)
+            }
         },
 
         async getCashAccount() {
@@ -94,12 +131,15 @@ export default {
 
     },
     mounted: function () {
-        this.getCashAccount()
-        this.getCashAddress()
-        this.getPrice()
+        /* Initialize BITBOX. */
+        this.initBitbox()
+
+        // this.getCashAccount()
+        // this.getCashAddress()
+        // this.getPrice()
         // this.openSocket()
 
-    }
+    },
 }
 </script>
 

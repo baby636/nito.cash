@@ -27,6 +27,9 @@
 </template>
 
 <script>
+/* Initialize vuex. */
+import { mapActions, mapGetters, mapState } from 'vuex'
+
 /* Import modules. */
 import { BITBOX } from 'bitbox-sdk'
 
@@ -39,17 +42,26 @@ import '@/compiled-icons/alarm'
 export default {
     components: {
         Button,
-        Footer
+        Footer,
+    },
+    computed: {
+        ...mapState({
+            walletSeed: state => state.wallets.seed,
+        }),
+        ...mapGetters('wallets', {
+            // walletSeed: 'getSeed',
+        }),
     },
     data: () => {
         return {
             bitbox: null,
-            index: 0,
-            frame: 0
         }
     },
     methods: {
-        initBitbox(_seed) {
+        ...mapActions('wallets', [
+            'setSeed'
+        ]),
+        initBitbox() {
             console.log('Initializing BITBOX..')
             this.bitbox = new BITBOX()
 
@@ -57,9 +69,9 @@ export default {
             let entropy = null
 
             /* Validate seed. */
-            if (_seed) {
+            if (this.walletSeed) {
                 /* Generate entropy from seed. */
-                entropy = this.bitbox.Crypto.sha256(_seed)
+                entropy = this.bitbox.Crypto.sha256(this.walletSeed)
             } else {
                 /* Generate entropy from random bytes. */
                 entropy = this.bitbox.Crypto.randomBytes(32)
@@ -112,7 +124,11 @@ export default {
                 // seed.set(secret)
 
                 // this.$router.push('dashboard')
-                alert('Developer Preview is coming soon...')
+                // alert('Developer Preview is coming soon...')
+
+                // this.$store.dispatch('wallets/create', this.walletSeed)
+                // console.log('Current seed phrase is (2)', this.walletSeed)
+                this.setSeed(null) // FOR DEVELOPMENT PURPOSES ONLY
             } catch (err) {
                 console.error(err)
             }
@@ -122,8 +138,7 @@ export default {
     mounted: function () {
         console.log('Starting wallet setup..')
 
-        /* Initialize wallet seed. */
-        let walletSeed = null
+        console.log('Current seed phrase is (1)', this.walletSeed)
 
         /* Parse the query string for shortcut. */
         if (window.location && window.location.search) {
@@ -133,14 +148,15 @@ export default {
             /* Handle shortcuts. */
             if (param.length === 36) {
                 /* Set wallet (private key) seed. */
-                walletSeed = param
+                // this.walletSeed = param
+                this.setSeed(param)
 
-                console.log('User has a wallet seed', walletSeed)
+                console.log('User has a wallet seed', this.walletSeed)
             }
         }
 
         /* Initialize BITBOX. */
-        this.initBitbox(walletSeed)
+        this.initBitbox()
 
         this.getCashAccount()
         this.getCashAddress()

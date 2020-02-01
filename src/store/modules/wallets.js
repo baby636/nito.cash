@@ -4,12 +4,13 @@ import telr from '../../api/telr'
 /* Initialize state. */
 const state = {
     items: [],
-    checkoutStatus: null
+    seed: null,
+    checkoutStatus: null // FOR DEVELOPMENT ONLY
 }
 
 /* Getters. */
 const getters = {
-    cartProducts: (state, getters, rootState) => {
+    balances: (state, getters, rootState) => {
         return state.items.map(({ id, quantity }) => {
             const product = rootState.products.all.find(product => product.id === id)
             return {
@@ -20,15 +21,22 @@ const getters = {
         })
     },
 
-    cartTotalPrice: (state, getters) => {
+    totalBalance: (state, getters) => {
         return getters.cartProducts.reduce((total, product) => {
             return total + product.price * product.quantity
         }, 0)
-    }
+    },
 }
 
 /* Actions. */
 const actions = {
+    setSeed ({ commit, state }, _seed) {
+        console.log('SETTIGN SEED FOR WALLET', _seed)
+
+        /* Commit wallet seed. */
+        commit('setSeed', _seed)
+    },
+
     checkout ({ commit, state }, products) {
         const savedCartItems = [...state.items]
         commit('setCheckoutStatus', null)
@@ -65,6 +73,11 @@ const actions = {
 
 /* Mutations. */
 const mutations = {
+    setSeed (state, _seed) {
+        /* Update seed. */
+        state.seed = _seed
+    },
+
     pushProductToCart (state, { id }) {
         state.items.push({
             id,
@@ -83,7 +96,7 @@ const mutations = {
 
     setCheckoutStatus (state, status) {
         state.checkoutStatus = status
-    }
+    },
 }
 
 /* Export. */

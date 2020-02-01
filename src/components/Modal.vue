@@ -20,13 +20,7 @@ export default {
         help: Boolean,
         secondary: Boolean,
         hideHeader: Boolean,
-    },
-    data: () => {
-        return {
-            //
-        }
-    },
-
+    }
 }
 </script>
 

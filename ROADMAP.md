@@ -19,6 +19,8 @@ The goal for __[Nito.cash](https://nito.cash/)__ is to become the __MOST user-fr
 - [ ] POC for web-based CashFusion (limited privacy via sponsors)
 - [ ] [Nito@Home](https://github.com/modenero/nito-home) (full privacy via lightweight CashFusion implementation)
 - [ ] Semi-automatic coin selection/control of UXTOs
+- [ ] Integrate [Liquality](https://liquality.io/) for non-custodial (BCH <> DAI) exchange
+- [ ] Integrate [Uniswap](https://uniswap.io/) for non-custodial (DAI <> cDAI) exchange
 
 ### Complete
 

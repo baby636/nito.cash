@@ -26,9 +26,6 @@
 </template>
 
 <script>
-/* Import modules. */
-import { BITBOX } from 'bitbox-sdk'
-
 /* Import icons. */
 import '@/compiled-icons/carnival'
 import '@/compiled-icons/rocket'
@@ -52,80 +49,15 @@ export default {
             }
             this.frame = requestAnimationFrame(this.loop)
         },
-        initBitbox() {
-            console.log('Initializing BITBOX..')
-            this.bitbox = new BITBOX()
-
-            const entropy = this.bitbox.Crypto.randomBytes(32)
-            console.log('ENTROPY', entropy)
-
-            // const mnemonic = this.bitbox.Mnemonic.generate(256)
-            // const mnemonic = this.bitbox.Mnemonic.fromEntropy(entropy)
-            // const mnemonic = this.bitbox.Mnemonic.fromEntropy(entropy.toString('hex'), this.bitbox.Mnemonic.wordLists().japanese)
-            const mnemonic = this.bitbox.Mnemonic.fromEntropy(entropy.toString('hex'), this.bitbox.Mnemonic.wordLists().english)
-            console.log('MNEMONIC', mnemonic)
-
-            const isValid = this.bitbox.Mnemonic.validate('bi', this.bitbox.Mnemonic.wordLists().english)
-            console.log('IS VALID', isValid)
-
-            let seedBuffer = this.bitbox.Mnemonic.toSeed(mnemonic)
-            console.log('SEED BUFFER', seedBuffer)
-
-            let hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
-
-            let childNode = this.bitbox.HDNode.derivePath(hdNode, `m/44'/145'/0'`)
-
-            const xPrivate = this.bitbox.HDNode.toXPriv(childNode)
-            console.log('X PRIVATE', xPrivate)
-        },
-        async getCashAccount() {
-            try {
-                let cashAccounts = await this.bitbox.CashAccounts.lookup("nyusternie", 55155)
-                console.log(cashAccounts)
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        async getCashAddress() {
-            try {
-                let reverseLookup = await this.bitbox.CashAccounts.reverseLookup('bitcoincash:qr5cv5xee23wdy8nundht82v6637etlq3u6kzrjknk')
-                console.log(reverseLookup)
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        async getPrice() {
-            try {
-                let current = await this.bitbox.Price.current('usd');
-                console.log('PRICE', current)
-            } catch(error) {
-                console.error(error)
-            }
-        },
-        async openSocket() {
-            let socket = new this.bitbox.Socket({callback: () => {console.log('connected')}, wsURL: 'https://ws.bitcoin.com'})
-            socket.listen('blocks', (message) => {
-                console.log(message)
-            })
-        },
-
     },
     mounted: function () {
         /* Start animation loop. */
         this.loop()
 
-        /* Initialize BITBOX. */
-        this.initBitbox()
-
-        this.getCashAccount()
-        this.getCashAddress()
-        this.getPrice()
-        // this.openSocket()
-
         /* Load setup. */
         setTimeout(() => {
             this.$router.push('setup')
-        }, 2000)
+        }, 3000)
     }
 }
 </script>

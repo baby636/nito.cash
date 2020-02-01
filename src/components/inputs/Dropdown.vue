@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="{ disabled: disabled }"
+        :class="{ disabled }"
         @click.stop="dropdown = !dropdown">
         <img :src="getFlagName(flag)" alt="" />
 
@@ -18,16 +18,14 @@
 <script>
 export default {
     props: {
-        value: String,
-        flag: String,
         disabled: Boolean,
+        flag: String,
+        items: Array,
+        value: String,
     },
     data: () => {
         return {
-            items: [],
-            onSelect: null,
             dropdown: false,
-            // selectedTab: '',
         }
     },
     computed: {

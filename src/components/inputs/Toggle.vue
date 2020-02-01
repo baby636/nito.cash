@@ -1,8 +1,8 @@
 <template>
     <div class="toggle"
         @click="update"
-        :class="{ disabled: disabled }">
-        <div class="knob" :class="{ active: active }" />
+        :class="{ disabled }">
+        <div class="knob" :class="{ active }" />
     </div>
 </template>
 

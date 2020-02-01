@@ -1,4 +1,5 @@
 /* eslint-disable */
+require('./alarm')
 require('./back')
 require('./carnival')
 require('./cog')

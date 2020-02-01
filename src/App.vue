@@ -34,7 +34,7 @@ export default {
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: local('Poppins Regular'), local('Poppins-Regular'), url('/poppins-regular.woff2') format('woff2');
+    src: local('Poppins Regular'), local('Poppins-Regular'), url('./assets/fonts/poppins-regular.woff2') format('woff2');
 }
 
 @font-face {
@@ -42,7 +42,7 @@ export default {
     font-style: normal;
     font-weight: 500;
     font-display: swap;
-    src: local('Poppins Medium'), local('Poppins-Medium'), url('/poppins-medium.woff2') format('woff2');
+    src: local('Poppins Medium'), local('Poppins-Medium'), url('./assets/fonts/poppins-medium.woff2') format('woff2');
 }
 
 @font-face {
@@ -50,7 +50,7 @@ export default {
     font-style: normal;
     font-weight: 600;
     font-display: swap;
-    src: local('Poppins SemiBold'), local('Poppins-SemiBold'), url('/poppins-semibold.woff2') format('woff2');
+    src: local('Poppins SemiBold'), local('Poppins-SemiBold'), url('./assets/fonts/poppins-semibold.woff2') format('woff2');
 }
 
 /* Main Theme */

@@ -1,5 +1,5 @@
 <template>
-    <footer :class="{ tooltip: tooltip }">
+    <footer :class="{ tooltip }">
         <slot />
     </footer>
 </template>
@@ -8,13 +8,7 @@
 export default {
     props: {
         tooltip: Boolean,
-    },
-    data: () => {
-        return {
-            // tooltip: ''
-        }
-    },
-
+    }
 }
 </script>
 

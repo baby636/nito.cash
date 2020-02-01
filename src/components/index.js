@@ -1,3 +1,4 @@
+/* Import components. */
 import Button from '@/components/Button'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
@@ -8,6 +9,7 @@ import Amount from '@/components/inputs/Amount'
 import Dropdown from '@/components/inputs/Dropdown'
 import Toggle from '@/components/inputs/Toggle'
 
+/* Export components. */
 export {
     Button,
     Footer,

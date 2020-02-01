@@ -19,11 +19,6 @@ export default {
         small: Boolean,
         warning: Boolean,
     },
-    data: () => {
-        return {
-            // loadingLabel: '',
-        }
-    },
     computed: {
         classObject: function () {
             return {
@@ -37,8 +32,7 @@ export default {
                 warning: this.warning,
             }
         }
-    },
-
+    }
 }
 </script>
 

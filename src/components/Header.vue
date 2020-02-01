@@ -38,11 +38,10 @@ export default {
         label: String,
         help: Boolean,
         secondary: Boolean,
-        showHelp: Boolean,
     },
     data: () => {
         return {
-            //
+            showHelp: false
         }
     },
     methods: {
@@ -51,7 +50,6 @@ export default {
             this.$router.push('dashboard')
         },
     }
-
 }
 </script>
 

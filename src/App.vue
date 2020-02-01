@@ -1,18 +1,18 @@
 <template>
-    <!-- <Splash class="app" /> -->
     <div class="app">
+        <Notification />
         <router-view />
     </div>
 </template>
 
 <script>
-/* Import views. */
-// import Splash from './Splash.vue'
+/* Import components. */
+import { Notification } from '@/components'
 
 export default {
-    // components: {
-    //     Splash
-    // },
+    components: {
+        Notification
+    },
     data: () => {
         return {
             // TODO

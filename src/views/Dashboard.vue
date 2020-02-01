@@ -28,7 +28,7 @@
         </chart> -->
 
         <Footer>
-            <Button @click.native="loadRequest" label="Request" double :disabled="!account" />
+            <Button @click.native="loadRequest" label="Request" double :disabled="!walletMasterSeed" />
             <Button @click.native="loadPay" label="Pay" double />
         </Footer>
     </main>
@@ -57,10 +57,19 @@ export default {
     data: () => {
         return {
             account: null,
-            backupReminder: true,
+            backupReminder: false,
             bitbox: null,
             showExport: false,
         }
+    },
+    computed: {
+        ...mapState({
+            walletMasterSeed: state => state.wallets.masterSeed,
+            walletSeeds: state => state.wallets.seeds,
+        }),
+        ...mapGetters('wallets', {
+            //
+        }),
     },
     methods: {
         /**

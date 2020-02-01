@@ -15,25 +15,33 @@
             </svg>
         </button>
 
-        <button
-            v-if="help"
-            @click="showHelp = true"
-            class="right">
-            <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="9" cy="9" r="8" stroke="#fff" stroke-width="2" />
-                <path fill="#fff" d="M8 8h2v5H8z" />
-                <circle cx="9" cy="6" r="1" fill="#fff" />
-            </svg>
-        </button>
-        <!-- <Help bind:active={showHelp}/> -->
+        <div v-if="help">
+            <button
+                @click="showHelp = true"
+                class="right">
+                <svg width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="9" cy="9" r="8" stroke="#fff" stroke-width="2" />
+                    <path fill="#fff" d="M8 8h2v5H8z" />
+                    <circle cx="9" cy="6" r="1" fill="#fff" />
+                </svg>
+            </button>
+
+            <!-- <Help :active="showHelp" /> -->
+        </div>
     </header>
 </template>
 
 <script>
+/* Import components. */
+import { Help } from '@/components'
+
 /* Import icons. */
 import '@/compiled-icons/back'
 
 export default {
+    components: {
+        Help,
+    },
     props: {
         label: String,
         help: Boolean,

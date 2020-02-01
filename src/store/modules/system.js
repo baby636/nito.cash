@@ -3,87 +3,123 @@ import telr from '../../api/telr'
 
 /* Initialize state. */
 const state = {
-    items: [],
-    checkoutStatus: null
+    error: null,
+    notification: null,
 }
 
 /* Getters. */
 const getters = {
-    cartProducts: (state, getters, rootState) => {
-        return state.items.map(({ id, quantity }) => {
-            const product = rootState.products.all.find(product => product.id === id)
-            return {
-                title: product.title,
-                price: product.price,
-                quantity
-            }
-        })
-    },
+    // cartProducts: (state, getters, rootState) => {
+    //     return state.items.map(({ id, quantity }) => {
+    //         const product = rootState.products.all.find(product => product.id === id)
+    //         return {
+    //             title: product.title,
+    //             price: product.price,
+    //             quantity
+    //         }
+    //     })
+    // },
 
-    cartTotalPrice: (state, getters) => {
-        return getters.cartProducts.reduce((total, product) => {
-            return total + product.price * product.quantity
-        }, 0)
-    }
+    // cartTotalPrice: (state, getters) => {
+    //     return getters.cartProducts.reduce((total, product) => {
+    //         return total + product.price * product.quantity
+    //     }, 0)
+    // }
 }
 
 /* Actions. */
 const actions = {
-    checkout ({ commit, state }, products) {
-        const savedCartItems = [...state.items]
-        commit('setCheckoutStatus', null)
-        // empty cart
-        commit('setCartItems', { items: [] })
-        shop.buyProducts(
-            products,
-            () => commit('setCheckoutStatus', 'successful'),
-            () => {
-                commit('setCheckoutStatus', 'failed')
-                // rollback to the cart saved before sending the request
-                commit('setCartItems', { items: savedCartItems })
-            }
-        )
+    setError ({ commit, state }, _error) {
+        console.info('Setting error message', _error)
+
+        /* Commit error message. */
+        commit('setError', _error)
+
+        /* Set automatic dismiss delay. */
+        setTimeout(() => {
+            commit('setError', null)
+        }, 3000)
+
     },
 
-    addProductToCart ({ state, commit }, product) {
-        commit('setCheckoutStatus', null)
+    setNotification ({ commit, state }, _notification) {
+        console.info('Setting notification message', _notification)
 
-        if (product.inventory > 0) {
-            const cartItem = state.items.find(item => item.id === product.id)
+        /* Commit notification message. */
+        commit('setNotification', _notification)
+    },
 
-            if (!cartItem) {
-                commit('pushProductToCart', { id: product.id })
-            } else {
-                commit('incrementItemQuantity', cartItem)
-            }
+    // checkout ({ commit, state }, products) {
+    //     const savedCartItems = [...state.items]
+    //     commit('setCheckoutStatus', null)
+    //     // empty cart
+    //     commit('setCartItems', { items: [] })
+    //     shop.buyProducts(
+    //         products,
+    //         () => commit('setCheckoutStatus', 'successful'),
+    //         () => {
+    //             commit('setCheckoutStatus', 'failed')
+    //             // rollback to the cart saved before sending the request
+    //             commit('setCartItems', { items: savedCartItems })
+    //         }
+    //     )
+    // },
 
-            // remove 1 item from stock
-            commit('products/decrementProductInventory', { id: product.id }, { root: true })
-        }
-    }
+    // addProductToCart ({ state, commit }, product) {
+    //     commit('setCheckoutStatus', null)
+    //
+    //     if (product.inventory > 0) {
+    //         const cartItem = state.items.find(item => item.id === product.id)
+    //
+    //         if (!cartItem) {
+    //             commit('pushProductToCart', { id: product.id })
+    //         } else {
+    //             commit('incrementItemQuantity', cartItem)
+    //         }
+    //
+    //         // remove 1 item from stock
+    //         commit('products/decrementProductInventory', { id: product.id }, { root: true })
+    //     }
+    // }
 }
 
 /* Mutations. */
 const mutations = {
-    pushProductToCart (state, { id }) {
-        state.items.push({
-            id,
-            quantity: 1
-        })
+    /**
+     * Set Error Message
+     */
+    setError (state, _error) {
+        /* Update error message. */
+        state.error = _error
     },
 
-    incrementItemQuantity (state, { id }) {
-        const cartItem = state.items.find(item => item.id === id)
-        cartItem.quantity++
+    /**
+     * Set Notification
+     */
+    setNotification (state, _notification) {
+        /* Update notification message. */
+        state.notification = _notification
     },
 
-    setCartItems (state, { items }) {
-        state.items = items
-    },
+    // pushProductToCart (state, { id }) {
+    //     state.items.push({
+    //         id,
+    //         quantity: 1
+    //     })
+    // },
 
-    setCheckoutStatus (state, status) {
-        state.checkoutStatus = status
-    }
+    // incrementItemQuantity (state, { id }) {
+    //     const cartItem = state.items.find(item => item.id === id)
+    //     cartItem.quantity++
+    // },
+
+    // setCartItems (state, { items }) {
+    //     state.items = items
+    // },
+
+    // setCheckoutStatus (state, status) {
+    //     state.checkoutStatus = status
+    // }
 }
 
 /* Export. */

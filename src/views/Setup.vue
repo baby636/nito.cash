@@ -44,6 +44,11 @@ export default {
         Button,
         Footer,
     },
+    data: () => {
+        return {
+            bitbox: null,
+        }
+    },
     computed: {
         ...mapState({
             walletMasterSeed: state => state.wallets.masterSeed,
@@ -52,11 +57,6 @@ export default {
         ...mapGetters('wallets', {
             // walletSeed: 'getSeed',
         }),
-    },
-    data: () => {
-        return {
-            bitbox: null,
-        }
     },
     methods: {
         ...mapActions('wallets', [

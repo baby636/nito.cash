@@ -61,9 +61,44 @@ export default {
             this.$router.push('settings')
         },
 
+        async getCashAccount() {
+            try {
+                let cashAccounts = await this.bitbox.CashAccounts.lookup("nyusternie", 55155)
+                console.log(cashAccounts)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async getCashAddress() {
+            try {
+                let reverseLookup = await this.bitbox.CashAccounts.reverseLookup('bitcoincash:qr5cv5xee23wdy8nundht82v6637etlq3u6kzrjknk')
+                console.log(reverseLookup)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async getPrice() {
+            try {
+                let current = await this.bitbox.Price.current('usd');
+                console.log('PRICE', current)
+            } catch(error) {
+                console.error(error)
+            }
+        },
+        async openSocket() {
+            let socket = new this.bitbox.Socket({callback: () => {console.log('connected')}, wsURL: 'https://ws.bitcoin.com'})
+            socket.listen('blocks', (message) => {
+                console.log(message)
+            })
+        },
+
     },
     mounted: function () {
-        //
+        this.getCashAccount()
+        this.getCashAddress()
+        this.getPrice()
+        // this.openSocket()
+
     }
 }
 </script>

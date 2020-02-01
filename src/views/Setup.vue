@@ -46,7 +46,8 @@ export default {
     },
     computed: {
         ...mapState({
-            walletSeed: state => state.wallets.seed,
+            walletMasterSeed: state => state.wallets.masterSeed,
+            walletSeeds: state => state.wallets.seeds,
         }),
         ...mapGetters('wallets', {
             // walletSeed: 'getSeed',
@@ -59,111 +60,131 @@ export default {
     },
     methods: {
         ...mapActions('wallets', [
-            'setSeed'
+            'addNewSeed',
+            'setMasterSeed',
         ]),
+
         initBitbox() {
-            console.log('Initializing BITBOX..')
-            this.bitbox = new BITBOX()
+            console.info('Initializing BITBOX..')
 
-            /* Initialize entropy. */
-            let entropy = null
-
-            /* Validate seed. */
-            if (this.walletSeed) {
-                /* Generate entropy from seed. */
-                entropy = this.bitbox.Crypto.sha256(this.walletSeed)
-            } else {
-                /* Generate entropy from random bytes. */
-                entropy = this.bitbox.Crypto.randomBytes(32)
-            }
-            console.log('ENTROPY', entropy)
-
-            // const mnemonic = this.bitbox.Mnemonic.fromEntropy(entropy)
-            // const mnemonic = this.bitbox.Mnemonic.fromEntropy(entropy.toString('hex'), this.bitbox.Mnemonic.wordLists().japanese)
-            const mnemonic = this.bitbox.Mnemonic.fromEntropy(entropy.toString('hex'), this.bitbox.Mnemonic.wordLists().english)
-            console.log('MNEMONIC', mnemonic)
-
-            // const isValid = this.bitbox.Mnemonic.validate('bi', this.bitbox.Mnemonic.wordLists().english)
-            // console.log('IS VALID', isValid)
-        },
-        async getCashAccount() {
             try {
-                let cashAccounts = await this.bitbox.CashAccounts.lookup("nyusternie", 55155)
-                console.log(cashAccounts)
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        async getCashAddress() {
-            try {
-                let reverseLookup = await this.bitbox.CashAccounts.reverseLookup('bitcoincash:qr5cv5xee23wdy8nundht82v6637etlq3u6kzrjknk')
-                console.log(reverseLookup)
-            } catch (error) {
-                console.log(error)
-            }
-        },
-        async getPrice() {
-            try {
-                let current = await this.bitbox.Price.current('usd');
-                console.log('PRICE', current)
-            } catch(error) {
-                console.error(error)
-            }
-        },
-        async openSocket() {
-            let socket = new this.bitbox.Socket({callback: () => {console.log('connected')}, wsURL: 'https://ws.bitcoin.com'})
-            socket.listen('blocks', (message) => {
-                console.log(message)
-            })
-        },
-        async createWallet() {
-            try {
-                console.log('SET THAT SEED!')
-                // const secret = generateSeed()
-                // await API.setSecret({ secret })
-                // seed.set(secret)
-
-                // this.$router.push('dashboard')
-                // alert('Developer Preview is coming soon...')
-
-                // this.$store.dispatch('wallets/create', this.walletSeed)
-                // console.log('Current seed phrase is (2)', this.walletSeed)
-                this.setSeed(null) // FOR DEVELOPMENT PURPOSES ONLY
+                /* Initialize BITBOX. */
+                this.bitbox = new BITBOX()
             } catch (err) {
                 console.error(err)
             }
         },
 
+        async createWallet() {
+            console.info('Creating a NEW wallet..')
+
+            try {
+                /* Initialize walletMasterSeed. */
+                let walletMasterSeed = null
+
+                /* Generate walletMasterSeed from random bytes. */
+                // TODO: !!! WARNING !!! WARNING !!! WARNING !!!
+                //       We MUST properly evaluate ANY and ALL weaknesses with
+                //       using randomBytes via a ("mobile") web browser.
+                walletMasterSeed = this.bitbox.Crypto.randomBytes(32)
+
+                console.info('Generated a NEW Master Wallet Seed (from randomBytes)',
+                    walletMasterSeed)
+
+                /* Set new master (private) key to wallet.. */
+                this.setMasterSeed(walletMasterSeed)
+
+                /**
+                 * Create mnemonic wordlist using BIP-39.
+                 * (https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+                 *
+                 * Available languages are:
+                 *   01. English
+                 *   02. Japanese
+                 *   03. Korean
+                 *   04. Spanish
+                 *   05. Chinese (Simplified)
+                 *   06. Chinese (Traditional)
+                 *   07. French
+                 *   08. Italian
+                 *   09. Czech
+                 */
+                const language = this.bitbox.Mnemonic.wordLists().english
+
+                /* Initialize mnemonic. */
+                const mnemonic = this.bitbox.Mnemonic
+                    .fromEntropy(walletMasterSeed.toString('hex'), language)
+
+                // TODO: Save partial key to Nito cloud.
+
+                console.log('MNEMONIC', mnemonic)
+            } catch (err) {
+                console.error(err)
+            }
+        },
+
+        /**
+         * Initialize Sponsored Wallet
+         *
+         * These wallets are received by attaching a UUID to the wallet URL.
+         *
+         * eg. https://nito.cash?47a49dfe-2fe4-4343-b81e-947580f243f0
+         *     will generate a new seed `47a49dfe-2fe4-4343-b81e-947580f243f0`
+         */
+        initSponsorWallet() {
+            /* Parse the query string for shortcut. */
+            if (window.location && window.location.search) {
+                /* Set param (remove &). */
+                const param = window.location.search.substr(1)
+
+                /* Handle uuid wallet seeds. */
+                if (param.length === 36) {
+                    /* Add sponsor wallet (private key) seed. */
+                    this.addNewSeed(param)
+
+                    /* Sponsorship DOES exist. */
+                    // NOTE: We must notify the user.
+                    return true
+                }
+            }
+
+            /* Sponsorship DOES NOT exists. */
+            return false
+        },
+
     },
     mounted: function () {
-        console.log('Starting wallet setup..')
-
-        console.log('Current seed phrase is (1)', this.walletSeed)
-
-        /* Parse the query string for shortcut. */
-        if (window.location && window.location.search) {
-            /* Set param (remove &). */
-            const param = window.location.search.substr(1)
-
-            /* Handle shortcuts. */
-            if (param.length === 36) {
-                /* Set wallet (private key) seed. */
-                // this.walletSeed = param
-                this.setSeed(param)
-
-                console.log('User has a wallet seed', this.walletSeed)
-            }
+        /* Validate wallet (master seed) exists. */
+        if (this.walletMasterSeed && !this.initSponsorWallet()) {
+            return this.$router.push('dashboard')
         }
 
         /* Initialize BITBOX. */
         this.initBitbox()
 
-        this.getCashAccount()
-        this.getCashAddress()
-        this.getPrice()
-        // this.openSocket()
+        /* Initialize sponsored wallet. */
+        this.initSponsorWallet()
 
-    }
+        /* Validate wallet (master) seed. */
+        if (this.walletMasterSeed) {
+            const walletMasterSeed = this.walletMasterSeed
+
+            console.log('WALLET SEED ALREADY EXISTS', walletMasterSeed)
+
+            // walletMasterSeed = this.bitbox.Crypto.sha256(this.walletMasterSeed)
+
+            const language = this.bitbox.Mnemonic.wordLists().english
+
+            /* Initialize mnemonic. */
+            const mnemonic = this.bitbox.Mnemonic
+                .fromEntropy(this.walletMasterSeed, language)
+
+            // TODO: Save partial key to Nito cloud.
+
+            console.log('MNEMONIC', mnemonic)
+
+        }
+    },
 }
 </script>
 

@@ -111,8 +111,8 @@ export default {
         /* Initialize BITBOX. */
         this.initBitbox()
 
-        console.log('this.walletMasterSeed', this.walletMasterSeed)
-        console.log('this.walletMasterMnemonic', this.walletMasterMnemonic)
+        // console.log('this.walletMasterSeed', this.walletMasterSeed)
+        // console.log('this.walletMasterMnemonic', this.walletMasterMnemonic)
 
         /* Initialize seed buffer. */
         const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)

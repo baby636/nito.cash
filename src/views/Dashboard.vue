@@ -9,17 +9,18 @@
                 </button>
             </header>
 
-            <!-- <balance>
+            <div class="balance">
                 <h1>
-                    {balanceDisplay.rounded}
-                    <small>{balanceDisplay.unit}</small>
+                    {{balanceDisplay.rounded}}
+                    <small>{{balanceDisplay.unit}}</small>
                 </h1>
-                <h2>{balanceDisplay.fiat}</h2>
+
+                <h2>{{balanceDisplay.fiat}}</h2>
 
                 <div>
-                    <Button onClick={() => goto('history')} label="Transaction history" secondary small />
+                    <Button @click.native="loadHistory" label="Transaction history" secondary small />
                 </div>
-            </balance> -->
+            </div>
         </div>
 
         <!-- <chart>
@@ -44,6 +45,10 @@ import { BITBOX } from 'bitbox-sdk'
 /* Import components. */
 import { Backup, Button, Footer } from '@/components'
 
+/* Import libraries. */
+import formatValue from '@/libs/formatValue'
+import marketPrice from '@/libs/marketPrice'
+
 /* Import icons. */
 import '@/compiled-icons/cog'
 import '@/compiled-icons/fire'
@@ -58,6 +63,7 @@ export default {
         return {
             address: null,
             backupReminder: false,
+            balanceDisplay: null,
             bitbox: null,
             showExport: false,
         }
@@ -95,6 +101,13 @@ export default {
         },
 
         /**
+         * Load History Screen
+         */
+        loadHistory() {
+            this.$router.push('history')
+        },
+
+        /**
          * Initialize BITBOX
          */
         initBitbox() {
@@ -116,6 +129,14 @@ export default {
                 const details = await this.bitbox.Address.details(this.address)
                 // const balance = await this.bitbox.Price.current('usd')
                 console.log('DETAILS', details)
+
+                /* Set balance (in satoshis). */
+                const balance = details.balanceSat
+
+                console.log('MARKET PRICE', marketPrice)
+
+                this.balanceDisplay = formatValue(balance, marketPrice)
+                console.log('BALANCE DISPLAY', JSON.stringify(this.balanceDisplay, null, 4))
             } catch(error) {
                 console.error(error)
             }
@@ -153,12 +174,20 @@ export default {
         },
 
     },
+    created: function () {
+        /* Initialize balance display (values). */
+        this.balanceDisplay = {
+            rounded: 0,
+            unit: '',
+            fiat: 0
+        }
+    },
     mounted: function () {
         /* Initialize BITBOX. */
         this.initBitbox()
 
-        console.log('this.walletMasterSeed', this.walletMasterSeed)
-        console.log('this.walletMasterMnemonic', this.walletMasterMnemonic)
+        // console.log('this.walletMasterSeed', this.walletMasterSeed)
+        // console.log('this.walletMasterMnemonic', this.walletMasterMnemonic)
 
         /* Initialize seed buffer. */
         const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
@@ -205,12 +234,12 @@ header button {
     background: none;
 }
 
-balance {
+.balance {
     display: block;
     text-align: center;
     margin-bottom: 40px;
 }
-balance h1 {
+.balance h1 {
     position: relative;
     display: inline-block;
     margin: 0 auto 10px;
@@ -220,30 +249,30 @@ balance h1 {
     font-family: 'Poppins', sans-serif;
 }
 
-balance h1 small,
-balance h2 {
+.balance h1 small,
+.balance h2 {
     font-size: 13px;
     line-height: 21px;
     font-weight: 500;
 }
 
-balance h1 small {
+.balance h1 small {
     position: absolute;
     top: 2px;
     left: calc(100% + 3px);
 }
 
-balance h2 {
+.balance h2 {
     margin-bottom: 36px;
 }
 
 @media only screen and (max-height: 600px) {
-    balance h2 {
+    .balance h2 {
         margin-bottom: 16px;
     }
 }
 
-balance div {
+.balance div {
     max-width: 186px;
     margin: 0 auto;
 }

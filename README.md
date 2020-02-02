@@ -2,50 +2,95 @@
 
 ![Nito.cash Poster](https://nito.cash/poster.jpg?1580211230)
 
-> __[Nito.cash](https://nito.cash)__ is the __most convenient, privacy wallet__ for newcomers to crypto.
+> __[Nito.cash](https://nito.cash)__ is the __most convenient privacy wallet__ for newcomers to crypto.
 
-__Benefits of a ephemeral wallet__
+## Anatomy of Nito.cash wallet
 
-- [x] Convenience: 9.5
-- [x] Privacy: 9.0
-- [x] Security: 7.0
+- [x] Maximum Convenience: 9.5
+- [x] Excellent Privacy: 9.0
+- [x] Good Security: 7.0
 
-## On-boarding new users
+## Improving the on-boarding experience for newcomers
 
-__A typical experience would involve the following:__
+> There are a few (well-known) wallet providers that offer simplified on-boarding processes for newcomers; most commonly by using a traditional __username & password__ for account security. However, in the spirit of encouraging a __non-custodial, censorship-proof__ world; with a future, free from the tragedy of oppression that continues to plague our societies, they have not been considered in this brief analysis.
 
-1. Visit your local App Store
-2. Download whatever wallet app your sponsor recommends
-3. Create a new wallet within the app
-4. Write down the 12 words required to secure your new wallet
-5. Confirm the 12 words to complete the setup process
-6. Receive crypto from your sponsor
+__Today's newcomers will commonly experience the following:__
 
-__A better experience SHOULD involve the following:__
+1. Open their respective app store (Android or iOS).
+2. Search & download the app recommended by their sponsor.
+3. Install the app.
+4. Create a new wallet.
+5. Secure the 12 seed words protecting their new wallet.
+6. Confirm (all or some of) the 12 words to complete the setup process.
+7. Open the 'Receive' screen for a QR code.  
+_(sponsor scans QR code for their address and sends)_
+8. Newcomer confirms receipt of "first crypto" from their sponsor.
 
-1. Open your mobile web browser
-2. Type in an address (eg. [https://nito.cash](https://nito.cash))
-3. Receive crypto from your sponsor
+(average time to complete: __5 - 10 minutes__)
 
-The time difference between the 2 processes is only a few minutes. however imho, a few minutes makes ALL the difference in the world.
+__NOTE:__ Step \#5 has consistently proven to be highly problematic.
 
-## So what's the real world use-case?
+---
 
-In my early days of crypto, I on-boarded multiple users on a daily basis, most commonly my Uber drivers. The process only took an average of 5 minutes. However, this time came at the END of the trip, since the driver would obviously be focused on .. DRIVING!
+__Nito.cash newcomers experience ONLY the following:__
 
-Nito.cash should only take about 30 seconds from the first mention, through receiving their first crypto. Nito.cash would then provide ALL the necessary education for the recipient, rather than having to overly burden the sponsor. (The sponsor would be free to talk about crypto during the entire ride however).
+1. Open their camera phone.
+2. Scan the QR code shown on their sponsors phone.
+3. Newcomer confirms receipt of "first crypto" from their sponsor.
 
-This example could be easily repeated in multiple situations, for example:
+(average time to complete: __25 - 30 seconds__)
 
-1. Noisy bar/restaurant
-2. Social event
+## It's _really_ best to KISS when introducing crypto
 
-## And what's wrong with just using an App Store wallet?
+Do you know how many __first-time users__ actually care about __securing__ their seed phrase?
 
-Besides the time factor that I've already detailed above, there is another major problem, specifically with the countless wallets that DO NOT use the traditinoal username/password model. From my experience, users DO NOT properly store those 12 words. Edge wallet (formerly Airbitz) was my go-to for this exact reason.
+__NONE__
 
-However, in today's market, I just don't see this model widely used anymore. (with a few exceptions, the wallets that do employ this model are NOT wallets that I would recommend to anyone, eg. Coinbase -- you know exactly why, so don't ask)
+..and that's why Nito __Keeps It Super-Simple__
 
-The purpose of Nito.cash is to be an EPHEMERAL wallet, and NOT your daily driver. Its primary purpose is for on-boarding first-time users AND educating them on "How to do crypto correctly!". That's it!
+Sponsorships take __less than 30 seconds__ from the moment a newcomer opens their phone, until they receive their very first crypto. The experience is __fast and painless.__
 
-The goal is to make Nito.cash not only a frictionless experience, but an enjoyable one.
+Nito further provides __ALL the necessary education__ for the newcomer; but at a time that's convenient for __THEM.__ And that way, the two parties are free to immediately resume their previous activity.
+
+## Nito sponsorships are effortless
+
+By offering __just $1.00 sponsorships,__ you can potentially introduce hundreds of first-time users to the wonderful world of crypto. Some of the __most welcoming__ newcomers for Nito sponsoring have included:
+
+1. Friends & family
+2. Classmates
+3. Bartenders and waiters
+4. Uber (ride-share) drivers
+5. Party guests
+6. Conference attendees
+
+_and the list goes on and on..._
+
+## Move your money with maximum discretion
+
+> Everyone should have a right to privacy when it comes to THEIR OWN MONEY.
+
+Nito.cash is currently in development for integrating two emerging technologies that will greatly improve the privacy long sought after by the crypto community.
+
+- [ ] [CashFusion]()
+- [ ] [zkSNARKS]()
+
+_Please visit __[r/NitoCash](https://reddit.com/r/NitoCash/)__ for the latest information regarding ongoing development._
+
+## Is it the end for "seed phrase" wallets?
+
+__Absolutely NOT!__
+
+The purpose of Nito.cash is to be a super convenient, on-boarding wallet for newcomers. __It is NOT meant to serve as a "primary" daily driver for ANY user.__ Security compromises were made to ensure that newcomers are immediately introduced to an __enjoyable crypto experience.__ After which, they can choose to slowly build on their education, while exploring their specific interest(s).
+
+__Guides are available in-app, on topics including:__
+
+- [ ] Which wallet(s) will eventually best serve their needs.
+- [ ] How to safely and securely protect their private keys.
+
+## What's next?
+
+Check out our __[Roadmap](ROADMAP.md)__ for what we have in store.
+
+As crypto fast approaches its teen years, Nito.cash aims to serve as the __optimal first impression__ necessary to drive tidal waves of fresh new crypto users, for years to come...
+
+__Cheers to that!__

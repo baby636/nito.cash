@@ -3,7 +3,10 @@
         <div v-if="sendState === 'sending'">
             <main class="center">
                 <Spinner />
-                <p>Your payment is being processed, please wait...</p>
+
+                <p>
+                    Your payment is being processed, please wait...
+                </p>
             </main>
         </div>
 
@@ -12,72 +15,54 @@
                 <div style="height: 200px; margin-bottom: 30px;">
                     <Animation type="pay-ok" />
                 </div>
-                <p>Your payment is complete</p>
+
+                <p>
+                    Your payment is complete
+                </p>
             </main>
+
             <Footer>
-                <Button onClick={resetSend} label="OK" />
+                <Button @click.native="resetSend" label="OK" />
             </Footer>
         </div>
 
         <div v-else>
-            <div class="balance">Current balance: {{currentBalance.rounded}} {{currentBalance.unit}}</div>
-
-            <div v-if="!cda">
-                <div v-if="cameraError">
-                    <main class="center">
-                        <form>
-                            <label>Payment link</label>
-                            <input placeholder={`${getDomain()}/?address=ABC...`} type="text" bind:value={paymentLink} />
-                        </form>
-                    </main>
-                    <Footer>
-                        <Button disabled={paymentLink.length === 0} onClick={onPaymentLink} label="Send" />
-                    </Footer>
-                </div>
-
-                <div v-else>
-                    <div class="scanner" class:enabled={scanner}>
-                        <div class="video-container">
-                            <video bind:this={video} autoplay playsinline />
-                        </div>
-                        <svg width="204" height="204" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M167 10V0h26.976c5.523 0 10 4.477 10 10v27h-10V10H167zM36.976 10H10v27H0V10C0 4.477 4.477 0 10
-                                0h26.976v10zM167 194h26.976v-27h10v27c0 5.523-4.477 10-10 10H167v-10zm-130.024 0v10H10c-5.523
-                                0-10-4.477-10-10v-27h10v27h26.976z" />
-                        </svg>
-                    </div>
-                </div>
+            <div class="balance">
+                Current balance: {{currentBalance.rounded}} {{currentBalance.unit}}
             </div>
 
-            <div v-else>
-                <main>
-                    <div />
-                    <animation>
-                        <Animation type="pay" />
-                    </animation>
-                    <div>
-                        {#if cda && cda.expectedAmount}
-                            <h4>
-                                <strong>{amount}</strong>
-                                <small>{unit}</small>
-                            </h4>
-                        {/if}
-                        <receiver>{`To ${cda && cda.receiver ? cda.receiver : 'anonymous recipient'}`}</receiver>
-                    </div>
+            <div v-if="cameraError">
+                <main class="center">
                     <form>
-                        {#if !cda || !cda.expectedAmount}
-                            <label>Amount</label>
-                            <Amount bind:amount bind:unit />
-                        {/if}
-
-                        <label>Transaction note</label>
-                        <input placeholder="Optional reference" type="text" bind:value={reference} />
+                        <label>Payment link</label>
+                        <input placeholder={`${getDomain()}/?address=ABC...`} type="text" bind:value={paymentLink} />
                     </form>
                 </main>
 
                 <Footer>
-                    <Button onClick={onSend} label="Send" />
+                    <Button @click.native="onPaymentLink" label="Send" :disabled="paymentLink.length === 0" />
+                </Footer>
+            </div>
+
+            <div v-else>
+                <div class="scanner" :class="{enabled: scanner}">
+                    <div class="video-container">
+                        <video id="video-display" autoplay playsinline />
+                    </div>
+
+                    <svg width="204" height="204" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M167 10V0h26.976c5.523 0 10 4.477 10 10v27h-10V10H167zM36.976 10H10v27H0V10C0 4.477 4.477 0 10
+                            0h26.976v10zM167 194h26.976v-27h10v27c0 5.523-4.477 10-10 10H167v-10zm-130.024 0v10H10c-5.523
+                            0-10-4.477-10-10v-27h10v27h26.976z" />
+                    </svg>
+                </div>
+
+                <Footer>
+                    <div>
+                        Address: {{address}}
+                    </div>
+                    <Button @click.native="onSend" label="Send" />
                 </Footer>
             </div>
         </div>
@@ -89,16 +74,12 @@
 import { Button, Footer, Modal } from '@/components'
 // import { Animation, Address, Amount, Berny, Button, Footer, Header, Spinner, View } from '~/components'
 
-/* Import icons. */
-// import '@/compiled-icons/fire'
-
 // import { Capacitor, Plugins } from '@capacitor/core'
-//
-// import QrScanner from 'qr-scanner'
-// QrScanner.WORKER_PATH = '/scanner.worker.min.js'
-//
-// import { onMount } from 'svelte'
-//
+
+/* Import QR Code scanner, with JS worker path. */
+import QrScanner from 'qr-scanner'
+QrScanner.WORKER_PATH = './js/qr-scanner-worker.min.js'
+
 // import { formatValue, getDomain, goto, parseLink, getIotas, getPlatform } from '~/lib/helpers'
 // import { account, balance, history, sendState } from '~/lib/account'
 // import { marketPrice } from '~/lib/market'
@@ -113,7 +94,7 @@ export default {
     },
     data: () => {
         return {
-            cda: true,
+            address: null,
             currentBalance: 0,
 
             amount: null,
@@ -133,6 +114,7 @@ export default {
     methods: {
         async scannerMobile(init) {
             console.log('SCANNER MOBILE')
+
             // if (typeof init === 'boolean') {
             //     try {
             //         const { CameraPreview } = Plugins
@@ -155,7 +137,7 @@ export default {
             //         const result = parseLink(data)
             //
             //         if (result) {
-            //             setCDA(result)
+            //             setAddress(result)
             //             camera.stop()
             //             camera = null
             //         } else {
@@ -167,7 +149,7 @@ export default {
             // }
         },
 
-        async onSend () {
+        async onSend() {
             console.log('ON SEND')
             // try {
             //     const value = getIotas(amount, unit, $marketPrice)
@@ -208,73 +190,92 @@ export default {
             // }
         },
 
-        onPaste (e) {
+        onPaste(e) {
             console.log('ON PASTE')
             // const data = (event.clipboardData || window.clipboardData).getData('text')
             // const result = parseLink(data)
             // if (result) {
-            //     setCDA(result)
+            //     setAddress(result)
             // }
         },
 
-        onPaymentLink () {
+        onPaymentLink() {
             console.log('ON PAYMENT LINK')
             // const result = parseLink(paymentLink)
             // if (result) {
-            //     setCDA(result)
+            //     setAddress(result)
             // } else {
             //     error.set('Invalid payment link')
             // }
         },
 
-        resetSend () {
+        resetSend() {
             console.log('RESET SEND')
             // sendState.set('idle')
             // goto('')
         },
 
-        setCDA (result) {
+        setAddress(_result) {
             console.log('SET CDA')
-            // cda = result
-            //
+
+            /* Set address. */
+            this.address = _result
+
             // if (result.expectedAmount) {
             //     const value = formatValue(result.expectedAmount)
             //     amount = value.value
             //     unit = value.unit
             // }
-            //
+
             // reference = result.reference || ''
-            //
-            // if (camera) {
-            //     camera.stop()
-            //     camera = null
-            // }
-            // if (scanner) {
-            //     scanner.destroy()
-            //     scanner = null
-            // }
+
+            if (this.camera) {
+                this.camera.stop()
+                this.camera = null
+            }
+
+            if (this.scanner) {
+                this.scanner.destroy()
+                this.scanner = null
+            }
         },
 
-        async scannerWeb (stream) {
+        async scannerWeb () {
             console.log('SCANNER WEB')
-            // try {
-            //     navigator.getUserMedia =
-            //         navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia
-            //
-            //     if (!navigator.mediaDevices.getUserMedia && !navigator.getUserMedia) {
-            //         cameraError = true
-            //     } else {
-            //         scanner = new QrScanner(video, (data) => {
-            //             const result = parseLink(data)
-            //             if (result) {
-            //                 setCDA(result)
-            //             }
-            //         })
-            //         await scanner.start()
-            //     }
-            // } catch (err) {
-            //     cameraError = true
-            // }
+
+            try {
+                navigator.getUserMedia =
+                    navigator.getUserMedia ||
+                    navigator.webkitGetUserMedia ||
+                    navigator.mozGetUserMedia ||
+                    navigator.msGetUserMedia
+
+                if (!navigator.mediaDevices.getUserMedia && !navigator.getUserMedia) {
+                    this.cameraError = true
+                } else {
+                    /* Initialize video element. */
+                    this.video = document.getElementById('video-display')
+
+                    this.scanner = new QrScanner(this.video, (_data) => {
+                        console.log('SCANNER DATA', _data)
+
+                        // FIXME: Build a new link parser
+                        const result = _data
+                        // const result = parseLink(_data)
+
+                        /* Validate (scanner) result. */
+                        if (result) {
+                            this.setAddress(result)
+                        }
+                    })
+
+                    /* Start scanner. */
+                    await this.scanner.start()
+                }
+            } catch (err) {
+                console.log('SCANNER WEB ERROR:', err)
+                this.cameraError = true
+            }
         },
     },
     created: function () {
@@ -283,43 +284,39 @@ export default {
         const rounded = Math.round(value * 10) / 10 + (Math.round(value * 10) / 10 === value ? '' : '+')
         const unit = 'sat'
         const fiat = '$1.337'
+
+        /* Build current balance package. */
         this.currentBalance = {
             value,
             rounded,
             unit,
             fiat
         }
-
     },
     mounted: function () {
         /* Initialize send state. */
         this.sendState = 'idle'
 
-        // onMount(() => {
-        //     sendState.set('idle')
-        //
-        //     const cdaLink = parseLink()
-        //
-        //     if (cdaLink) {
-        //         setCDA(cdaLink)
-        //         window.history.pushState('Dashboard', null, '/#pay')
-        //     } else if (Capacitor.getPlatform() === 'web') {
-        //         scannerWeb()
-        //     } else {
-        //         scannerMobile(true)
-        //     }
-        //
-        //     return () => {
-        //         if (camera) {
-        //             camera.stop()
-        //             camera = null
-        //         }
-        //         if (scanner) {
-        //             scanner.destroy()
-        //             scanner = null
-        //         }
-        //     }
-        // })
+        /* Initialize scanner. */
+        // if (Capacitor.getPlatform() === 'web') {
+        if (true) {
+            this.scannerWeb()
+        } else {
+            this.scannerMobile(true)
+        }
+    },
+    beforeDestroy() {
+        /* Cleanup camera. */
+        if (this.camera) {
+            this.camera.stop()
+            this.camera = null
+        }
+
+        /* Cleanup scanner. */
+        if (this.scanner) {
+            this.scanner.destroy()
+            this.scanner = null
+        }
     }
 }
 </script>
@@ -354,6 +351,10 @@ main.center {
     background: #000;
     overflow: hidden;
     opacity: 0;
+
+    height: 300px;
+    /* height: calc(100vh - 225px); */
+    /* height: 100%; */
 }
 
 .scanner.enabled {

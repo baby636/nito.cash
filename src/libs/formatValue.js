@@ -26,11 +26,11 @@ export default (satoshis, marketPrice, units) => {
     switch (true) {
     case value < 100:
         break
-    case value < 10000:
+    case value < 100000:
         value /= 100
         unit = 'bits'
         break
-    case value < 10000000:
+    case value < 100000000:
         value /= 100000
         unit = 'mBCH'
         break
@@ -41,6 +41,9 @@ export default (satoshis, marketPrice, units) => {
     }
 
     /* Rounded value (based on decimal value). */
+    // TODO: Run more display tests to decide if we're keeping the rounding.
+    //       2-decimal places is ideal for "primary" displays.
+    //       4-decimal places is acceptable for "secondary" displays.
     const rounded = Math.round(value * 10) / 10 +
         (Math.round(value * 10) / 10 === value ? '' : '+')
 

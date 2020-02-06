@@ -57,9 +57,15 @@ export default {
         lottie.loadAnimation(options)
 
         // return () => {
-        //     animation && animation.destroy()
+        //
         // }
     },
+    beforeDestroy() {
+        /* Cleanup animation. */
+        if (this.animation) {
+            this.animation.destroy()
+        }
+    }
 }
 </script>
 

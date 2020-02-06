@@ -58,6 +58,10 @@ export default {
         setTimeout(() => {
             this.$router.push('setup')
         }, 3000)
+    },
+    beforeDestroy() {
+        /* Cleanup animation frame. */
+        cancelAnimationFrame(this.frame)
     }
 }
 </script>

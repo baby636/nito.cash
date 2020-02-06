@@ -11,7 +11,7 @@
 
             <div class="balance">
                 <h1>
-                    {{balanceDisplay.rounded}}
+                    {{balanceDisplay.value}}
                     <small>{{balanceDisplay.unit}}</small>
                 </h1>
 
@@ -131,7 +131,8 @@ export default {
                 console.log('DETAILS', details)
 
                 /* Set balance (in satoshis). */
-                const balance = details.balanceSat
+                // const balance = details.balanceSat
+                const balance = details.balanceSat + details.unconfirmedBalanceSat
 
                 console.log('MARKET PRICE', marketPrice)
 
@@ -177,6 +178,7 @@ export default {
     created: function () {
         /* Initialize balance display (values). */
         this.balanceDisplay = {
+            value: 0,
             rounded: 0,
             unit: '',
             fiat: 0
@@ -243,7 +245,7 @@ header button {
     position: relative;
     display: inline-block;
     margin: 0 auto 10px;
-    font-size: 40px;
+    font-size: 48px;
     line-height: 40px;
     font-weight: 500;
     font-family: 'Poppins', sans-serif;
@@ -251,18 +253,19 @@ header button {
 
 .balance h1 small,
 .balance h2 {
-    font-size: 13px;
     line-height: 21px;
     font-weight: 500;
 }
 
 .balance h1 small {
+    font-size: 16px;
     position: absolute;
     top: 2px;
     left: calc(100% + 3px);
 }
 
 .balance h2 {
+    font-size: 20px;
     margin-bottom: 36px;
 }
 

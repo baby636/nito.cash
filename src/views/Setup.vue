@@ -126,6 +126,9 @@ export default {
 
                 /* Set new master (private) key to wallet.. */
                 this.setMasterMnemonic(mnemonic)
+
+                /* Redirect to dashboard. */
+                this.$router.push('dashboard')
             } catch (err) {
                 console.error(err)
             }
@@ -164,6 +167,7 @@ export default {
     mounted: function () {
         /* Validate wallet (master seed) exists. */
         if (this.walletMasterSeed && !this.initSponsorWallet()) {
+            /* Redirect to dashboard. */
             return this.$router.push('dashboard')
         }
 

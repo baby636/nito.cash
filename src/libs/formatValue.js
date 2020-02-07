@@ -4,14 +4,15 @@ const numeral = require('numeral')
 /**
  * Format BCH value to value units and calculate market value.
  */
-export default (satoshis, marketPrice, units) => {
+export default (satoshis, marketPrice, currency) => {
+    console.log('CURRENCY', currency)
     // let value = getIotas(iotas, units, marketPrice)
     let value = satoshis
 
     let unit = 'sats'
 
-    let fiat = ((satoshis / 100000000) * marketPrice.value)
-    fiat = numeral(fiat).format('$0,0.00[00]') + ' ' + marketPrice.currency
+    let fiat = ((satoshis / 100000000) * (marketPrice / 100.0))
+    fiat = numeral(fiat).format('$0,0.00[00]') + ' ' + currency
 
     // const fiat = !marketPrice
     //     ? '-'

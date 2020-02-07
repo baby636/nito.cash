@@ -31,16 +31,40 @@
                 Current balance: {{currentBalance.rounded}} {{currentBalance.unit}}
             </div>
 
-            <div v-if="cameraError">
-                <main class="center">
+            <div v-if="cameraError || address">
+                <main>
+                    <div />
+
+                    <div class="animation">
+                        <Animation type="pay" />
+                    </div>
+
+                    <Address :address="address" />
+
                     <form>
-                        <label>Payment link</label>
-                        <input placeholder={`${getDomain()}/?address=ABC...`} type="text" bind:value={paymentLink} />
+                        <label>Amount</label>
+                        <Amount :amount="amount" :unit="unit" />
+
+                        <label>Transaction note</label>
+                        <input placeholder="Optional reference" type="text" :value="reference" />
                     </form>
+
+                    <div class="scanner" :class="{enabled: scanner}">
+                        <div class="video-container">
+                            <video id="video-display" autoplay playsinline />
+                        </div>
+
+                        <svg width="204" height="204" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M167 10V0h26.976c5.523 0 10 4.477 10 10v27h-10V10H167zM36.976 10H10v27H0V10C0 4.477 4.477 0 10
+                                0h26.976v10zM167 194h26.976v-27h10v27c0 5.523-4.477 10-10 10H167v-10zm-130.024 0v10H10c-5.523
+                                0-10-4.477-10-10v-27h10v27h26.976z" />
+                        </svg>
+                    </div>
                 </main>
 
                 <Footer>
-                    <Button @click.native="onPaymentLink" label="Send" :disabled="paymentLink.length === 0" />
+                    <Button @click.native="onSend" label="Send" />
                 </Footer>
             </div>
 
@@ -57,24 +81,18 @@
                             0-10-4.477-10-10v-27h10v27h26.976z" />
                     </svg>
                 </div>
-
-                <Footer>
-                    <div>
-                        Address: {{address}}
-                    </div>
-                    <Button @click.native="onSend" label="Send" />
-                </Footer>
             </div>
         </div>
     </Modal>
 </template>
 
 <script>
-/* Import components. */
-import { Button, Footer, Modal } from '@/components'
-// import { Animation, Address, Amount, Berny, Button, Footer, Header, Spinner, View } from '~/components'
+/* Initialize vuex. */
+import { mapActions, mapGetters, mapState } from 'vuex'
 
-// import { Capacitor, Plugins } from '@capacitor/core'
+/* Import components. */
+import { Address, Amount, Animation, Button, Footer, Modal } from '@/components'
+// import { Berny, Button, Footer, Header, Spinner, View } from '~/components'
 
 /* Import QR Code scanner, with JS worker path. */
 import QrScanner from 'qr-scanner'
@@ -82,12 +100,12 @@ QrScanner.WORKER_PATH = './js/qr-scanner-worker.min.js'
 
 // import { formatValue, getDomain, goto, parseLink, getIotas, getPlatform } from '~/lib/helpers'
 // import { account, balance, history, sendState } from '~/lib/account'
-// import { marketPrice } from '~/lib/market'
-// import { notification, error } from '~/lib/app'
-// import API from '~/lib/api'
 
 export default {
     components: {
+        Address,
+        Amount,
+        Animation,
         Button,
         Footer,
         Modal,
@@ -99,7 +117,7 @@ export default {
 
             amount: null,
             reference: '',
-            unit: 'Mi',
+            unit: 'Satoshis',
 
             video: null,
             scanner: null,
@@ -111,83 +129,59 @@ export default {
             sendState: null,
         }
     },
+    computed: {
+        ...mapState({
+            walletMasterMnemonic: state => state.wallets.masterMnemonic,
+            walletMasterSeed: state => state.wallets.masterSeed,
+            walletSeeds: state => state.wallets.seeds,
+        }),
+        ...mapGetters('wallets', {
+            //
+        }),
+    },
     methods: {
-        async scannerMobile(init) {
-            console.log('SCANNER MOBILE')
-
-            // if (typeof init === 'boolean') {
-            //     try {
-            //         const { CameraPreview } = Plugins
-            //         camera = CameraPreview
-            //
-            //         await camera.start({ position: 'rear' })
-            //     } catch (err) {
-            //         error.set(`Camera: ${err.message || err}`)
-            //         cameraError = true
-            //     }
-            // }
-            //
-            // try {
-            //     if (camera) {
-            //         const capture = await camera.capture()
-            //         const img = new Image()
-            //         img.src = `data:image/jpeg;base64,${capture.value}`
-            //
-            //         const data = await QrScanner.scanImage(img)
-            //         const result = parseLink(data)
-            //
-            //         if (result) {
-            //             setAddress(result)
-            //             camera.stop()
-            //             camera = null
-            //         } else {
-            //             requestAnimationFrame(scannerMobile)
-            //         }
-            //     }
-            // } catch (err) {
-            //     requestAnimationFrame(scannerMobile)
-            // }
-        },
+        ...mapActions('system', [
+            'setError',
+            'setNotification',
+        ]),
 
         async onSend() {
             console.log('ON SEND')
-            // try {
-            //     const value = getIotas(amount, unit, $marketPrice)
-            //     const time = await API.getTime()
-            //
-            //     if (!value) {
-            //         return error.set('Cannot send payment without value')
-            //     }
-            //
-            //     if (Math.ceil(time / 1000) >= cda.timeoutAt) {
-            //         return error.set('Payment request expired')
-            //     }
-            //
-            //     if (value > $balance) {
-            //         return error.set('Insufficient funds')
-            //     }
-            //
-            //     sendState.set('sending')
-            //
-            //     const data = {
-            //         address: cda.address,
-            //         timeoutAt: cda.timeoutAt,
-            //         value
-            //     }
-            //
-            //     if (cda.expectedAmount) {
-            //         data['expectedAmount'] = cda.expectedAmount
-            //     }
-            //
-            //     await $account.sendToCDA(data)
-            //
-            //     history.update(($history) =>
-            //         $history.concat([{ address: cda.address.substr(0, 81), reference, receiver: cda.receiver, incoming: false }])
-            //     )
-            // } catch (err) {
-            //     error.set(err.message ? err.message.split(';')[0] : err)
-            //     sendState.set('idle')
-            // }
+
+            if (!this.value) {
+                return this.setError('Cannot send payment without amount')
+            }
+
+            try {
+                /* Initialize transaction builder. */
+                const transactionBuilder = new bitbox.TransactionBuilder('mainnet')
+
+                // if (value > $balance) {
+                //     return error.set('Insufficient funds')
+                // }
+                // 
+                // this.sendState = 'sending'
+                //
+                // const data = {
+                //     address: cda.address,
+                //     timeoutAt: cda.timeoutAt,
+                //     value
+                // }
+                //
+                // if (cda.expectedAmount) {
+                //     data['expectedAmount'] = cda.expectedAmount
+                // }
+                //
+                // await $account.sendToCDA(data)
+                //
+                // history.update(($history) =>
+                //     $history.concat([{ address: cda.address.substr(0, 81), reference, receiver: cda.receiver, incoming: false }])
+                // )
+            } catch (err) {
+                this.setError(err.message ? err.message.split(';')[0] : err)
+
+                this.sendState = 'idle'
+            }
         },
 
         onPaste(e) {
@@ -199,24 +193,16 @@ export default {
             // }
         },
 
-        onPaymentLink() {
-            console.log('ON PAYMENT LINK')
-            // const result = parseLink(paymentLink)
-            // if (result) {
-            //     setAddress(result)
-            // } else {
-            //     error.set('Invalid payment link')
-            // }
-        },
-
         resetSend() {
-            console.log('RESET SEND')
-            // sendState.set('idle')
-            // goto('')
+            /* Reset (send) state to idle. */
+            this.sendState = 'idle'
+
+            /* Redirect to dashboard. */
+            this.$router.push('dashboard')
         },
 
         setAddress(_result) {
-            console.log('SET CDA')
+            console.log('SET ADDRESS')
 
             /* Set address. */
             this.address = _result
@@ -352,7 +338,7 @@ main.center {
     overflow: hidden;
     opacity: 0;
 
-    height: 300px;
+    height: 450px;
     /* height: calc(100vh - 225px); */
     /* height: 100%; */
 }
@@ -361,14 +347,15 @@ main.center {
     opacity: 1;
 }
 
-animation {
+.animation {
     display: block;
     height: 150px;
     text-align: center;
+    margin-bottom: 15px;
 }
 
 @media only screen and (max-height: 600px) {
-    animation {
+    .animation {
         height: 100px;
     }
 }
@@ -416,7 +403,8 @@ h4 small {
     line-height: 13px;
     margin: 4px 0 0 3px;
 }
-receiver {
+
+.receiver {
     display: block;
     text-align: center;
 }

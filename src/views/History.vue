@@ -53,7 +53,6 @@ import { Header, Tabs } from '@/components'
 // import '@/compiled-icons/fire'
 
 // import { history } from '~/lib/account'
-// import { marketPrice } from '~/lib/market'
 // import { formatDate, formatValue } from '~/lib/helpers'
 
 

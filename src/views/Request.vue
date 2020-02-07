@@ -26,7 +26,6 @@ import { Amount, Animation, Button, Footer, Modal, QR } from '@/components'
 import { BITBOX } from 'bitbox-sdk'
 
 // import { address, receiver, setAddress } from '~/lib/account'
-// import { marketPrice } from '~/lib/market'
 // import { getIotas, goto, createLink, getTimeUnits, setClipboard } from '~/lib/helpers'
 
 export default {

@@ -47,7 +47,6 @@ import { Backup, Button, Footer } from '@/components'
 
 /* Import libraries. */
 import formatValue from '@/libs/formatValue'
-import marketPrice from '@/libs/marketPrice'
 
 /* Import icons. */
 import '@/compiled-icons/cog'
@@ -70,6 +69,8 @@ export default {
     },
     computed: {
         ...mapState({
+            marketPrice: state => state.blockchain.tickers.BCH.USD,
+
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
             walletSeeds: state => state.wallets.seeds,
@@ -79,6 +80,10 @@ export default {
         }),
     },
     methods: {
+        ...mapActions('blockchain', [
+            'updateTickers',
+        ]),
+
         /**
          * Load Pay Screen
          */
@@ -134,9 +139,9 @@ export default {
                 // const balance = details.balanceSat
                 const balance = details.balanceSat + details.unconfirmedBalanceSat
 
-                console.log('MARKET PRICE', marketPrice)
+                console.log('MARKET PRICE', this.marketPrice)
 
-                this.balanceDisplay = formatValue(balance, marketPrice)
+                this.balanceDisplay = formatValue(balance, this.marketPrice, 'USD')
                 console.log('BALANCE DISPLAY', JSON.stringify(this.balanceDisplay, null, 4))
             } catch(error) {
                 console.error(error)
@@ -151,24 +156,31 @@ export default {
                 console.log(error)
             }
         },
+
         async getCashAddress() {
             try {
-                let reverseLookup = await this.bitbox.CashAccounts.reverseLookup('bitcoincash:qr5cv5xee23wdy8nundht82v6637etlq3u6kzrjknk')
+                let reverseLookup = await this.bitbox.CashAccounts
+                    .reverseLookup('bitcoincash:qr5cv5xee23wdy8nundht82v6637etlq3u6kzrjknk')
+
                 console.log(reverseLookup)
             } catch (error) {
                 console.log(error)
             }
         },
-        async getPrice() {
+
+        async setPrice() {
             try {
-                let current = await this.bitbox.Price.current('usd');
+                let current = await this.bitbox.Price.current('usd')
+
                 console.log('PRICE', current)
             } catch(error) {
                 console.error(error)
             }
         },
+
         async openSocket() {
             let socket = new this.bitbox.Socket({callback: () => {console.log('connected')}, wsURL: 'https://ws.bitcoin.com'})
+
             socket.listen('blocks', (message) => {
                 console.log(message)
             })
@@ -188,9 +200,6 @@ export default {
         /* Initialize BITBOX. */
         this.initBitbox()
 
-        // console.log('this.walletMasterSeed', this.walletMasterSeed)
-        // console.log('this.walletMasterMnemonic', this.walletMasterMnemonic)
-
         /* Initialize seed buffer. */
         const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
         // console.log('SEED BUFFER', seedBuffer)
@@ -206,11 +215,14 @@ export default {
             this.address = address
         }
 
+        /* Update price tickers. */
+        this.updateTickers()
+
+        /* Get current (wallet) balance. */
         this.getBalance()
 
         // this.getCashAccount()
         // this.getCashAddress()
-        // this.getPrice()
         // this.openSocket()
 
     },

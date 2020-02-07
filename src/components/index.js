@@ -8,6 +8,7 @@ import Notification from './Notification'
 import Tabs from './Tabs'
 import QR from './QR'
 
+import Address from './inputs/Address'
 import Amount from './inputs/Amount'
 import Dropdown from './inputs/Dropdown'
 import Toggle from './inputs/Toggle'
@@ -26,6 +27,7 @@ export {
     Tabs,
     QR,
 
+    Address,
     Amount,
     Dropdown,
     Toggle,

@@ -1,5 +1,5 @@
 <template>
-    <textarea :value={{address}} />
+    <textarea :value="address" />
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
 
 <style scoped>
 textarea {
-    height: 86px;
-    text-transform: uppercase;
+    /* height: 86px; */
+    /* text-transform: uppercase; */
 }
 </style>

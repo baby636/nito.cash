@@ -1,8 +1,13 @@
 <template>
     <div>
-        <input type="number" placeholder="Enter your amount" v-on:keydown="onKey" v-model="amountDisplay" />
+        <input
+            type="number"
+            placeholder="Enter your amount"
+            v-bind:value="amount"
+            v-on:input="$emit('input', $event.target.value)"
+        />
 
-        <span v-if="amountDisplay">=1337.888</span>
+        <span v-if="amount">=1337.888</span>
         <!-- <span v-if="amountDisplay">={{ unit !== $marketPrice.currency ? marketValue.fiat : `${marketValue.rounded} ${marketValue.unit}` }}</span> -->
 
         <button
@@ -27,7 +32,7 @@
 
 export default {
     props: {
-        amount: Number,
+        amount: String,
         unit: String,
     },
     data: () => {
@@ -40,35 +45,20 @@ export default {
         }
     },
     computed: {
-        amountDisplay: {
-            get: function () {
-                return this.userAmount !== null ? this.userAmount : this.amount
-            },
-            set: function (_val) {
-                this.userAmount = _val
-            }
-        },
+        //
     },
     methods: {
-        onKey(e) {
-            console.log('key is down')
-            if (e.keyCode === 8 || e.target.value.length <= 12) {
-                return true
-            } else {
-                e.target.value = e.target.value.substring(0, 12)
-            }
-        },
-
-        // clickOutside = () => {
-        //     dropdown = false
-        // },
+        //
     },
     created: function () {
         // $: marketValue = formatValue(amount, $marketPrice, unit)
         // $: units = ['i', 'Ki', 'Mi', 'Gi', 'Ti', $marketPrice ? $marketPrice.currency : 'USD']
-
     },
-
+    beforeDestroy() {
+        /* Set flag. */
+        // NOTE: This should be triggered on `clickOutside`.
+        this.dropdown = false
+    }
 }
 </script>
 

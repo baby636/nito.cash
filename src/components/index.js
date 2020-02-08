@@ -5,8 +5,9 @@ import Footer from './Footer'
 import Header from './Header'
 import Modal from './Modal'
 import Notification from './Notification'
-import Tabs from './Tabs'
 import QR from './QR'
+import Spinner from './Spinner'
+import Tabs from './Tabs'
 
 import Address from './inputs/Address'
 import Amount from './inputs/Amount'
@@ -24,8 +25,9 @@ export {
     Header,
     Modal,
     Notification,
-    Tabs,
     QR,
+    Spinner,
+    Tabs,
 
     Address,
     Amount,

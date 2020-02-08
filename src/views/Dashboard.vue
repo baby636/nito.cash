@@ -69,8 +69,10 @@ export default {
     },
     computed: {
         ...mapState({
+            /* Blockchain */
             marketPrice: state => state.blockchain.tickers.BCH.USD,
 
+            /* Wallets */
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
             walletSeeds: state => state.wallets.seeds,

@@ -42,8 +42,9 @@
                     <Address :address="address" />
 
                     <form>
-                        <label>Amount</label>
-                        <Amount :amount="amount" :unit="unit" />
+                        <label>Amount</label> [{{amount}}]
+                        <Amount v-model="amount" :unit="unit" />
+                        <!-- <Amount :amount="amount" :unit="unit" /> -->
 
                         <label>Transaction note</label>
                         <input placeholder="Optional reference" type="text" :value="reference" />
@@ -90,8 +91,11 @@
 /* Initialize vuex. */
 import { mapActions, mapGetters, mapState } from 'vuex'
 
+/* Import modules. */
+import { BITBOX } from 'bitbox-sdk'
+
 /* Import components. */
-import { Address, Amount, Animation, Button, Footer, Modal } from '@/components'
+import { Address, Amount, Animation, Button, Footer, Modal, Spinner } from '@/components'
 // import { Berny, Button, Footer, Header, Spinner, View } from '~/components'
 
 /* Import QR Code scanner, with JS worker path. */
@@ -109,13 +113,14 @@ export default {
         Button,
         Footer,
         Modal,
+        Spinner,
     },
     data: () => {
         return {
             address: null,
             currentBalance: 0,
 
-            amount: null,
+            amount: 0.00,
             reference: '',
             unit: 'Satoshis',
 
@@ -131,6 +136,10 @@ export default {
     },
     computed: {
         ...mapState({
+            /* Blockchain */
+            marketPrice: state => state.blockchain.tickers.BCH.USD,
+
+            /* Wallets */
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
             walletSeeds: state => state.wallets.seeds,
@@ -145,35 +154,52 @@ export default {
             'setNotification',
         ]),
 
+        /**
+         * Initialize BITBOX
+         */
+        initBitbox() {
+            console.info('Initializing BITBOX..')
+
+            try {
+                /* Initialize BITBOX. */
+                this.bitbox = new BITBOX()
+            } catch (err) {
+                console.error(err)
+            }
+        },
+
         async onSend() {
             console.log('ON SEND')
 
-            if (!this.value) {
+            if (!this.amount) {
                 return this.setError('Cannot send payment without amount')
             }
 
             try {
                 /* Initialize transaction builder. */
-                const transactionBuilder = new bitbox.TransactionBuilder('mainnet')
+                const transactionBuilder = new this.bitbox.TransactionBuilder('mainnet')
+                console.log('TX BUILDER', transactionBuilder)
 
-                // if (value > $balance) {
-                //     return error.set('Insufficient funds')
-                // }
-                // 
-                // this.sendState = 'sending'
-                //
+                console.log('Transaction Amount', this.amount)
+
+                if (this.amount > this.currentBalance) {
+                    return this.setError('Insufficient funds')
+                }
+
+                this.sendState = 'sending'
+
                 // const data = {
                 //     address: cda.address,
                 //     timeoutAt: cda.timeoutAt,
                 //     value
                 // }
-                //
+
                 // if (cda.expectedAmount) {
                 //     data['expectedAmount'] = cda.expectedAmount
                 // }
-                //
+
                 // await $account.sendToCDA(data)
-                //
+
                 // history.update(($history) =>
                 //     $history.concat([{ address: cda.address.substr(0, 81), reference, receiver: cda.receiver, incoming: false }])
                 // )
@@ -265,15 +291,18 @@ export default {
         },
     },
     created: function () {
+        /* Initialize BITBOX. */
+        this.initBitbox()
+
         // this.currentBalance = formatValue(this.balance)
-        const value = 1337
-        const rounded = Math.round(value * 10) / 10 + (Math.round(value * 10) / 10 === value ? '' : '+')
+        const amount = 1337
+        const rounded = Math.round(amount * 10) / 10 + (Math.round(amount * 10) / 10 === amount ? '' : '+')
         const unit = 'sat'
         const fiat = '$1.337'
 
         /* Build current balance package. */
         this.currentBalance = {
-            value,
+            amount,
             rounded,
             unit,
             fiat

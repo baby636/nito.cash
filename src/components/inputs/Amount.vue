@@ -7,6 +7,7 @@
             v-on:input="$emit('input', $event.target.value)"
         />
 
+        <!-- <span>=1337.888</span> -->
         <span v-if="amount">=1337.888</span>
         <!-- <span v-if="amountDisplay">={{ unit !== $marketPrice.currency ? marketValue.fiat : `${marketValue.rounded} ${marketValue.unit}` }}</span> -->
 
@@ -40,8 +41,7 @@ export default {
             dropdown: false,
             userAmount: null,
             marketValue: 0,
-            units: ['bits', 'mBCH', 'BCH', 'USD'],
-            // units = ['i', 'Ki', 'Mi', 'Gi', 'Ti', marketPrice ? marketPrice.currency : 'USD'],
+            units: ['satoshis', 'bits', 'mBCH', 'BCH', 'USD'],
         }
     },
     computed: {
@@ -75,7 +75,7 @@ div > button {
     position: absolute;
     top: 8px;
     right: 8px;
-    width: 56px;
+    width: 75px;
     height: 36px;
     border-radius: 5px;
     background: var(--secondary);
@@ -96,7 +96,7 @@ div > button {
 span {
     position: absolute;
     top: 18px;
-    right: 74px;
+    right: 90px;
     font-size: 13px;
     color: var(--light);
     text-align: right;
@@ -130,7 +130,7 @@ nav button {
     display: block;
     background: var(--input-bg);
     height: 36px;
-    width: 68px;
+    width: 75px;
     text-align: center;
     font-size: 14px;
 }

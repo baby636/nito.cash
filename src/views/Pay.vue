@@ -31,7 +31,7 @@
                 Current balance: {{currentBalance.rounded}} {{currentBalance.unit}}
             </div>
 
-            <div v-if="cameraError || address">
+            <div v-if="cameraError || receiver">
                 <main>
                     <div />
 
@@ -39,12 +39,11 @@
                         <Animation type="pay" />
                     </div>
 
-                    <Address :address="address" />
+                    <Address :address="receiver" />
 
                     <form>
-                        <label>Amount</label> [{{amount}}]
+                        <label>Amount</label>
                         <Amount v-model="amount" :unit="unit" />
-                        <!-- <Amount :amount="amount" :unit="unit" /> -->
 
                         <label>Transaction note</label>
                         <input placeholder="Optional reference" type="text" :value="reference" />
@@ -117,12 +116,13 @@ export default {
     },
     data: () => {
         return {
-            address: null,
+            addresses: [],
             currentBalance: 0,
 
+            receiver: null,
             amount: 0.00,
             reference: '',
-            unit: 'Satoshis',
+            unit: 'satoshis',
 
             video: null,
             scanner: null,
@@ -176,17 +176,147 @@ export default {
             }
 
             try {
+                /* Initialize seed buffer. */
+                const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
+                // console.log('SEED BUFFER', seedBuffer)
+
+                const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
+                // console.log('HD NODE', hdNode)
+
+                const address = this.bitbox.HDNode.toCashAddress(hdNode)
+                console.log('ADDRESS', address)
+
+                // NOTE: Array with maximum of 20 legacy or cash addresses.
+                // TODO: Add support for "change" addresses.
+                if (address) {
+                    this.addresses = [address]
+                }
+
+                /* Retrieve unspent transaction outputs. */
+                const utxo = await this.bitbox.Address.utxo(this.addresses)
+                console.log('UTXOS', utxo)
+
+                /* Set ALL uxtos. */
+                const myInputs = utxo[0].utxos
+
                 /* Initialize transaction builder. */
                 const transactionBuilder = new this.bitbox.TransactionBuilder('mainnet')
-                console.log('TX BUILDER', transactionBuilder)
+                console.log('TX BUILDER - 1', transactionBuilder)
 
+                console.log('Transaction Address', this.receiver)
                 console.log('Transaction Amount', this.amount)
 
                 if (this.amount > this.currentBalance) {
                     return this.setError('Insufficient funds')
                 }
 
+                /* Initialize utxo flag. */
+                let inputsAdded = false
+
+                /* Loop through ALL uxtos. */
+                myInputs.forEach(utxo => {
+                    console.log('UXTO', utxo)
+
+                    /* Validate input flag. */
+                    if (!inputsAdded) {
+                        /* Add input with txid and index of vout. */
+                        transactionBuilder.addInput(utxo.txid, utxo.vout)
+
+                        console.log('ADDED UTXO', utxo.txid, utxo.vout, utxo.satoshis)
+
+                        // NOTE: Set the FULL UXTO as the amount.
+                        // FIXME: Add change address.
+                        this.amount = utxo.satoshis
+
+                        /* Set input flag. */
+                        inputsAdded = true
+                    }
+                })
+
+                console.log('TX BUILDER - 2', transactionBuilder)
+
+                // let originalAmount = 100000;
+                const byteCount = this.bitbox.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 })
+                console.log('BYTE COUNT', byteCount)
+
+                // amount to send to receiver. It's the original amount - 1 sat/byte for tx size
+                const sendAmount = this.amount - byteCount
+                console.log('SEND AMOUNT', sendAmount)
+
+                /* Validate send amount. */
+                // TODO: Validate BCH dust amount.
+                if (sendAmount < 546) {
+                    /* Set error. */
+                    this.setError(`Amount is too low. Min: ${546 + byteCount} sats`)
+
+                    /* Set flag. */
+                    this.sendState = 'idle'
+
+                    return
+                }
+
+                // add output w/ address and amount to send
+                transactionBuilder.addOutput(this.receiver, sendAmount)
+                // transactionBuilder.addOutput('bitcoincash:' + this.receiver, sendAmount)
+                // transactionBuilder.addOutput('bitcoincash:qpuax2tarq33f86wccwlx8ge7tad2wgvqgjqlwshpw', sendAmount)
+
+                console.log('TX BUILDER - 3', transactionBuilder)
+
+                /* Set locktime (for immediate propagation). */
+                transactionBuilder.setLockTime(0)
+
+                /* Set keypair. */
+                const keyPair = this.bitbox.HDNode.toKeyPair(hdNode)
+                console.log('KEYPAIR', keyPair)
+
+                /* Initialize redeemscript. */
+                let redeemScript
+
+                /* Sign the transaction input(s). */
+                transactionBuilder.sign(
+                    0, // vin
+                    keyPair,
+                    redeemScript,
+                    transactionBuilder.hashTypes.SIGHASH_ALL,
+                    parseInt(this.amount),
+                    transactionBuilder.signatureAlgorithms.SCHNORR
+                )
+
+                console.log('TX BUILDER - 4', transactionBuilder)
+
+                /* Build transaction. */
+                const tx = transactionBuilder.build()
+                console.log('TX BUILD', tx)
+
+                /* Set tx output to raw hex. */
+                const txHex = tx.toHex()
+                console.log('RAW HEX', txHex)
+
+                /* Set state. */
                 this.sendState = 'sending'
+
+                /* Broadcast transaction to network. */
+                this.bitbox.RawTransactions.sendRawTransaction(txHex)
+                    .then(
+                        (result) => {
+                            console.log('TX RESULT', result)
+
+                            /* Set notification. */
+                            this.setNotification('Sent successfully!')
+
+                            /* Set flag. */
+                            this.sendState = 'idle'
+                        },
+                        (err) => {
+                            console.error('TX SEND ERROR:', err)
+
+                            /* Set error. */
+                            this.setError(err.message ? err.message.split(';')[0] : err)
+
+                            /* Set flag. */
+                            this.sendState = 'idle'
+                        }
+                    )
 
                 // const data = {
                 //     address: cda.address,
@@ -204,8 +334,12 @@ export default {
                 //     $history.concat([{ address: cda.address.substr(0, 81), reference, receiver: cda.receiver, incoming: false }])
                 // )
             } catch (err) {
+                console.error('TX SEND ERROR:', err)
+
+                /* Set error. */
                 this.setError(err.message ? err.message.split(';')[0] : err)
 
+                /* Set flag. */
                 this.sendState = 'idle'
             }
         },
@@ -215,7 +349,7 @@ export default {
             // const data = (event.clipboardData || window.clipboardData).getData('text')
             // const result = parseLink(data)
             // if (result) {
-            //     setAddress(result)
+            //     setReceiver(result)
             // }
         },
 
@@ -227,11 +361,11 @@ export default {
             this.$router.push('dashboard')
         },
 
-        setAddress(_result) {
-            console.log('SET ADDRESS')
+        setReceiver(_result) {
+            console.log('SET RECEIVER', _result)
 
-            /* Set address. */
-            this.address = _result
+            /* Set receiver. */
+            this.receiver = _result
 
             // if (result.expectedAmount) {
             //     const value = formatValue(result.expectedAmount)
@@ -277,7 +411,7 @@ export default {
 
                         /* Validate (scanner) result. */
                         if (result) {
-                            this.setAddress(result)
+                            this.setReceiver(result)
                         }
                     })
 

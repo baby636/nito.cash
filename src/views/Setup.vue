@@ -30,9 +30,6 @@
 /* Initialize vuex. */
 import { mapActions, mapGetters, mapState } from 'vuex'
 
-/* Import modules. */
-import { BITBOX } from 'bitbox-sdk'
-
 /* Import components. */
 import { Button, Footer } from '@/components'
 

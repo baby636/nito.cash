@@ -9,11 +9,9 @@
     "generate-icons": "vsvg -s ./svg-icons -t ./src/compiled-icons"
   },
   "dependencies": {
-    "bitbox-sdk": "8.11.2",
     "chartist": "0.11.4",
     "core-js": "2.6.5",
     "currency-codes": "1.5.1",
-    "ethers": "4.0.43",
     "lottie-web": "5.6.3",
     "moment": "2.24.0",
     "numeral": "2.0.6",

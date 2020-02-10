@@ -39,7 +39,8 @@
                         <Animation type="pay" />
                     </div>
 
-                    <Address :address="receiver" />
+                    <!-- <Address :address="receiver" /> -->
+                    <Address v-model="receiver" />
 
                     <form>
                         <label>Amount</label>
@@ -89,9 +90,6 @@
 <script>
 /* Initialize vuex. */
 import { mapActions, mapGetters, mapState } from 'vuex'
-
-/* Import modules. */
-import { BITBOX } from 'bitbox-sdk'
 
 /* Import components. */
 import { Address, Amount, Animation, Button, Footer, Modal, Spinner } from '@/components'
@@ -183,7 +181,10 @@ export default {
                 const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
                 // console.log('HD NODE', hdNode)
 
-                const address = this.bitbox.HDNode.toCashAddress(hdNode)
+                /* Initialize child node. */
+                const childNode = hdNode.derivePath("m/44'/145'/0'/0/0")
+
+                const address = this.bitbox.HDNode.toCashAddress(childNode)
                 console.log('ADDRESS', address)
 
                 // NOTE: Array with maximum of 20 legacy or cash addresses.
@@ -266,7 +267,7 @@ export default {
                 transactionBuilder.setLockTime(0)
 
                 /* Set keypair. */
-                const keyPair = this.bitbox.HDNode.toKeyPair(hdNode)
+                const keyPair = this.bitbox.HDNode.toKeyPair(childNode)
                 console.log('KEYPAIR', keyPair)
 
                 /* Initialize redeemscript. */

@@ -1,5 +1,9 @@
 <template>
-    <textarea :value="address" />
+    <textarea
+        placeholder="Recipient address"
+        v-bind:value="address"
+        v-on:input="$emit('input', $event.target.value)"
+    />
 </template>
 
 <script>

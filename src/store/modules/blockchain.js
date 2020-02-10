@@ -1,6 +1,3 @@
-/* Import modules. */
-import { BITBOX } from 'bitbox-sdk'
-
 /* Import libraries. */
 import telr from '../../api/telr'
 

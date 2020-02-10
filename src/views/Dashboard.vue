@@ -39,9 +39,6 @@
 /* Initialize vuex. */
 import { mapActions, mapGetters, mapState } from 'vuex'
 
-/* Import modules. */
-import { BITBOX } from 'bitbox-sdk'
-
 /* Import components. */
 import { Backup, Button, Footer } from '@/components'
 
@@ -65,6 +62,7 @@ export default {
             balanceDisplay: null,
             bitbox: null,
             showExport: false,
+            bchjs: null,
         }
     },
     computed: {
@@ -198,18 +196,21 @@ export default {
             fiat: 0
         }
     },
-    mounted: function () {
+    mounted: async function () {
         /* Initialize BITBOX. */
         this.initBitbox()
 
         /* Initialize seed buffer. */
         const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
-        // console.log('SEED BUFFER', seedBuffer)
+        console.log('SEED BUFFER', seedBuffer)
 
         const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
-        // console.log('HD NODE', hdNode)
+        console.log('HD NODE', hdNode)
 
-        const address = this.bitbox.HDNode.toCashAddress(hdNode)
+        /* Initialize child node. */
+        const childNode = hdNode.derivePath("m/44'/145'/0'/0/0")
+
+        const address = this.bitbox.HDNode.toCashAddress(childNode)
         console.log('ADDRESS', address)
 
         /* Initialize QRCode link. */

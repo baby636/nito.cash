@@ -22,9 +22,6 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 /* Import components. */
 import { Amount, Animation, Button, Footer, Modal, QR } from '@/components'
 
-/* Import modules. */
-import { BITBOX } from 'bitbox-sdk'
-
 // import { address, receiver, setAddress } from '~/lib/account'
 // import { getIotas, goto, createLink, getTimeUnits, setClipboard } from '~/lib/helpers'
 
@@ -120,7 +117,10 @@ export default {
         const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
         // console.log('HD NODE', hdNode)
 
-        const address = this.bitbox.HDNode.toCashAddress(hdNode)
+        /* Initialize child node. */
+        const childNode = hdNode.derivePath("m/44'/145'/0'/0/0")
+
+        const address = this.bitbox.HDNode.toCashAddress(childNode)
         console.log('ADDRESS', address)
 
         /* Initialize QRCode link. */

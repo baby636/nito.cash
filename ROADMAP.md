@@ -1,6 +1,6 @@
 ## Roadmap of planned features and ideas
 
-Last updated: January 28, 2020
+Last updated: February 11, 2020
 
 The goal for __[Nito.cash](https://nito.cash/)__ is to become the __MOST user-friendly wallet__ for on-boarding newcomers to their __first "positive" crypto experience.__ We strive to continuously improve the user-experience; and to __BUIDL the most reliable solutions__ for first-time users.
 

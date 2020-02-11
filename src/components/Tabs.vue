@@ -2,7 +2,8 @@
     <nav>
         <button
             v-for="item of tabs"
-            @click="selectedTab = item"
+            v-bind:value="tab"
+            @click="updateTab(item)"
             :class="{ active: item === activeTab }">
             {{item}}
         </button>
@@ -26,6 +27,15 @@ export default {
             return this.selectedTab ? this.selectedTab : this.tab
         },
     },
+    methods: {
+        updateTab(_item) {
+            /* Update selected tab. */
+            this.selectedTab = _item
+
+            /* Emit tab update (to parent). */
+            this.$emit('tab-change', _item)
+        }
+    }
 
 }
 </script>

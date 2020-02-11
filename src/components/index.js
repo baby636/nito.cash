@@ -16,6 +16,7 @@ import Toggle from './inputs/Toggle'
 
 import Backup from './popups/Backup'
 import Help from './popups/Help'
+import Warning from './popups/Warning'
 
 /* Export components. */
 export {
@@ -36,4 +37,5 @@ export {
 
     Backup,
     Help,
+    Warning,
 }

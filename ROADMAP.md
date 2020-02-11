@@ -6,11 +6,17 @@ The goal for __[Nito.cash](https://nito.cash/)__ is to become the __MOST user-fr
 
 ### Underway
 
-- [ ] Enable send & receive BCH coins
+- [ ] Add help screens
+- [ ] Enable "sweepable" UUID-seeded wallets
+- [ ] One-click downloadable nito.cash runs "locally" in your web browser
+- [ ] Working with Cloudflare to stabilize ipfs.nito.cash over their gateway
 
 ### Planned
 
+- [ ] Improve QRCode UX on Android
 - [ ] Add basic security w/ an (optional) pin number
+- [ ] Enable dark mode
+- [ ] Enable browser notifications
 - [ ] Enable send & receive SLP tokens
 - [ ] Enable CashAccount support
 - [ ] Merchant-mode w/ simple cash register
@@ -26,6 +32,7 @@ The goal for __[Nito.cash](https://nito.cash/)__ is to become the __MOST user-fr
 
 - [x] Build a Vue.js wireframe (based on [Spark wallet](https://spark.iota.org/) for IOTA)
 - [x] Add [BITBOX](https://developer.bitcoin.com/bitbox) library
+- [x] Enable send & receive BCH coins
 
 ## Community Feedback
 

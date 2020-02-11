@@ -43,8 +43,7 @@ export default {
     },
     data: () => {
         return {
-            // animation: null,
-            // container: null,
+            // active: null,
         }
     },
     methods: {

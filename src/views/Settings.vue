@@ -1,111 +1,123 @@
 <template>
-    <Modal label="Settings" secondary>
-        <Tabs :tabs="tabs" :tab="tab" />
+    <div>
+        <Warning
+            :class="{ active: showWarning }"
+            v-on:confirm="destroyWallet"
+            v-on:cancel="showWarning = false"
+        >
+            <h5>Destroy wallet?</h5>
 
-        <main>
-            <section v-if="tab === 'Basic'">
-                <label>Language</label>
+            <p>
+                Your transaction history will be cleared. If you have not backed up, you will permanently lose the tokens in your wallet.
+            </p>
+        </Warning>
 
-                <Dropdown value="English" flag="United Kingdom" disabled />
+        <Modal label="Settings" secondary>
+            <Tabs :tabs="tabs" :tab="tab" v-on:tab-change="updateTab" />
 
-                <label>Currency</label>
+            <main>
+                <section v-if="tab === 'Basic'">
+                    <label>Language</label>
 
-                <Dropdown
-                    :onSelect="changeCurrency"
-                    :flag="cc.code(fiatCurrency).countries[0]"
-                    :value="cc.code(fiatCurrency).currency"
-                    items="currencies" />
+                    <Dropdown value="English" flag="United Kingdom" disabled />
 
-                <hr />
+                    <label>Currency</label>
 
-                <label class="inline">
-                    <span>Dark mode</span>
-                    <span>
-                        <Toggle :on="darkMode" />
-                    </span>
-                </label>
+                    <Dropdown
+                        :onSelect="changeCurrency"
+                        :flag="cc.code(fiatCurrency).countries[0]"
+                        :value="cc.code(fiatCurrency).currency"
+                        items="currencies" />
 
-                <p>Visual theme optimised for night time use</p>
+                    <hr />
 
-                <hr />
+                    <label class="inline">
+                        <span>Dark mode</span>
+                        <span>
+                            <Toggle :on="darkMode" />
+                        </span>
+                    </label>
 
-                <label class="inline">
-                    <span>Notifications</span>
-                    <span>
-                        <Toggle :disabled="disabledNotifications" :on="showNotifications" />
-                    </span>
-                </label>
+                    <p>Visual theme optimised for night time use</p>
 
-                <p v-if="disabledNotifications">Notifications are blocked by your browser. Enable them in the browser settings and restart Spark.</p>
-                <p v-else>Show new and confirmed payment notifications</p>
+                    <hr />
 
-                <hr />
-            </section>
+                    <label class="inline">
+                        <span>Notifications</span>
+                        <span>
+                            <Toggle :disabled="disabledNotifications" :on="showNotifications" />
+                        </span>
+                    </label>
 
-            <section v-if="tab === 'Advanced'">
-                <label>Set node</label>
-                <input type="text" value="https://wallet2.iota.town:443" />
-            </section>
+                    <p v-if="disabledNotifications">Notifications are blocked by your browser. Enable them in the browser settings and restart Spark.</p>
+                    <p v-else>Show new and confirmed payment notifications</p>
 
-            <div v-if="tab === 'Wallet'">
-                <section>
-                    <article>
-                        <icon>
-                            <Icon icon="seedvault" />
-                        </icon>
-                        <div>
-                            <h6 class="dark">BACK UP WITH SEEDVAULT</h6>
-                            <p>
-                                You can backup this wallet by exporting a seedvault. The exported SeedVault can then be imported into
-                                Trinity wallet.
-                            </p>
-
-                        </div>
-                    </article>
-                    <Button
-                        onClick={() => {
-                            showExport = true
-                        }}
-                        label="Create SeedVault" />
+                    <hr />
                 </section>
 
-                <Footer tooltip>
-                    <article>
-                        <icon>
-                            <Icon icon="warning" warning />
-                        </icon>
-                        <div>
-                            <h6>BURN YOUR WALLET</h6>
-                            <p>
-                                You can destroy this wallet, but you will lose access to your tokens and transaction history.
-                                <br />
-                                Be sure to back up your wallet before proceeding, otherwise your tokens will be unrecoverable.
-                            </p>
-                        </div>
-                    </article>
+                <section v-if="tab === 'Advanced'">
+                    <label>Set node</label>
+                    <input type="text" value="https://wallet2.iota.town:443" />
+                </section>
 
-                    <Button
-                        onClick={() => {
-                            showWarning = true
-                        }}
-                        warning
-                        label="Destroy this wallet" />
-                </Footer>
-            </div>
-        </main>
-    </Modal>
+                <div v-if="tab === 'Wallet'">
+                    <section>
+                        <article>
+                            <svgicon icon="vault" width="54" height="54" :fill="false" :original="true"></svgicon>
+
+                            <div>
+                                <h6 class="dark">BACK UP WITH SEEDVAULT</h6>
+                                <p>
+                                    You can backup this wallet by exporting a seedvault. The exported SeedVault can then be imported into
+                                    Trinity wallet.
+                                </p>
+
+                            </div>
+                        </article>
+
+                        <Button
+                            @click.native="backup"
+                            label="Create SeedVault" />
+                    </section>
+
+                    <Footer tooltip>
+                        <article>
+                            <svgicon icon="alarm" width="54" height="54" :fill="false" :original="true"></svgicon>
+
+                            <div>
+                                <h6>BURN YOUR WALLET</h6>
+                                <p>
+                                    You can destroy this wallet, but you will lose access to your tokens and transaction history.
+                                    <br />
+                                    Be sure to back up your wallet before proceeding, otherwise your tokens will be unrecoverable.
+                                </p>
+                            </div>
+                        </article>
+
+                        <Button
+                            @click.native="showWarning = true"
+                            warning
+                            label="Destroy this wallet" />
+                    </Footer>
+                </div>
+            </main>
+        </Modal>
+    </div>
 </template>
 
 <script>
+/* Initialize vuex. */
+import { mapActions, mapGetters, mapState } from 'vuex'
+
 /* Import modules. */
 import cc from 'currency-codes'
 
 /* Import components. */
-import { Button, Dropdown, Footer, Modal, Tabs, Toggle } from '@/components'
+import { Button, Dropdown, Footer, Modal, Tabs, Toggle, Warning } from '@/components'
 
 /* Import icons. */
-// import '@/compiled-icons/fire'
-
+import '@/compiled-icons/alarm'
+import '@/compiled-icons/vault'
 
 // import { Export, Button, Dropdown, Footer, Header, Icon, Tabs, Toggle, View, Warning } from '~/components'
 // import { account, seed } from '~/lib/account'
@@ -120,6 +132,7 @@ export default {
         Modal,
         Tabs,
         Toggle,
+        Warning,
     },
     data: () => {
         return {
@@ -136,6 +149,17 @@ export default {
         }
     },
     methods: {
+        ...mapActions('system', [
+            'setError',
+            'setNotification',
+        ]),
+
+        ...mapActions('wallets', [
+            'addNewSeed',
+            'setMasterMnemonic',
+            'setMasterSeed',
+        ]),
+
         getCurrencies(_rates) {
             console.log('GET CURRENCIES')
             if (!_rates) {
@@ -162,9 +186,34 @@ export default {
             fiatCurrency.set(_currency)
         },
 
+        updateTab(_tab) {
+            /* Update tab. */
+            this.tab = _tab
+        },
+
+        async backup() {
+            this.setError('This feature is coming soon')
+        },
+
         async destroyWallet() {
             try {
-                console.log('DESTROY WALLET')
+                console.log('Destroying wallet')
+
+                /* Set wallet to null. */
+                this.setMasterMnemonic(null)
+                this.setMasterSeed(null)
+
+                /* Set flag. */
+                this.showWarning = false
+
+                /* Display notification. */
+                this.setNotification('Wallet has been destroyed')
+
+                /* Load setup. */
+                setTimeout(() => {
+                    this.$router.push('setup')
+                }, 3000)
+
                 // const { generatePersistenceID } = await import('@iota/persistence')
                 // const { trytesToTrits } = await import('@iota/converter')
                 //

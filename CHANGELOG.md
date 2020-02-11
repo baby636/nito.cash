@@ -2,7 +2,7 @@
 
 ### v20.2.10
 
-[ipfs.io](https://ipfs.io/ipfs/QmWwVHvu71GgrU4BLNqR3ZpGfUA6UviRMfxar14mhVJuGD/) | [cloudflare-ipfs.com](https://cloudflare-ipfs.com/ipfs/QmWwVHvu71GgrU4BLNqR3ZpGfUA6UviRMfxar14mhVJuGD/)
+[ipfs.io](https://ipfs.io/ipfs/QmWwVHvu71GgrU4BLNqR3ZpGfUA6UviRMfxar14mhVJuGD/) | [cloudflare-ipfs.com](https://cloudflare-ipfs.com/ipfs/QmWwVHvu71GgrU4BLNqR3ZpGfUA6UviRMfxar14mhVJuGD/) |
 [infura.io](https://ipfs.infura.io/ipfs/QmWwVHvu71GgrU4BLNqR3ZpGfUA6UviRMfxar14mhVJuGD/)
 
 - Enable send & receive BCH coins

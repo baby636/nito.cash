@@ -4,7 +4,7 @@
 
 > __[Nito.cash](https://nito.cash)__ is the __most user-friendly, privacy protective wallet__ for crypto newcomers.
 
-[![Build Status](https://travis-ci.com/modenero/nito-cash.svg?branch=master)](https://travis-ci.com/modenero/nito-cash)
+[![Build Status](https://travis-ci.com/modenero/nito-cash.svg?branch=master)](https://travis-ci.com/modenero/nito-cash) [![Greenkeeper badge](https://badges.greenkeeper.io/modenero/nito-cash.svg)](https://greenkeeper.io/)
 
 ## Anatomy of Nito.cash wallet
 

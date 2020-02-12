@@ -2,12 +2,15 @@
     <Modal label="Request a payment" :help="true">
         <main>
             <QR :value="address" />
-
         </main>
 
-        <small class="small">
+        <div class="abbr">
+            {{displayAddress}}
+        </div>
+
+        <div class="address">
             {{address}}
-        </small>
+        </div>
 
         <Footer>
             <Button @click.native="copyAddress" label="Copy shareable link" />
@@ -54,9 +57,36 @@ export default {
             walletMasterSeed: state => state.wallets.masterSeed,
             walletSeeds: state => state.wallets.seeds,
         }),
+
         ...mapGetters('wallets', {
             //
         }),
+
+        displayAddress() {
+            /* Set abbreviation length. */
+            const lenAbbr = 24
+
+            /* Set (un-formatted) address. */
+            let formatted = this.address
+
+            /* Handle `bitcoincash` prefix. */
+            if (formatted.indexOf(':') !== -1) {
+                // formatted = formatted.split(':')[0] + '\n' + formatted.split(':')[1]
+                formatted = formatted.split(':')[1]
+            }
+
+            /* Shorten address using `...` in-between. */
+            formatted = formatted.slice(0, lenAbbr / 4) +
+                ' • ' +
+                formatted.slice(lenAbbr / 4, lenAbbr / 2) +
+                ' . . . ' +
+                formatted.slice(-lenAbbr / 2, -lenAbbr / 4) +
+                ' • ' +
+                formatted.slice(-lenAbbr / 4)
+
+            /* Return (formatted) address. */
+            return formatted
+        },
     },
     methods: {
         ...mapActions('system', [
@@ -97,9 +127,51 @@ export default {
             }
         },
 
+        /**
+         * Set Clipboard
+         */
+        setClipboard(_input) {
+            console.log('SET CLIPBOARD')
+
+            try {
+                const textArea = document.createElement('textarea')
+                textArea.value = _input
+                document.body.appendChild(textArea)
+
+                if (navigator.userAgent.match(/ipad|iphone/i)) {
+                    const range = document.createRange()
+                    range.selectNodeContents(textArea)
+
+                    const selection = window.getSelection()
+                    selection.removeAllRanges()
+                    selection.addRange(range)
+
+                    textArea.setSelectionRange(0, 999999)
+                } else {
+                    textArea.select()
+                }
+
+                document.execCommand('copy')
+                document.body.removeChild(textArea)
+
+                return true
+            } catch (err) {
+                console.error(err)
+
+                return false
+            }
+        },
+
+        /**
+         * Copy Address
+         */
         copyAddress() {
-            console.log('COPY ADDRESS')
-            // setClipboard(link)
+            console.log('COPY ADDRESS', this.address)
+
+            /* Set clipboard (with current address). */
+            this.setClipboard(this.address)
+
+            /* Display notification. */
             this.setNotification('Link copied to clipboard')
         },
     },
@@ -145,9 +217,21 @@ p {
     margin-bottom: 20px;
 }
 
-small {
-    color: rgba(220, 30, 30);
+div .abbr {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--trinary);
+
     text-align: center;
-    margin-top: 20px;
+    margin-top: 48px;
+}
+
+div .address {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--secondary);
+
+    text-align: center;
+    margin-top: 16px;
 }
 </style>

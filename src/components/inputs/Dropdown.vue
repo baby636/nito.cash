@@ -2,13 +2,13 @@
     <div
         :class="{ disabled }"
         @click.stop="dropdown = !dropdown">
-        <img :src="getFlagName(flag)" alt="" />
+        <img :src="getFlagName(activeFlag)" alt="" />
 
-        <p>{{value}}</p>
+        <p>{{activeCountry}}</p>
 
         <nav :class="{ active: dropdown }">
-            <button v-for="item of items" @click="onSelect(item.value)" :class="{ active: item.label === value }">
-                <img v-if-"item.flag" :src="getFlagName(item.flag)" alt="" />
+            <button v-for="item of items" @click="onSelect(item)" :class="{ active: item.label === activeCountry }">
+                <img v-if="item.flag" :src="getFlagName(item.flag)" alt="" />
                 {{item.label}}
             </button>
         </nav>
@@ -16,6 +16,9 @@
 </template>
 
 <script>
+/* Import modules. */
+import cc from 'currency-codes'
+
 export default {
     props: {
         disabled: Boolean,
@@ -26,19 +29,26 @@ export default {
     data: () => {
         return {
             dropdown: false,
+            selectedCountry: null,
+            selectedFlag: null,
         }
     },
     computed: {
-        // // NOTE: We use `activeTab` to avoid mutating the parent's (tab) prop.
-        // activeTab: function () {
-        //     return this.selectedTab ? this.selectedTab : this.tab
-        // },
+        // NOTE: We use `selectedCountry` to avoid mutating the parent's (value) prop.
+        activeCountry: function () {
+            return this.selectedCountry ? this.selectedCountry : this.value
+        },
+
+        // NOTE: We use `selectedFlag` to avoid mutating the parent's (flag) prop.
+        activeFlag: function () {
+            return this.selectedFlag ? this.selectedFlag : this.flag
+        },
     },
     methods: {
         getFlagName(_country) {
-            // return require('@/assets/flags/united-kingdom.svg')
+            // console.log('GET FLAG NAME', _country)
 
-            if (_country === 'American Samoa') {
+            if (_country === 'American Samoa' || _country === 'United States') {
                 return require('@/assets/flags/united-states-of-america.svg')
             }
 
@@ -50,33 +60,39 @@ export default {
                 return require('@/assets/flags/european-union.svg')
             }
 
-            // FIXME: We MUST hard-code these countries, until we can
-            //        fix the issue below.
-            if (_country === 'United Kingdom') {
+            if (_country === 'United Kingdom Of Great Britain And Northern Ireland (The)') {
                 return require('@/assets/flags/united-kingdom.svg')
             }
 
-            // NOTE: We (default) to USA, until we can fix the issue below.
-            return require('@/assets/flags/united-states-of-america.svg')
-
-            // FIXME: This is NOT working!!
-            //        Probably an issue with webpack and `@` aliasing.
-            return require(`@/assets/flags/${_country}.svg`
-                .replace(' (The)', '')
+            /* Decode country id. */
+            // NOTE: This is "required"; probably due to an issue
+            //       with webpack and `@` aliasing.
+            const countryId = _country.replace(' (The)', '')
                 .replace(' (The Republic Of)', '')
                 .replace(/\s+/g, '-')
-                .toLowerCase())
+                .toLowerCase()
+
+            /* Return flag's svg (image). */
+            return require(`@/assets/flags/${countryId}.svg`)
         },
 
         clickOutside() {
             this.dropdown = false
         },
 
-        // onSelect() {
-        //     console.log('ON SELECT WAS CALLED!')
-        // },
-    },
+        onSelect(_country) {
+            // console.log('ON SELECT WAS CALLED!', _country)
 
+            /* Retrieve currency. */
+            const currency = cc.code(_country.value).currency
+
+            /* Set (selected) country. */
+            this.selectedCountry = currency
+
+            /* Set (selected) flag. */
+            this.selectedFlag = _country.flag
+        },
+    }
 }
 </script>
 

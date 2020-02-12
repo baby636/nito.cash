@@ -19,15 +19,16 @@
                 <section v-if="tab === 'Basic'">
                     <label>Language</label>
 
-                    <Dropdown value="English" flag="United Kingdom" disabled />
+                    <Dropdown value="United States" flag="United States" disabled />
 
                     <label>Currency</label>
 
+                    <!-- FIXME: `countries[0]` assumes the wrong index for (default) country. -->
                     <Dropdown
                         :onSelect="changeCurrency"
                         :flag="cc.code(fiatCurrency).countries[0]"
                         :value="cc.code(fiatCurrency).currency"
-                        items="currencies" />
+                        :items="currencies" />
 
                     <hr />
 
@@ -161,17 +162,24 @@ export default {
         ]),
 
         getCurrencies(_rates) {
-            console.log('GET CURRENCIES')
+            // console.log('GET CURRENCIES', _rates)
+
             if (!_rates) {
                 return []
             }
 
             const result = Object.keys(_rates).map((item) => {
+                /* Retrieve currency details. */
                 const currencyData = cc.code(item)
+
+                // console.log('GET ID', item, _rates[item])
+
+                /* Set flag id. */
+                const flagId = _rates[item]
 
                 return {
                     label: currencyData.currency,
-                    flag: currencyData.countries[0],
+                    flag: currencyData.countries[flagId],
                     value: item
                 }
             })
@@ -241,6 +249,24 @@ export default {
         /* Initialize currency codes. */
         this.cc = cc
 
+        /* Initialize currencies. */
+        // FIXME: Be sure to set the (default) country id, for currencies with
+        //        multiple countries.
+        // console.log('Decoded country list', cc.code('GBP'))
+        this.currencies = this.getCurrencies({
+            'USD': 16, // United States Of America (The)
+            'EUR': 0, // Andorra
+            'GBP': 3, // United Kingdom Of Great Britain And Northern Ireland (The)
+            'INR': 1, // India
+            'AUD': 0, // Malaysia
+            'CAD': 0, // Canada
+            'SGD': 0, // Singapore
+            'CHF': 1, // Switzerland
+            'MYR': 0, // Malaysia
+            'JPY': 0, // Japan
+            'CNY': 0, // China
+        })
+        // console.log('CURRENCIES', this.currencies)
         // $: currencies = getCurrencies($marketData.rates)
 
         // this.disabledNotifications = typeof Notification !== 'function' || Notification.permission === 'denied'
@@ -252,7 +278,6 @@ export default {
 
         // FIXME: We need to detect the user's compatibility.
         this.showNotifications = false
-
     },
     mounted: function () {
         //

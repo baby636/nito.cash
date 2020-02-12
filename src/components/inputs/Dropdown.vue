@@ -74,6 +74,8 @@ export default {
 
             /* Return flag's svg (image). */
             return require(`@/assets/flags/${countryId}.svg`)
+            // FIXME: Workaround for Bug in Jest testing
+            // return require('@/assets/flags/united-states-of-america.svg')
         },
 
         clickOutside() {

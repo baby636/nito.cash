@@ -27,6 +27,8 @@ The goal for __[Nito.cash](https://nito.cash/)__ is to become the __MOST user-fr
 - [ ] Semi-automatic coin selection/control of UXTOs
 - [ ] Integrate [Liquality](https://liquality.io/) for non-custodial (BCH <> DAI) exchange
 - [ ] Integrate [Uniswap](https://uniswap.io/) for non-custodial (DAI <> cDAI) exchange
+- [ ] Build an IPFS launch page (select your own gateway)
+- [ ] Allow for GDPR-free, IPFS edition (no usage logging, no error reporting)
 
 ### Complete
 

@@ -32,12 +32,8 @@ import '@/compiled-icons/rocket'
 import '@/compiled-icons/rocketman'
 
 export default {
-    components: {
-        // Icon
-    },
     data: () => {
         return {
-            bitbox: null,
             index: 0,
             frame: 0
         }

@@ -131,7 +131,7 @@ export default {
          * Set Clipboard
          */
         setClipboard(_input) {
-            console.log('SET CLIPBOARD')
+            // console.log('SET CLIPBOARD')
 
             try {
                 const textArea = document.createElement('textarea')
@@ -166,7 +166,7 @@ export default {
          * Copy Address
          */
         copyAddress() {
-            console.log('COPY ADDRESS', this.address)
+            // console.log('COPY ADDRESS', this.address)
 
             /* Set clipboard (with current address). */
             this.setClipboard(this.address)

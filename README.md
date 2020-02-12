@@ -2,8 +2,6 @@
 
 ![Nito.cash Poster](https://nito.cash/poster.jpg?1581239745)
 
-> __[Nito.cash](https://nito.cash)__ is the __most user-friendly, privacy protective wallet__ for crypto newcomers.
-
 [![Build Status](https://travis-ci.com/modenero/nito-cash.svg?branch=master)](https://travis-ci.com/modenero/nito-cash)
 
 ## Anatomy of Nito.cash wallet

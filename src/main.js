@@ -6,6 +6,9 @@ import VueSVGIcon from 'vue-svgicon'
 import router from './router'
 import store from './store'
 
+/* Import (3rd-party) plugins. */
+require('./plugins/bugsnag')
+
 /* Import main application. */
 import App from './App.vue'
 

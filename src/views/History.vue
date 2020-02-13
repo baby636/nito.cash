@@ -73,7 +73,9 @@ export default {
     },
     data: () => {
         return {
+            addresses: [],
             history: [],
+
             selectedHash: null,
             showDetails: false,
             tab: 'All',
@@ -84,6 +86,11 @@ export default {
         ...mapState({
             /* Blockchain */
             marketPrice: state => state.blockchain.tickers.BCH.USD,
+
+            /* Wallets */
+            walletMasterMnemonic: state => state.wallets.masterMnemonic,
+            walletMasterSeed: state => state.wallets.masterSeed,
+            walletSeeds: state => state.wallets.seeds,
         }),
 
         /* Returns history items. */
@@ -99,6 +106,25 @@ export default {
         },
     },
     methods: {
+        ...mapActions('system', [
+            'setError',
+            'setNotification',
+        ]),
+
+        /**
+         * Initialize BITBOX
+         */
+        initBitbox() {
+            console.info('Initializing BITBOX..')
+
+            try {
+                /* Initialize BITBOX. */
+                this.bitbox = new BITBOX()
+            } catch (err) {
+                console.error(err)
+            }
+        },
+
         /**
          * Update Tab
          */
@@ -173,10 +199,10 @@ export default {
                 /* Initialize transaction day. */
                 const txDay = item.timestamp - (item.timestamp % (24 * 60 * 60))
 
-                // TODO: Find out how this is displayed, if null??
+                /* Sets the (display) day (null if already set for the "current" day). */
                 const day = txDay !== currentDay ? txDay : null
 
-                // TODO: Find out why we save currentDay??
+                /* Saves the current (displayed) day (on the UI). */
                 currentDay = txDay
 
                 /* Return (formated) transaction object. */
@@ -189,23 +215,180 @@ export default {
                     }
                 )
             })
-        }
+        },
+
+        async setHistory() {
+            try {
+                /* Initialize seed buffer. */
+                const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
+                // console.log('SEED BUFFER', seedBuffer)
+
+                const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
+                // console.log('HD NODE', hdNode)
+
+                /* Initialize child node. */
+                const childNode = hdNode.derivePath("m/44'/145'/0'/0/0")
+
+                const address = this.bitbox.HDNode.toCashAddress(childNode)
+                console.log('ADDRESS', address)
+
+                // NOTE: Array with maximum of 20 legacy or cash addresses.
+                // TODO: Add support for "change" addresses.
+                if (address) {
+                    this.addresses = [address]
+                }
+
+                /* Retrieve unspent transaction outputs. */
+                const utxo = await this.bitbox.Address.utxo(this.addresses)
+                console.log('UTXOS', utxo)
+
+                /* Retrieve transaction details. */
+                const addrDetails = await this.bitbox.Address.details(this.addresses)
+                console.log('ADDRESS(ES) DETAILS', addrDetails)
+
+                /* Loop through ALL uxtos. */
+                addrDetails.forEach(async address => {
+                    console.log('ADDRESS DETAILS', address)
+
+                    /* Retrieve transactions. */
+                    const transactions = address.transactions
+
+                    /* Loop through ALL uxtos. */
+                    transactions.forEach(async txHash => {
+                        console.log('TX HASH', txHash)
+
+                        /* Retrieve transaction details. */
+                        const details = await this.bitbox.Transaction.details(txHash)
+                        console.log('TX DETAILS', details)
+
+                        /* Set (transaction) hash. */
+                        const hash = details.txid
+
+                        /* Initialize value. */
+                        let value = 0
+
+                        /* Initialize incoming. */
+                        let incoming = false
+
+                        /* Initialize persistence. */
+                        let persistence = false
+                        // let persistence = utxo.confirmations > 0 ? true : false
+
+                        /* Initialize timestamp. */
+                        let timestamp = null
+
+                        /* Set inputs. */
+                        const inputs = details.vin
+
+                        /* Search inputs. */
+                        inputs.forEach(input => {
+                            console.log('INPUT CASHADDR', input.cashAddress, this.addresses)
+
+                            /* Validate (matching) transaction. */
+                            // FIXME: This "could" fail (or cause problems),
+                            //        when sending within the same wallet.
+                            if (this.addresses.includes(input.cashAddress)) {
+                                /* Add value. */
+                                value += input.value
+
+                                /* Validate persistence. */
+                                if (details.confirmations > 0) {
+                                    persistence = true
+                                }
+
+                                /* Set timestamp. */
+                                timestamp = details.time
+                            }
+                        })
+
+                        /* Set outputs. */
+                        const outputs = details.vout
+
+                        /* Search outputs. */
+                        outputs.forEach(output => {
+                            console.log('OUTPUT CASHADDR', output.scriptPubKey.cashAddrs[0])
+
+                            /* Validate (matching) transaction. */
+                            // FIXME: This "could" fail (or cause problems),
+                            //        when sending within the same wallet.
+                            if (this.addresses.includes(output.scriptPubKey.cashAddrs[0])) {
+                                /* Add value. */
+                                value += parseInt(output.value * 100000000)
+
+                                /* Set (incoming) flag. */
+                                incoming = true
+
+                                /* Validate persistence. */
+                                if (details.confirmations > 0) {
+                                    persistence = true
+                                }
+
+                                /* Set timestamp. */
+                                timestamp = details.time
+                            }
+                        })
+
+                        /* Build transaction details. */
+                        const tx = {
+                            hash,
+                            value,
+                            incoming,
+                            persistence,
+                            timestamp
+                        }
+
+                        console.log('BUILT TX', tx)
+
+                        /* Add transaction to history. */
+                        this.history.push(tx)
+                    })
+
+                    /* Set (transaction) hash. */
+                    // const hash = utxo.txid
+
+                    /* Retrieve transaction details. */
+                    // const details = await this.bitbox.Transaction.details(hash)
+                    // console.log('TX DETAILS', details)
+
+                    /* Set value. */
+                    // const value = utxo.satoshis
+
+                    /* Set incoming. */
+                    // const incoming = true
+
+                    /* Set persistence. */
+                    // const persistence = utxo.confirmations > 0 ? true : false
+
+                    /* Set timestamp. */
+                    // const timestamp = details.time
+
+                    /* Build transaction details. */
+                    // const tx = {
+                    //     hash,
+                    //     value,
+                    //     incoming,
+                    //     persistence,
+                    //     timestamp
+                    // }
+
+                    /* Add transaction to history. */
+                    // this.history.push(tx)
+                })
+            } catch (err) {
+                console.error('SET HISTORY ERROR:', err)
+
+                /* Set error. */
+                this.setError(err.message ? err.message.split(';')[0] : err)
+            }
+        },
     },
     created: function () {
-        //
+        /* Initialize BITBOX. */
+        this.initBitbox()
     },
     mounted: function () {
-        // TODO Retrieve transaction history.
-        let tx = {
-            hash: '59371efe67f380fc8044187adeb52bbaddc3225d13690eebb469badb9ffcbc54',
-            value: 2233,
-            incoming: true,
-            persistence: true,
-            // day: 1581475150,
-            timestamp: 1581475150,
-        }
-
-        this.history.push(tx)
+        /* Set (transaction) history. */
+        this.setHistory()
     }
 }
 </script>

@@ -40,7 +40,7 @@
                     </div>
 
                     <!-- <Address :address="receiver" /> -->
-                    <Address v-model="receiver" />
+                    <Address v-model="receiver" :address="receiver" />
 
                     <form>
                         <label>Amount</label>

@@ -149,6 +149,31 @@ export default {
             disabledNotifications: null,
         }
     },
+    computed: {
+        currencies() {
+            /* Initialize currencies. */
+            // FIXME: Be sure to set the (default) country id, for currencies with
+            //        multiple countries.
+            // console.log('Decoded country list', cc.code('GBP'))
+            const currencies = this.getCurrencies({
+                'USD': 16, // United States Of America (The)
+                'EUR': 0, // Andorra
+                'GBP': 3, // United Kingdom Of Great Britain And Northern Ireland (The)
+                'INR': 1, // India
+                'AUD': 0, // Malaysia
+                'CAD': 0, // Canada
+                'SGD': 0, // Singapore
+                'CHF': 1, // Switzerland
+                'MYR': 0, // Malaysia
+                'JPY': 0, // Japan
+                'CNY': 0, // China
+            })
+            // console.log('CURRENCIES', currencies)
+            // $: currencies = getCurrencies($marketData.rates)
+
+            return currencies
+        },
+    },
     methods: {
         ...mapActions('system', [
             'setError',
@@ -194,6 +219,9 @@ export default {
             fiatCurrency.set(_currency)
         },
 
+        /**
+         * Update Tab
+         */
         updateTab(_tab) {
             /* Update tab. */
             this.tab = _tab
@@ -248,26 +276,6 @@ export default {
     created: function () {
         /* Initialize currency codes. */
         this.cc = cc
-
-        /* Initialize currencies. */
-        // FIXME: Be sure to set the (default) country id, for currencies with
-        //        multiple countries.
-        // console.log('Decoded country list', cc.code('GBP'))
-        this.currencies = this.getCurrencies({
-            'USD': 16, // United States Of America (The)
-            'EUR': 0, // Andorra
-            'GBP': 3, // United Kingdom Of Great Britain And Northern Ireland (The)
-            'INR': 1, // India
-            'AUD': 0, // Malaysia
-            'CAD': 0, // Canada
-            'SGD': 0, // Singapore
-            'CHF': 1, // Switzerland
-            'MYR': 0, // Malaysia
-            'JPY': 0, // Japan
-            'CNY': 0, // China
-        })
-        // console.log('CURRENCIES', this.currencies)
-        // $: currencies = getCurrencies($marketData.rates)
 
         // this.disabledNotifications = typeof Notification !== 'function' || Notification.permission === 'denied'
         this.disabledNotifications = false

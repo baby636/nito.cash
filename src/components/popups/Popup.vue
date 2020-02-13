@@ -7,15 +7,21 @@
 <script>
 export default {
     props: {
-        active: Boolean,
+        active: Boolean | String,
         solid: Boolean,
     },
-    mounted: function () {
-        // const onkey = (e) => {
-        //     if (e.key === 'Escape') {
-        //         active = false
-        //     }
-        // }
+    created: function () {
+        /* Setup escape key press. */
+        document.onkeydown = evt => {
+            /* Capture window event. */
+            evt = evt || window.event
+
+            /* Detect `escape` key. */
+            if (evt.keyCode === 27) {
+                /* Set flag. */
+                this.active = null
+            }
+        }
     },
 }
 </script>

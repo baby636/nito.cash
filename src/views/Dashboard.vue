@@ -75,6 +75,7 @@ export default {
             walletMasterSeed: state => state.wallets.masterSeed,
             walletSeeds: state => state.wallets.seeds,
         }),
+
         ...mapGetters('wallets', {
             //
         }),

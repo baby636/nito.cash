@@ -115,7 +115,7 @@ export default {
     data: () => {
         return {
             addresses: [],
-            currentBalance: 0,
+            // currentBalance: 0,
 
             receiver: null,
             amount: 0.00,
@@ -142,9 +142,29 @@ export default {
             walletMasterSeed: state => state.wallets.masterSeed,
             walletSeeds: state => state.wallets.seeds,
         }),
+
         ...mapGetters('wallets', {
             //
         }),
+
+        currentBalance() {
+            // FIXME TEMPORARY FOR DEVELOPMENT PURPOSES ONLY
+            const amount = 1337
+            const rounded = Math.round(amount * 10) / 10 + (Math.round(amount * 10) / 10 === amount ? '' : '+')
+            const unit = 'sat'
+            const fiat = '$1.337'
+
+            /* Build current balance package. */
+            const balance = {
+                amount,
+                rounded,
+                unit,
+                fiat
+            }
+
+            return balance
+            // return currentBalance = formatValue($balance)
+        },
     },
     methods: {
         ...mapActions('system', [
@@ -428,20 +448,6 @@ export default {
     created: function () {
         /* Initialize BITBOX. */
         this.initBitbox()
-
-        // this.currentBalance = formatValue(this.balance)
-        const amount = 1337
-        const rounded = Math.round(amount * 10) / 10 + (Math.round(amount * 10) / 10 === amount ? '' : '+')
-        const unit = 'sat'
-        const fiat = '$1.337'
-
-        /* Build current balance package. */
-        this.currentBalance = {
-            amount,
-            rounded,
-            unit,
-            fiat
-        }
     },
     mounted: function () {
         /* Initialize send state. */

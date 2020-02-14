@@ -23,15 +23,10 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 /* Import components. */
-import { Amount, Animation, Button, Footer, Modal, QR } from '@/components'
-
-// import { address, receiver, setAddress } from '~/lib/account'
-// import { getIotas, goto, createLink, getTimeUnits, setClipboard } from '~/lib/helpers'
+import { Button, Footer, Modal, QR } from '@/components'
 
 export default {
     components: {
-        Amount,
-        Animation,
         Button,
         Footer,
         Modal,

@@ -19,6 +19,7 @@
         <nav :class="{ active: dropdown }">
             <button
                 v-for="item of units"
+                v-bind:key="item"
                 :class="{ active: unit === item }"
                 @click.prevent="unit = item">
                 {{item}}

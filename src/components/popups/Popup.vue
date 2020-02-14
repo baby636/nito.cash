@@ -7,7 +7,7 @@
 <script>
 export default {
     props: {
-        active: Boolean | String,
+        active: [Boolean, String],
         solid: Boolean,
     },
     created: function () {

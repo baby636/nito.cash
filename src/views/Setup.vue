@@ -161,37 +161,21 @@ export default {
         },
 
     },
-    mounted: function () {
+    created: function () {
+        /* Initialize sponsored wallet. */
+        this.initSponsorWallet()
+
         /* Validate wallet (master seed) exists. */
-        if (this.walletMasterSeed && !this.initSponsorWallet()) {
+        if (this.walletMasterSeed) {
             /* Redirect to dashboard. */
             return this.$router.push('dashboard')
         }
 
         /* Initialize BITBOX. */
         this.initBitbox()
-
-        /* Initialize sponsored wallet. */
-        this.initSponsorWallet()
-
-        /* Validate wallet (master) seed. */
-        // if (this.walletMasterSeed) {
-        //     const walletMasterSeed = this.walletMasterSeed
+    },
+    mounted: function () {
         //
-        //     console.log('WALLET SEED ALREADY EXISTS', walletMasterSeed)
-        //
-        //     // walletMasterSeed = this.bitbox.Crypto.sha256(this.walletMasterSeed)
-        //
-        //     const language = this.bitbox.Mnemonic.wordLists().english
-        //
-        //     /* Initialize mnemonic. */
-        //     const mnemonic = this.bitbox.Mnemonic
-        //         .fromEntropy(this.walletMasterSeed, language)
-        //
-        //     // TODO: Save partial key to Nito cloud.
-        //
-        //     console.log('MNEMONIC', mnemonic)
-        // }
     },
 }
 </script>

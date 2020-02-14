@@ -7,7 +7,12 @@
         <p>{{activeCountry}}</p>
 
         <nav :class="{ active: dropdown }">
-            <button v-for="item of items" @click="onSelect(item)" :class="{ active: item.label === activeCountry }">
+            <button
+                v-for="item of items"
+                v-bind:key="item"
+                @click="onSelect(item)"
+                :class="{ active: item.label === activeCountry }"
+            >
                 <img v-if="item.flag" :src="getFlagName(item.flag)" alt="" />
                 {{item.label}}
             </button>

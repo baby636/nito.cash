@@ -225,6 +225,8 @@ export default {
         /* Get current (wallet) balance. */
         this.getBalance()
 
+        console.log('WALLET SEEDS', this.walletSeeds)
+
         // this.getCashAccount()
         // this.getCashAddress()
         // this.openSocket()

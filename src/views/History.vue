@@ -15,7 +15,7 @@
                 You haven’t {{ tab === 'Sent' ? 'sent' : 'made' }} any transactions yet
             </p>
 
-            <div v-for="tx of items">
+            <div v-for="tx of items" v-bind:key="tx">
                 <div class="date" v-if="tx.day">{{ formatDate(tx.day, 'short') }}</div>
 
                 <div class="item"

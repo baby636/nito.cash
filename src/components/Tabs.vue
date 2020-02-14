@@ -2,6 +2,7 @@
     <nav>
         <button
             v-for="item of tabs"
+            v-bind:key="item"
             v-bind:value="tab"
             @click="updateTab(item)"
             :class="{ active: item === activeTab }">

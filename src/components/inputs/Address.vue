@@ -1,7 +1,7 @@
 <template>
     <textarea
         placeholder="Recipient address"
-        v-bind:value="address"
+        :value="address"
         v-on:input="$emit('input', $event.target.value)"
     />
 </template>

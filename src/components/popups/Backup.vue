@@ -24,13 +24,11 @@
 </template>
 
 <script>
-// import { error, backupReminder } from '~/lib/app'
+/* Import popup manager. */
+import Popup from './Popup'
 
 /* Import components. */
 import { Animation, Button } from '@/components'
-
-/* Import popup manager. */
-import Popup from './Popup'
 
 export default {
     components: {

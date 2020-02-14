@@ -66,8 +66,6 @@
 </template>
 
 <script>
-// import { error, backupReminder } from '~/lib/app'
-
 /* Import popup manager. */
 import Popup from './Popup'
 

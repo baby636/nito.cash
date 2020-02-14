@@ -1,8 +1,8 @@
 /* Import libraries. */
-import telr from '../../api/telr'
+// import telr from '../../api/telr'
 
 /* Initialize BITBOX. */
-const bitbox = new BITBOX()
+const bitbox = new window.BITBOX()
 
 /* Initialize state. */
 const state = {
@@ -20,7 +20,7 @@ const getters = {
 
 /* Actions. */
 const actions = {
-    async updateTickers ({ commit, state }) {
+    async updateTickers ({ commit }) {
         console.info('Updating tickers..')
 
         /* Retrieve current price. */

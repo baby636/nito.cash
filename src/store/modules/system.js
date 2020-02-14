@@ -1,5 +1,5 @@
 /* Import libraries. */
-import telr from '../../api/telr'
+// import telr from '../../api/telr'
 
 /* Initialize state. */
 const state = {
@@ -29,7 +29,7 @@ const getters = {
 
 /* Actions. */
 const actions = {
-    setError ({ commit, state }, _error) {
+    setError ({ commit }, _error) {
         console.info('Setting error message', _error)
 
         /* Commit error message. */
@@ -41,7 +41,7 @@ const actions = {
         }, 3000)
     },
 
-    setNotification ({ commit, state }, _notification) {
+    setNotification ({ commit }, _notification) {
         console.info('Setting notification message', _notification)
 
         /* Commit notification message. */

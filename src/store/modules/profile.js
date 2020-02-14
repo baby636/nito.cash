@@ -28,9 +28,9 @@ const mutations = {
     },
 
     /* Increment number of application starts. */
-    incrementAppStarts (state, { id }) {
-        const appStarts = state.profile
-        appStarts++
+    incrementAppStarts (state) {
+        /* Increment. */
+        state.profile.appStarts++
     }
 }
 

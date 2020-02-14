@@ -14,9 +14,6 @@ import wallets from './modules/wallets'
 /* Initialize Vuex. */
 Vue.use(Vuex)
 
-/* Initialize debugging. */
-const debug = process.env.NODE_ENV !== 'production'
-
 /* Export store. */
 export default new Vuex.Store({
     modules: {

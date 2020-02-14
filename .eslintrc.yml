@@ -1,9 +1,0 @@
-env:
-    node: true
-parserOptions:
-    ecmaVersion: 8
-    sourceType: module
-rules:
-    indent:
-        - error
-        - 4

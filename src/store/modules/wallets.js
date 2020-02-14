@@ -1,5 +1,5 @@
 /* Import libraries. */
-import telr from '../../api/telr'
+// import telr from '../../api/telr'
 
 /* Initialize state. */
 const state = {
@@ -32,21 +32,21 @@ const getters = {
 
 /* Actions. */
 const actions = {
-    addNewSeed ({ commit, state }, _seed) {
+    addNewSeed ({ commit }, _seed) {
         console.info('Adding new seed to wallet pool', _seed)
 
         /* Commit new seed to wallet. */
         commit('addNewSeed', _seed)
     },
 
-    setMasterMnemonic ({ commit, state }, _mnemonic) {
+    setMasterMnemonic ({ commit }, _mnemonic) {
         console.info('Setting master wallet mnemonic', _mnemonic)
 
         /* Commit wallet's master mnemonic. */
         commit('setMasterMnemonic', _mnemonic)
     },
 
-    setMasterSeed ({ commit, state }, _seed) {
+    setMasterSeed ({ commit }, _seed) {
         console.info('Setting master wallet seed', _seed)
 
         /* Commit wallet's master seed. */

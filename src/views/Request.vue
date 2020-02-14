@@ -102,7 +102,7 @@ export default {
 
             try {
                 /* Initialize BITBOX. */
-                this.bitbox = new BITBOX()
+                this.bitbox = new window.BITBOX()
             } catch (err) {
                 console.error(err)
             }

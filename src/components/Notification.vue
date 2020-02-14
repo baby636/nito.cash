@@ -17,18 +17,7 @@
 </template>
 
 <script>
-/* Initialize vuex. */
-import { mapActions, mapGetters, mapState } from 'vuex'
-
 export default {
-    props: {
-        // type: String,
-    },
-    data: () => {
-        return {
-            //
-        }
-    },
     computed: {
         error: {
             get: function () {
@@ -46,9 +35,6 @@ export default {
                 this.$store.commit('system/setNotification', _val)
             }
         },
-    },
-    mounted: async function () {
-        //
     },
 }
 </script>

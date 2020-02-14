@@ -41,10 +41,11 @@
   "eslintConfig": {
     "root": true,
     "env": {
+      "jest": true,
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
+      "plugin:vue/base",
       "eslint:recommended"
     ],
     "rules": {},

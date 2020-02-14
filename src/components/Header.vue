@@ -33,14 +33,14 @@
 
 <script>
 /* Import components. */
-import { Help } from '@/components'
+// import { Help } from '@/components'
 
 /* Import icons. */
 import '@/compiled-icons/back'
 
 export default {
     components: {
-        Help,
+        // Help,
     },
     props: {
         label: String,

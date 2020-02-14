@@ -108,7 +108,7 @@
 
 <script>
 /* Initialize vuex. */
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 
 /* Import modules. */
 import cc from 'currency-codes'
@@ -215,8 +215,8 @@ export default {
         },
 
         changeCurrency(_currency) {
-            console.log('CHANGE CURRENCY')
-            fiatCurrency.set(_currency)
+            console.log('CHANGE CURRENCY', _currency)
+            // fiatCurrency.set(_currency)
         },
 
         /**

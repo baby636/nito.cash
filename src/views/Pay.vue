@@ -180,7 +180,7 @@ export default {
 
             try {
                 /* Initialize BITBOX. */
-                this.bitbox = new BITBOX()
+                this.bitbox = new window.BITBOX()
             } catch (err) {
                 console.error(err)
             }
@@ -365,8 +365,8 @@ export default {
             }
         },
 
-        onPaste(e) {
-            console.log('ON PASTE')
+        onPaste(_value) {
+            console.log('ON PASTE', _value)
             // const data = (event.clipboardData || window.clipboardData).getData('text')
             // const result = parseLink(data)
             // if (result) {
@@ -407,8 +407,14 @@ export default {
             }
         },
 
-        async scannerWeb () {
-            console.log('SCANNER WEB')
+        /**
+         * Scanner
+         *
+         * NOTE: This DOES NOT work on any of the Android devices tested.
+         *       However, it DOES work well on all iOS devices tested.
+         */
+        async scanner () {
+            console.log('SCANNER')
 
             try {
                 navigator.getUserMedia =
@@ -454,12 +460,7 @@ export default {
         this.sendState = 'idle'
 
         /* Initialize scanner. */
-        // if (Capacitor.getPlatform() === 'web') {
-        if (true) {
-            this.scannerWeb()
-        } else {
-            this.scannerMobile(true)
-        }
+        this.scanner()
     },
     beforeDestroy() {
         /* Cleanup camera. */

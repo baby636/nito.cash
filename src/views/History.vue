@@ -54,7 +54,7 @@
 
 <script>
 /* Initialize vuex. */
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 /* Import components. */
 import { Header, Tabs, Transaction } from '@/components'
@@ -119,7 +119,7 @@ export default {
 
             try {
                 /* Initialize BITBOX. */
-                this.bitbox = new BITBOX()
+                this.bitbox = new window.BITBOX()
             } catch (err) {
                 console.error(err)
             }
@@ -195,7 +195,7 @@ export default {
             let currentDay = null
 
             /* Return filtered (transactions). */
-            return filtered.map((item, index) => {
+            return filtered.map(item => {
                 /* Initialize transaction day. */
                 const txDay = item.timestamp - (item.timestamp % (24 * 60 * 60))
 

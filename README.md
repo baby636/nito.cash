@@ -90,7 +90,7 @@ __Guides are available in-app, on topics including:__
 
 ## What's next?
 
-Check out our __[Roadmap](ROADMAP.md)__ for what we have in store.
+Check out our __[Roadmap](docs/ROADMAP.md)__ for what we have in store.
 
 As crypto fast approaches its teen years, Nito.cash aims to serve as the __optimal first impression__ necessary to drive tidal waves of fresh new crypto users, for years to come...
 

@@ -88,9 +88,10 @@ export default {
             marketPrice: state => state.blockchain.tickers.BCH.USD,
 
             /* Wallets */
+            walletDerivationPath: state => state.wallets.derivationPath,
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
-            walletSeeds: state => state.wallets.seeds,
+            walletImportedSeeds: state => state.wallets.importedSeeds,
         }),
 
         /* Returns history items. */
@@ -225,7 +226,7 @@ export default {
                 // console.log('HD NODE', hdNode)
 
                 /* Initialize child node. */
-                const childNode = hdNode.derivePath("m/44'/145'/0'/0/0")
+                const childNode = hdNode.derivePath(`${this.walletDerivationPath.bch}/0/0`)
 
                 const address = this.bitbox.HDNode.toCashAddress(childNode)
                 console.log('ADDRESS', address)

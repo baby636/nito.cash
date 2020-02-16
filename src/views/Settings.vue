@@ -2,7 +2,7 @@
     <div>
         <Warning
             :class="{ active: showWarning }"
-            v-on:confirm="destroyWallet"
+            v-on:confirm="destroy"
             v-on:cancel="showWarning = false"
         >
             <h5>Destroy wallet?</h5>
@@ -232,7 +232,7 @@ export default {
             this.setError('This feature is coming soon')
         },
 
-        async destroyWallet() {
+        async destroy() {
             try {
                 console.log('Destroying wallet')
 

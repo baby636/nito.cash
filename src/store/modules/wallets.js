@@ -1,6 +1,12 @@
 /* Import libraries. */
 // import telr from '../../api/telr'
 
+/* Import libraries. */
+import formatValue from '@/libs/formatValue'
+
+/* Initialize BITBOX. */
+const bitbox = new window.BITBOX()
+
 /* Initialize state. */
 const state = {
     // NOTE: This is a 24-word (BIP-39) phrase, which can be generated from
@@ -70,7 +76,60 @@ console.log('WHAT ARE STORE (GETTERS)', getters)
         const currentAccountIndex = Math.max(...state.activeAccounts)
 
         return currentAccountIndex + 1
-    }
+    },
+
+    getAddress: (state) => {
+        /* Initialize seed buffer. */
+        const seedBuffer = bitbox.Mnemonic.toSeed(state.masterMnemonic)
+        console.log('SEED BUFFER', seedBuffer)
+
+        const hdNode = bitbox.HDNode.fromSeed(seedBuffer)
+        console.log('HD NODE', hdNode)
+
+        /* Set change. */
+        // FIXME: This must be derived.
+        const change = 0
+
+        /* Set address index. */
+        // FIXME: This must be derived.
+        const addressIndex = 0
+
+        /* Initialize child node. */
+        const childNode = hdNode.derivePath(
+            `${state.derivationPath.bch}/${change}/${addressIndex}`)
+
+        const address = bitbox.HDNode.toCashAddress(childNode)
+        console.log('ADDRESS (wallet)', address)
+
+        /* Return address. */
+        return address
+    },
+
+    getBalance: (state) => async (_address, _marketPrice) => {
+        console.log('STATE', state);
+        console.log('ADDRESS', _address);
+        console.log('MARKET PRICE', _marketPrice);
+
+        try {
+            const details = await bitbox.Address.details(_address)
+            // const balance = await this.bitbox.Price.current('usd')
+            console.log('DETAILS', details)
+
+            /* Set balance (in satoshis). */
+            // const balance = details.balanceSat
+            const balance = details.balanceSat + details.unconfirmedBalanceSat
+
+            console.log('MARKET PRICE', _marketPrice)
+
+            const balanceDisplay = formatValue(balance, _marketPrice, 'USD')
+            console.log('BALANCE DISPLAY', JSON.stringify(balanceDisplay, null, 4))
+
+            return balanceDisplay
+        } catch(error) {
+            console.error(error)
+        }
+    },
+
     // wallets: (state, getters, rootState) => {
     //     return state.items.map(({ id, quantity }) => {
     //         const product = rootState.products.all.find(product => product.id === id)
@@ -91,6 +150,9 @@ console.log('WHAT ARE STORE (GETTERS)', getters)
 
 /* Actions. */
 const actions = {
+    /**
+     * Add New Seed
+     */
     addNewSeed ({ commit, state }, _seed) {
         /* Validate new seed (for duplicates). */
         if (state.importedSeeds.includes(_seed)) {
@@ -103,6 +165,62 @@ const actions = {
         }
     },
 
+    /**
+     * Create New Wallet
+     */
+    createNewWallet ({ commit }) {
+        console.info('Creating a NEW wallet..')
+
+        try {
+            /* Initialize walletMasterSeed. */
+            // let walletMasterSeed = null
+
+            /* Generate walletMasterSeed from random bytes. */
+            // TODO: !!! WARNING !!! WARNING !!! WARNING !!!
+            //       We MUST properly evaluate ANY and ALL weaknesses with
+            //       using randomBytes via a ("mobile") web browser.
+            const masterSeed = bitbox.Crypto.randomBytes(32)
+
+            /* Set new master (private) key to wallet.. */
+            commit('setMasterSeed', masterSeed)
+            // this.setMasterSeed(walletMasterSeed)
+
+            /**
+             * Create mnemonic wordlist using BIP-39.
+             * (https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+             *
+             * Available languages are:
+             *   01. English
+             *   02. Japanese
+             *   03. Korean
+             *   04. Spanish
+             *   05. Chinese (Simplified)
+             *   06. Chinese (Traditional)
+             *   07. French
+             *   08. Italian
+             *   09. Czech
+             */
+            const language = bitbox.Mnemonic.wordLists().english
+
+            /* Initialize mnemonic. */
+            const mnemonic = this.bitbox.Mnemonic
+                .fromEntropy(masterSeed.toString('hex'), language)
+
+            // TODO: Save partial key to Nito cloud.
+
+            // console.log('MNEMONIC', mnemonic)
+
+            /* Set new master (private) key to wallet.. */
+            commit('setMasterMnemonic', mnemonic)
+            // this.setMasterMnemonic(mnemonic)
+        } catch (err) {
+            console.error(err)
+        }
+    },
+
+    /**
+     * Set Master Mnemonic
+     */
     setMasterMnemonic ({ commit }, _mnemonic) {
         console.log('Setting master wallet mnemonic', _mnemonic)
 
@@ -110,6 +228,9 @@ const actions = {
         commit('setMasterMnemonic', _mnemonic)
     },
 
+    /**
+     * Set Master Seed
+     */
     setMasterSeed ({ commit }, _seed) {
         console.log('Setting master wallet seed', _seed)
 
@@ -117,6 +238,9 @@ const actions = {
         commit('setMasterSeed', _seed)
     },
 
+    /**
+     * Destroy Wallet
+     */
     destroyWallet ({ commit }) {
         console.log('Destroying wallet')
 

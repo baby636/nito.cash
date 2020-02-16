@@ -138,9 +138,10 @@ export default {
             marketPrice: state => state.blockchain.tickers.BCH.USD,
 
             /* Wallets */
+            walletDerivationPath: state => state.wallets.derivationPath,
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
-            walletSeeds: state => state.wallets.seeds,
+            walletImportedSeeds: state => state.wallets.importedSeeds,
         }),
 
         ...mapGetters('wallets', {
@@ -200,7 +201,7 @@ export default {
                 // console.log('HD NODE', hdNode)
 
                 /* Initialize child node. */
-                const childNode = hdNode.derivePath("m/44'/145'/0'/0/0")
+                const childNode = hdNode.derivePath(`${this.walletDerivationPath.bch}/0/0`)
 
                 const address = this.bitbox.HDNode.toCashAddress(childNode)
                 console.log('ADDRESS', address)
@@ -406,12 +407,12 @@ export default {
         },
 
         /**
-         * Scanner
+         * Start Scanner
          *
          * NOTE: This DOES NOT work on any of the Android devices tested.
          *       However, it DOES work well on all iOS devices tested.
          */
-        async scanner () {
+        async startScanner () {
             console.log('SCANNER')
 
             try {
@@ -457,8 +458,8 @@ export default {
         /* Initialize send state. */
         this.sendState = 'idle'
 
-        /* Initialize scanner. */
-        this.scanner()
+        /* Start scanner. */
+        this.startScanner()
     },
     beforeDestroy() {
         /* Cleanup camera. */

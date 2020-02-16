@@ -21,7 +21,7 @@
                 </div>
             </article>
 
-            <Button @click.native="createWallet" label="Create a NEW wallet" />
+            <Button @click.native="create" label="Create a NEW wallet" />
         </Footer>
     </main>
 </template>
@@ -50,7 +50,7 @@ export default {
         ...mapState({
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
-            walletSeeds: state => state.wallets.seeds,
+            walletImportedSeeds: state => state.wallets.importedSeeds,
         }),
         ...mapGetters('wallets', {
             // walletSeed: 'getSeed',
@@ -59,6 +59,7 @@ export default {
     methods: {
         ...mapActions('wallets', [
             'addNewSeed',
+            'createNewWallet',
             'setMasterMnemonic',
             'setMasterSeed',
         ]),
@@ -66,64 +67,24 @@ export default {
         /**
          * Initialize BITBOX
          */
-        initBitbox() {
-            try {
-                /* Initialize BITBOX. */
-                this.bitbox = new window.BITBOX()
-            } catch (err) {
-                console.error(err)
-            }
-        },
+        // initBitbox() {
+        //     try {
+        //         /* Initialize BITBOX. */
+        //         this.bitbox = new window.BITBOX()
+        //     } catch (err) {
+        //         console.error(err)
+        //     }
+        // },
 
-        async createWallet() {
-            console.info('Creating a NEW wallet..')
+        async create() {
+            /* Create new wallet. */
+            this.createNewWallet()
 
-            try {
-                /* Initialize walletMasterSeed. */
-                let walletMasterSeed = null
-
-                /* Generate walletMasterSeed from random bytes. */
-                // TODO: !!! WARNING !!! WARNING !!! WARNING !!!
-                //       We MUST properly evaluate ANY and ALL weaknesses with
-                //       using randomBytes via a ("mobile") web browser.
-                walletMasterSeed = this.bitbox.Crypto.randomBytes(32)
-
-                /* Set new master (private) key to wallet.. */
-                this.setMasterSeed(walletMasterSeed)
-
-                /**
-                 * Create mnemonic wordlist using BIP-39.
-                 * (https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
-                 *
-                 * Available languages are:
-                 *   01. English
-                 *   02. Japanese
-                 *   03. Korean
-                 *   04. Spanish
-                 *   05. Chinese (Simplified)
-                 *   06. Chinese (Traditional)
-                 *   07. French
-                 *   08. Italian
-                 *   09. Czech
-                 */
-                const language = this.bitbox.Mnemonic.wordLists().english
-
-                /* Initialize mnemonic. */
-                const mnemonic = this.bitbox.Mnemonic
-                    .fromEntropy(walletMasterSeed.toString('hex'), language)
-
-                // TODO: Save partial key to Nito cloud.
-
-                // console.log('MNEMONIC', mnemonic)
-
-                /* Set new master (private) key to wallet.. */
-                this.setMasterMnemonic(mnemonic)
-
+            /* Continue to Dashboard. */
+            setTimeout(() => {
                 /* Redirect to dashboard. */
                 this.$router.push('dashboard')
-            } catch (err) {
-                console.error(err)
-            }
+            }, 1000)
         },
 
         /**
@@ -167,7 +128,7 @@ export default {
         }
 
         /* Initialize BITBOX. */
-        this.initBitbox()
+        // this.initBitbox()
     },
     mounted: function () {
         //

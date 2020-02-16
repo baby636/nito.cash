@@ -43,7 +43,7 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import { Backup, Button, Footer } from '@/components'
 
 /* Import libraries. */
-import formatValue from '@/libs/formatValue'
+// import formatValue from '@/libs/formatValue'
 
 /* Import icons. */
 import '@/compiled-icons/cog'
@@ -71,14 +71,16 @@ export default {
             marketPrice: state => state.blockchain.tickers.BCH.USD,
 
             /* Wallets */
+            walletDerivationPath: state => state.wallets.derivationPath,
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
-            walletSeeds: state => state.wallets.seeds,
+            walletImportedSeeds: state => state.wallets.importedSeeds,
         }),
 
-        ...mapGetters('wallets', {
-            //
-        }),
+        ...mapGetters('wallets', [
+            'getAddress',
+            'getBalance',
+        ]),
     },
     methods: {
         ...mapActions('blockchain', [
@@ -128,24 +130,24 @@ export default {
         /**
          * Get (Wallet) Balance
          */
-        async getBalance() {
-            try {
-                const details = await this.bitbox.Address.details(this.address)
-                // const balance = await this.bitbox.Price.current('usd')
-                console.log('DETAILS', details)
-
-                /* Set balance (in satoshis). */
-                // const balance = details.balanceSat
-                const balance = details.balanceSat + details.unconfirmedBalanceSat
-
-                console.log('MARKET PRICE', this.marketPrice)
-
-                this.balanceDisplay = formatValue(balance, this.marketPrice, 'USD')
-                console.log('BALANCE DISPLAY', JSON.stringify(this.balanceDisplay, null, 4))
-            } catch(error) {
-                console.error(error)
-            }
-        },
+        // async getBalance() {
+        //     try {
+        //         const details = await this.bitbox.Address.details(this.address)
+        //         // const balance = await this.bitbox.Price.current('usd')
+        //         console.log('DETAILS', details)
+        //
+        //         /* Set balance (in satoshis). */
+        //         // const balance = details.balanceSat
+        //         const balance = details.balanceSat + details.unconfirmedBalanceSat
+        //
+        //         console.log('MARKET PRICE', this.marketPrice)
+        //
+        //         this.balanceDisplay = formatValue(balance, this.marketPrice, 'USD')
+        //         console.log('BALANCE DISPLAY', JSON.stringify(this.balanceDisplay, null, 4))
+        //     } catch(error) {
+        //         console.error(error)
+        //     }
+        // },
 
         async getCashAccount() {
             try {
@@ -186,7 +188,7 @@ export default {
         },
 
     },
-    created: function () {
+    created: async function () {
         /* Initialize balance display (values). */
         this.balanceDisplay = {
             value: 0,
@@ -194,41 +196,21 @@ export default {
             unit: '',
             fiat: 0
         }
-    },
-    mounted: async function () {
-        /* Initialize BITBOX. */
-        this.initBitbox()
-
-        /* Initialize seed buffer. */
-        const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
-        console.log('SEED BUFFER', seedBuffer)
-
-        const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
-        console.log('HD NODE', hdNode)
-
-        /* Initialize child node. */
-        const childNode = hdNode.derivePath("m/44'/145'/0'/0/0")
-
-        const address = this.bitbox.HDNode.toCashAddress(childNode)
-        console.log('ADDRESS', address)
-
-        /* Initialize QRCode link. */
-        if (address) {
-            this.address = address
-        }
 
         /* Update price tickers. */
         this.updateTickers()
 
         /* Get current (wallet) balance. */
-        this.getBalance()
-
-        console.log('WALLET SEEDS', this.walletSeeds)
+        // FIXME: We don't need to request address.
+        this.balanceDisplay = await this.getBalance(
+            this.getAddress, this.marketPrice)
 
         // this.getCashAccount()
         // this.getCashAddress()
         // this.openSocket()
-
+    },
+    mounted: function () {
+        //
     },
 }
 </script>

@@ -4,7 +4,9 @@ import nito from '../../api/nito'
 /* Initialize state. */
 const state = {
     profile: {
-        appStarts: 0
+        appStarts: 0,
+
+        showUnconfirmed: true
     }
 }
 

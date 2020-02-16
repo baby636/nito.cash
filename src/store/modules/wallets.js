@@ -40,26 +40,11 @@ const state = {
 /* Getters. */
 const getters = {
     /**
-     * Receiving Account
-     *
-     * Returns the current (next active) receiving account.
-     *
-     * NOTE: This account MUST be currently "unfunded".
-     */
-    receivingAccount: (state, getters) => {
-console.log('WHAT ARE STORE (GETTERS)', getters)
-        /* Set current account index. */
-        const currentAccountIndex = Math.max(...state.activeAccounts)
-
-        return currentAccountIndex + 1
-    },
-
-    /**
-     * Active Accounts
+     * Get Active Accounts
      *
      * Returns (addresses for) ALL active accounts.
      */
-    activeAccounts: (state) => {
+    getActiveAccounts: (state) => {
         /* Set current account index. */
         const currentAccountIndex = Math.max(...state.activeAccounts)
 
@@ -67,24 +52,15 @@ console.log('WHAT ARE STORE (GETTERS)', getters)
     },
 
     /**
-     * Change Accounts
-     *
-     * Returns (addresses for) ALL (in-use) change accounts.
+     * Get Address
      */
-    changeAccounts: (state) => {
-        /* Set current account index. */
-        const currentAccountIndex = Math.max(...state.activeAccounts)
-
-        return currentAccountIndex + 1
-    },
-
     getAddress: (state) => {
         /* Initialize seed buffer. */
         const seedBuffer = bitbox.Mnemonic.toSeed(state.masterMnemonic)
-        console.log('SEED BUFFER', seedBuffer)
+        // console.log('SEED BUFFER', seedBuffer)
 
         const hdNode = bitbox.HDNode.fromSeed(seedBuffer)
-        console.log('HD NODE', hdNode)
+        // console.log('HD NODE', hdNode)
 
         /* Set change. */
         // FIXME: This must be derived.
@@ -99,35 +75,74 @@ console.log('WHAT ARE STORE (GETTERS)', getters)
             `${state.derivationPath.bch}/${change}/${addressIndex}`)
 
         const address = bitbox.HDNode.toCashAddress(childNode)
-        console.log('ADDRESS (wallet)', address)
+        console.log('ADDRESS', address)
 
         /* Return address. */
         return address
     },
 
-    getBalance: (state) => async (_address, _marketPrice) => {
-        console.log('STATE', state);
-        console.log('ADDRESS', _address);
-        console.log('MARKET PRICE', _marketPrice);
+    /**
+    * Get Balance
+    *
+    * NOTE: This function will accept ANY wallet address to retrieve the
+    *       current balance (based on "supplied" market price).
+    */
+    getBalance: (state, getters, rootState) => async (_address, _marketPrice) => {
+        // console.log('GET BALANCE (address)', _address)
+        // console.log('GET BALANCE (market price)', _marketPrice)
 
         try {
+            /* Retrieve address details. */
             const details = await bitbox.Address.details(_address)
-            // const balance = await this.bitbox.Price.current('usd')
-            console.log('DETAILS', details)
+            console.log('ADDRESS DETAILS', JSON.stringify(details, null, 4))
+
+            /* Initialize balance. */
+            let balance = 0
 
             /* Set balance (in satoshis). */
-            // const balance = details.balanceSat
-            const balance = details.balanceSat + details.unconfirmedBalanceSat
+            if (rootState.profile.showUnconfirmed) {
+                /* Both confirmed and unconfirmed. */
+                balance = details.balanceSat + details.unconfirmedBalanceSat
+            } else {
+                /* Confirmed ONLY. */
+                balance = details.balanceSat
+            }
 
-            console.log('MARKET PRICE', _marketPrice)
+            /* Format balance (for display). */
+            const formattedBalance = formatValue(balance, _marketPrice, 'USD')
+            console.log('FORMATTED BALANCE', JSON.stringify(formattedBalance, null, 4))
 
-            const balanceDisplay = formatValue(balance, _marketPrice, 'USD')
-            console.log('BALANCE DISPLAY', JSON.stringify(balanceDisplay, null, 4))
-
-            return balanceDisplay
+            /* Return (formatted) balance. */
+            return formattedBalance
         } catch(error) {
             console.error(error)
         }
+    },
+
+    /**
+     * Get Change Accounts
+     *
+     * Returns (addresses for) ALL (in-use) change accounts.
+     */
+    getChangeAccounts: (state) => {
+        /* Set current account index. */
+        const currentAccountIndex = Math.max(...state.activeAccounts)
+
+        return currentAccountIndex + 1
+    },
+
+    /**
+     * Get Receiving Account
+     *
+     * Returns the current (next active) receiving account.
+     *
+     * NOTE: This account MUST be currently "unfunded".
+     */
+    getReceivingAccount: (state) => {
+        /* Set current account index. */
+        const currentAccountIndex = Math.max(...state.activeAccounts)
+
+        return currentAccountIndex + 1
     },
 
     // wallets: (state, getters, rootState) => {

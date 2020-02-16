@@ -5,7 +5,7 @@ const numeral = require('numeral')
  * Format BCH value to value units and calculate market value.
  */
 export default (satoshis, marketPrice, currency) => {
-    console.log('CURRENCY', currency)
+    // console.log('CURRENCY', currency)
     // let value = getIotas(iotas, units, marketPrice)
     let value = satoshis
 

@@ -67,8 +67,6 @@ export default {
          * Initialize BITBOX
          */
         initBitbox() {
-            console.info('Initializing BITBOX..')
-
             try {
                 /* Initialize BITBOX. */
                 this.bitbox = new window.BITBOX()
@@ -89,9 +87,6 @@ export default {
                 //       We MUST properly evaluate ANY and ALL weaknesses with
                 //       using randomBytes via a ("mobile") web browser.
                 walletMasterSeed = this.bitbox.Crypto.randomBytes(32)
-
-                console.info('Generated a NEW Master Wallet Seed (from randomBytes)',
-                    walletMasterSeed)
 
                 /* Set new master (private) key to wallet.. */
                 this.setMasterSeed(walletMasterSeed)
@@ -119,7 +114,7 @@ export default {
 
                 // TODO: Save partial key to Nito cloud.
 
-                console.log('MNEMONIC', mnemonic)
+                // console.log('MNEMONIC', mnemonic)
 
                 /* Set new master (private) key to wallet.. */
                 this.setMasterMnemonic(mnemonic)

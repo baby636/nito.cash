@@ -93,32 +93,11 @@ export default {
          * Initialize BITBOX
          */
         initBitbox() {
-            console.info('Initializing BITBOX..')
-
             try {
                 /* Initialize BITBOX. */
                 this.bitbox = new window.BITBOX()
             } catch (err) {
                 console.error(err)
-            }
-        },
-
-        async generateRequest() {
-            if (!this.amount) {
-                return this.setError('Please enter your requested amount')
-            }
-
-            /* Set loading flag. */
-            this.loading = true
-
-            try {
-                // FIXME: What can we do here?
-                // await setAddress(getIotas(amount, unit, $marketPrice), reference)
-            } catch (_err) {
-                /* Set loading flag. */
-                this.loading = false
-
-                this.setError((_err && _err.message) || _err || 'Error generating address')
             }
         },
 

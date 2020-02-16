@@ -182,6 +182,7 @@ export default {
 
         ...mapActions('wallets', [
             'addNewSeed',
+            'destroyWallet',
             'setMasterMnemonic',
             'setMasterSeed',
         ]),
@@ -235,9 +236,8 @@ export default {
             try {
                 console.log('Destroying wallet')
 
-                /* Set wallet to null. */
-                this.setMasterMnemonic(null)
-                this.setMasterSeed(null)
+                /* Request (total) wallet destruction. */
+                this.destroyWallet()
 
                 /* Set flag. */
                 this.showWarning = false
@@ -249,26 +249,11 @@ export default {
                 setTimeout(() => {
                     this.$router.push('setup')
                 }, 3000)
-
-                // const { generatePersistenceID } = await import('@iota/persistence')
-                // const { trytesToTrits } = await import('@iota/converter')
-                //
-                // const dbID = generatePersistenceID(trytesToTrits($seed))
-                //
-                // if ($account) {
-                //     $account.stop()
-                // }
-                //
-                // const deleteRequest = window.indexedDB.deleteDatabase(dbID)
-                //
-                // deleteRequest.onsuccess = () => {
-                //     localStorage.clear()
-                //     sessionStorage.clear()
-                //     location.hash = ''
-                //     location.reload()
-                // }
             } catch (err) {
-                console.log(err)
+                console.error(err)
+
+                /* Set error. */
+                this.setError(err.message ? err.message.split(';')[0] : err)
             }
         },
 

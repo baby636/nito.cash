@@ -117,8 +117,6 @@ export default {
          * Initialize BITBOX
          */
         initBitbox() {
-            console.info('Initializing BITBOX..')
-
             try {
                 /* Initialize BITBOX. */
                 this.bitbox = new window.BITBOX()

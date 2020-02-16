@@ -13,17 +13,6 @@ export default {
     components: {
         Notification
     },
-    data: () => {
-        return {
-            // TODO
-        }
-    },
-    methods: {
-        //
-    },
-    mounted: function () {
-        console.info('Main application has mounted!')
-    },
 }
 </script>
 

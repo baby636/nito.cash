@@ -21,11 +21,11 @@ const getters = {
 /* Actions. */
 const actions = {
     async updateTickers ({ commit }) {
-        console.info('Updating tickers..')
+        console.log('Updating price tickers..')
 
         /* Retrieve current price. */
         const current = await bitbox.Price.current('usd')
-        console.log('CURRENT PRICE', current)
+        console.info('Current BCH/USD price', current)
 
         /* Commit price to tickers. */
         commit('updateTickers', current)

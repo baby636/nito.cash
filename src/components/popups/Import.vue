@@ -1,22 +1,24 @@
 <template>
     <Popup active>
         <section>
-            <header>Backup your wallet</header>
+            <header>Hey! You have money waiting</header>
 
             <article>
                 <div class="animation">
-                    <Animation type="president" />
+                    <Animation type="receive" />
                 </div>
 
-                <p>If you use your browser in Incognito mode, or your browser cache is reset, you can lose your funds.</p>
+                <p>
+                    You currently have <strong>$0.00</strong> in crypto waiting to be imported into your wallet.
+                </p>
 
                 <p>
-                    <strong>Would you like to backup your wallet now?</strong>
+                    <strong>Would you like to import that money now?</strong>
                 </p>
             </article>
 
             <footer>
-                <Button @click.native="deny" label="No" double />
+                <Button @click.native="close" label="No" double />
                 <Button @click.native="confirm" label="Yes" double />
             </footer>
         </section>
@@ -24,6 +26,9 @@
 </template>
 
 <script>
+/* Initialize vuex. */
+import { mapActions } from 'vuex'
+
 /* Import popup manager. */
 import Popup from './Popup'
 
@@ -37,7 +42,7 @@ export default {
         Popup,
     },
     props: {
-        showExport: Boolean,
+        // showImport: Boolean,
     },
     data: () => {
         return {
@@ -45,22 +50,33 @@ export default {
         }
     },
     methods: {
+        ...mapActions('system', [
+            'setError',
+            'setNotification',
+        ]),
+
         /**
-         * Confirm (Wallet Backup)
+         * Confirm (Wallet Import)
          */
         confirm() {
-            console.log('CONFIRM')
-            // showExport = true
-            // backupReminder.set(false)
+            console.log('TODO: Process import of seed wallet.')
+
+            // TODO: Process import of seed wallet.
+            this.setNotification('Wallet funds imported successfully!')
+
+            /* Emit to parent. */
+            this.$emit('close-import')
         },
 
         /**
-         * Deny (Wallet Backup)
+         * Close (Wallet Import)
          */
-        deny() {
-            console.log('DENY')
-            // backupReminder.set(false)
-        }
+        close() {
+            console.log('CLOSING..')
+
+            /* Emit to parent. */
+            this.$emit('close-import')
+        },
     },
     mounted: function () {
         //

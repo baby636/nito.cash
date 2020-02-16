@@ -16,6 +16,7 @@ import Toggle from './inputs/Toggle'
 
 import Backup from './popups/Backup'
 import Help from './popups/Help'
+import Import from './popups/Import'
 import Transaction from './popups/Transaction'
 import Warning from './popups/Warning'
 
@@ -38,6 +39,7 @@ export {
 
     Backup,
     Help,
+    Import,
     Transaction,
     Warning,
 }

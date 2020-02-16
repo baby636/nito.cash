@@ -1,6 +1,15 @@
 <template>
     <main>
-        <Backup v-if="backupReminder" :showExport="showExport" />
+        <Backup
+            v-if="backupReminder"
+            :showBackup="showBackup"
+            v-on:close-backup="showBackup = false"
+        />
+
+        <Import
+            v-if="showImport"
+            v-on:close-import="showImport = false"
+        />
 
         <div>
             <header>
@@ -11,11 +20,11 @@
 
             <div class="balance">
                 <h1>
-                    {{balanceDisplay.value}}
-                    <small>{{balanceDisplay.unit}}</small>
+                    {{walletBalance.value}}
+                    <small>{{walletBalance.unit}}</small>
                 </h1>
 
-                <h2>{{balanceDisplay.fiat}}</h2>
+                <h2>{{walletBalance.fiat}}</h2>
 
                 <div>
                     <Button @click.native="loadHistory" label="Transaction history" secondary small />
@@ -40,7 +49,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 
 /* Import components. */
-import { Backup, Button, Footer } from '@/components'
+import { Backup, Button, Footer, Import } from '@/components'
 
 /* Import libraries. */
 // import formatValue from '@/libs/formatValue'
@@ -53,16 +62,15 @@ export default {
     components: {
         Backup,
         Button,
-        Footer
+        Footer,
+        Import,
     },
     data: () => {
         return {
-            address: null,
             backupReminder: false,
-            balanceDisplay: null,
-            bitbox: null,
-            showExport: false,
-            bchjs: null,
+            showBackup: false,
+            showImport: false,
+            walletBalance: null,
         }
     },
     computed: {
@@ -115,99 +123,25 @@ export default {
             this.$router.push('history')
         },
 
-        /**
-         * Initialize BITBOX
-         */
-        initBitbox() {
-            try {
-                /* Initialize BITBOX. */
-                this.bitbox = new window.BITBOX()
-            } catch (err) {
-                console.error(err)
-            }
-        },
-
-        /**
-         * Get (Wallet) Balance
-         */
-        // async getBalance() {
-        //     try {
-        //         const details = await this.bitbox.Address.details(this.address)
-        //         // const balance = await this.bitbox.Price.current('usd')
-        //         console.log('DETAILS', details)
-        //
-        //         /* Set balance (in satoshis). */
-        //         // const balance = details.balanceSat
-        //         const balance = details.balanceSat + details.unconfirmedBalanceSat
-        //
-        //         console.log('MARKET PRICE', this.marketPrice)
-        //
-        //         this.balanceDisplay = formatValue(balance, this.marketPrice, 'USD')
-        //         console.log('BALANCE DISPLAY', JSON.stringify(this.balanceDisplay, null, 4))
-        //     } catch(error) {
-        //         console.error(error)
-        //     }
-        // },
-
-        async getCashAccount() {
-            try {
-                let cashAccounts = await this.bitbox.CashAccounts.lookup("nyusternie", 55155)
-                console.log(cashAccounts)
-            } catch (error) {
-                console.log(error)
-            }
-        },
-
-        async getCashAddress() {
-            try {
-                let reverseLookup = await this.bitbox.CashAccounts
-                    .reverseLookup('bitcoincash:qr5cv5xee23wdy8nundht82v6637etlq3u6kzrjknk')
-
-                console.log(reverseLookup)
-            } catch (error) {
-                console.log(error)
-            }
-        },
-
-        async setPrice() {
-            try {
-                let current = await this.bitbox.Price.current('usd')
-
-                console.log('PRICE', current)
-            } catch(error) {
-                console.error(error)
-            }
-        },
-
-        async openSocket() {
-            let socket = new this.bitbox.Socket({callback: () => {console.log('connected')}, wsURL: 'https://ws.bitcoin.com'})
-
-            socket.listen('blocks', (message) => {
-                console.log(message)
-            })
-        },
 
     },
     created: async function () {
         /* Initialize balance display (values). */
-        this.balanceDisplay = {
+        this.walletBalance = {
             value: 0,
             rounded: 0,
             unit: '',
             fiat: 0
         }
 
+        /* Retrieve current (wallet) balance. */
+        // FIXME: We don't need to request address.
+        this.walletBalance = await this.getBalance(
+            this.getAddress, this.marketPrice)
+
         /* Update price tickers. */
         this.updateTickers()
 
-        /* Get current (wallet) balance. */
-        // FIXME: We don't need to request address.
-        this.balanceDisplay = await this.getBalance(
-            this.getAddress, this.marketPrice)
-
-        // this.getCashAccount()
-        // this.getCashAddress()
-        // this.openSocket()
     },
     mounted: function () {
         //

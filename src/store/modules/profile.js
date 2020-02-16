@@ -3,11 +3,11 @@ import nito from '../../api/nito'
 
 /* Initialize state. */
 const state = {
-    profile: {
-        appStarts: 0,
+    /* Application starts (count). */
+    appStarts: 0,
 
-        showUnconfirmed: true
-    }
+    /* Show unconfirmed transactions (flag). */
+    showUnconfirmed: true
 }
 
 /* Getters. */

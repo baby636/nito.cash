@@ -70,9 +70,7 @@ export default {
          * Close (Transaction Details)
          */
         close() {
-            console.log('CLOSING..')
-
-            /* Emit tab update (to parent). */
+            /* Emit to parent. */
             this.$emit('close-details')
         },
 

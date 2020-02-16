@@ -218,7 +218,7 @@ const actions = {
             const language = bitbox.Mnemonic.wordLists().english
 
             /* Initialize mnemonic. */
-            const mnemonic = this.bitbox.Mnemonic
+            const mnemonic = bitbox.Mnemonic
                 .fromEntropy(masterSeed.toString('hex'), language)
 
             // TODO: Save partial key to Nito cloud.

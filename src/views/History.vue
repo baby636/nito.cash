@@ -9,7 +9,7 @@
                 :txHash="selectedHash"
                 :tx="selected"
                 :active="showDetails"
-                 v-on:close-details="showDetails = false" />
+                v-on:close-details="showDetails = false" />
 
             <p v-if="items.length === 0">
                 You haven’t {{ tab === 'Sent' ? 'sent' : 'made' }} any transactions yet

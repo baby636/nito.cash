@@ -48,9 +48,9 @@ export default {
     },
     computed: {
         ...mapState({
+            walletImportedSeeds: state => state.wallets.importedSeeds,
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
-            walletImportedSeeds: state => state.wallets.importedSeeds,
         }),
         ...mapGetters('wallets', {
             // walletSeed: 'getSeed',
@@ -63,18 +63,6 @@ export default {
             'setMasterMnemonic',
             'setMasterSeed',
         ]),
-
-        /**
-         * Initialize BITBOX
-         */
-        // initBitbox() {
-        //     try {
-        //         /* Initialize BITBOX. */
-        //         this.bitbox = new window.BITBOX()
-        //     } catch (err) {
-        //         console.error(err)
-        //     }
-        // },
 
         async create() {
             /* Create new wallet. */
@@ -126,9 +114,6 @@ export default {
             /* Redirect to dashboard. */
             return this.$router.push('dashboard')
         }
-
-        /* Initialize BITBOX. */
-        // this.initBitbox()
     },
     mounted: function () {
         //

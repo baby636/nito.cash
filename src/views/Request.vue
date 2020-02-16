@@ -48,15 +48,15 @@ export default {
     },
     computed: {
         ...mapState({
-            walletDerivationPath: state => state.wallets.derivationPath,
+            walletImportedSeeds: state => state.wallets.importedSeeds,
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
-            walletImportedSeeds: state => state.wallets.importedSeeds,
         }),
 
-        ...mapGetters('wallets', {
-            //
-        }),
+        ...mapGetters('wallets', [
+            'getAddress',
+            'getBalance',
+        ]),
 
         displayAddress() {
             /* Set abbreviation length. */
@@ -89,18 +89,6 @@ export default {
             'setError',
             'setNotification',
         ]),
-
-        /**
-         * Initialize BITBOX
-         */
-        initBitbox() {
-            try {
-                /* Initialize BITBOX. */
-                this.bitbox = new window.BITBOX()
-            } catch (err) {
-                console.error(err)
-            }
-        },
 
         /**
          * Set Clipboard
@@ -151,29 +139,8 @@ export default {
         },
     },
     created: function () {
-        /* Initialize BITBOX. */
-        this.initBitbox()
-
-        // console.log('this.walletMasterSeed', this.walletMasterSeed)
-        // console.log('this.walletMasterMnemonic', this.walletMasterMnemonic)
-
-        /* Initialize seed buffer. */
-        const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
-        // console.log('SEED BUFFER', seedBuffer)
-
-        const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
-        // console.log('HD NODE', hdNode)
-
-        /* Initialize child node. */
-        const childNode = hdNode.derivePath(`${this.walletDerivationPath.bch}/0/0`)
-
-        const address = this.bitbox.HDNode.toCashAddress(childNode)
-        console.log('ADDRESS', address)
-
-        /* Initialize QRCode link. */
-        if (address) {
-            this.address = address
-        }
+        /* Set address. */
+        this.address = this.getAddress
     },
     mounted: function () {
         //

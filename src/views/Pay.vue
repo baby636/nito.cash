@@ -28,7 +28,7 @@
 
         <div v-else>
             <div class="balance">
-                Current balance: {{currentBalance.rounded}} {{currentBalance.unit}}
+                Current balance: {{walletBalance.rounded}} {{walletBalance.unit}}
             </div>
 
             <div v-if="cameraError || receiver">
@@ -36,15 +36,15 @@
                     <div />
 
                     <div class="animation">
-                        <Animation type="pay" />
+                        <Animation type="president" />
                     </div>
 
-                    <!-- <Address :address="receiver" /> -->
                     <Address v-model="receiver" :address="receiver" />
 
                     <form>
                         <label>Amount</label>
-                        <Amount v-model="amount" :unit="unit" />
+                        <Amount :amount="amount" v-on:amount-update="updateAmount" :unit="unit" />
+                        <!-- <Amount v-model="amount" :amount="amount" :unit="unit" /> -->
 
                         <label>Transaction note</label>
                         <input placeholder="Optional reference" type="text" :value="reference" />
@@ -115,12 +115,13 @@ export default {
     data: () => {
         return {
             addresses: [],
-            // currentBalance: 0,
+            // walletBalance: 0,
+            walletBalance: null,
 
             receiver: null,
-            amount: 0.00,
+            amount: null,
             reference: '',
-            unit: 'satoshis',
+            unit: 'bits',
 
             video: null,
             scanner: null,
@@ -144,224 +145,57 @@ export default {
             walletMasterSeed: state => state.wallets.masterSeed,
         }),
 
-        ...mapGetters('wallets', {
-            //
-        }),
+        ...mapGetters('wallets', [
+            'getAddress',
+            'getBalance',
+        ]),
 
-        currentBalance() {
-            // FIXME TEMPORARY FOR DEVELOPMENT PURPOSES ONLY
-            const amount = 1337
-            const rounded = Math.round(amount * 10) / 10 + (Math.round(amount * 10) / 10 === amount ? '' : '+')
-            const unit = 'sat'
-            const fiat = '$1.337'
-
-            /* Build current balance package. */
-            const balance = {
-                amount,
-                rounded,
-                unit,
-                fiat
-            }
-
-            return balance
-            // return currentBalance = formatValue($balance)
-        },
+        // walletBalance() {
+        //     // FIXME TEMPORARY FOR DEVELOPMENT PURPOSES ONLY
+        //     const amount = 1337
+        //     const rounded = Math.round(amount * 10) / 10 + (Math.round(amount * 10) / 10 === amount ? '' : '+')
+        //     const unit = 'sat'
+        //     const fiat = '$1.337'
+        //
+        //     /* Build current balance package. */
+        //     const balance = {
+        //         amount,
+        //         rounded,
+        //         unit,
+        //         fiat
+        //     }
+        //
+        //     return balance
+        //     // return walletBalance = formatValue($balance)
+        // },
     },
     methods: {
+        ...mapActions('blockchain', [
+            'updateTickers',
+        ]),
+
         ...mapActions('system', [
             'setError',
             'setNotification',
         ]),
 
-        /**
-         * Initialize BITBOX
-         */
-        initBitbox() {
-            try {
-                /* Initialize BITBOX. */
-                this.bitbox = new window.BITBOX()
-            } catch (err) {
-                console.error(err)
-            }
-        },
+        ...mapActions('wallets', [
+            'sendCrypto',
+        ]),
 
-        async onSend() {
-            console.log('ON SEND')
+        onSend() {
+            // console.log('SENDING', this.amount)
 
-            if (!this.amount) {
-                return this.setError('Cannot send payment without amount')
+            if (this.amount > this.currentBalance) {
+                return this.setError('Insufficient funds')
             }
 
-            try {
-                /* Initialize seed buffer. */
-                const seedBuffer = this.bitbox.Mnemonic.toSeed(this.walletMasterMnemonic)
-                // console.log('SEED BUFFER', seedBuffer)
-
-                const hdNode = this.bitbox.HDNode.fromSeed(seedBuffer)
-                // console.log('HD NODE', hdNode)
-
-                /* Initialize child node. */
-                const childNode = hdNode.derivePath(`${this.walletDerivationPath.bch}/0/0`)
-
-                const address = this.bitbox.HDNode.toCashAddress(childNode)
-                console.log('ADDRESS', address)
-
-                // NOTE: Array with maximum of 20 legacy or cash addresses.
-                // TODO: Add support for "change" addresses.
-                if (address) {
-                    this.addresses = [address]
-                }
-
-                /* Retrieve unspent transaction outputs. */
-                const utxo = await this.bitbox.Address.utxo(this.addresses)
-                console.log('UTXOS', utxo)
-
-                /* Set ALL uxtos. */
-                const myInputs = utxo[0].utxos
-
-                /* Initialize transaction builder. */
-                const transactionBuilder = new this.bitbox.TransactionBuilder('mainnet')
-                console.log('TX BUILDER - 1', transactionBuilder)
-
-                console.log('Transaction Address', this.receiver)
-                console.log('Transaction Amount', this.amount)
-
-                if (this.amount > this.currentBalance) {
-                    return this.setError('Insufficient funds')
-                }
-
-                /* Initialize utxo flag. */
-                let inputsAdded = false
-
-                /* Loop through ALL uxtos. */
-                myInputs.forEach(utxo => {
-                    console.log('UXTO', utxo)
-
-                    /* Validate input flag. */
-                    if (!inputsAdded) {
-                        /* Add input with txid and index of vout. */
-                        transactionBuilder.addInput(utxo.txid, utxo.vout)
-
-                        console.log('ADDED UTXO', utxo.txid, utxo.vout, utxo.satoshis)
-
-                        // NOTE: Set the FULL UXTO as the amount.
-                        // FIXME: Add change address.
-                        this.amount = utxo.satoshis
-
-                        /* Set input flag. */
-                        inputsAdded = true
-                    }
-                })
-
-                console.log('TX BUILDER - 2', transactionBuilder)
-
-                // let originalAmount = 100000;
-                const byteCount = this.bitbox.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 })
-                console.log('BYTE COUNT', byteCount)
-
-                // amount to send to receiver. It's the original amount - 1 sat/byte for tx size
-                const sendAmount = this.amount - byteCount
-                console.log('SEND AMOUNT', sendAmount)
-
-                /* Validate send amount. */
-                // TODO: Validate BCH dust amount.
-                if (sendAmount < 546) {
-                    /* Set error. */
-                    this.setError(`Amount is too low. Min: ${546 + byteCount} sats`)
-
-                    /* Set flag. */
-                    this.sendState = 'idle'
-
-                    return
-                }
-
-                // add output w/ address and amount to send
-                transactionBuilder.addOutput(this.receiver, sendAmount)
-                // transactionBuilder.addOutput('bitcoincash:' + this.receiver, sendAmount)
-                // transactionBuilder.addOutput('bitcoincash:qpuax2tarq33f86wccwlx8ge7tad2wgvqgjqlwshpw', sendAmount)
-
-                console.log('TX BUILDER - 3', transactionBuilder)
-
-                /* Set locktime (for immediate propagation). */
-                transactionBuilder.setLockTime(0)
-
-                /* Set keypair. */
-                const keyPair = this.bitbox.HDNode.toKeyPair(childNode)
-                console.log('KEYPAIR', keyPair)
-
-                /* Initialize redeemscript. */
-                let redeemScript
-
-                /* Sign the transaction input(s). */
-                transactionBuilder.sign(
-                    0, // vin
-                    keyPair,
-                    redeemScript,
-                    transactionBuilder.hashTypes.SIGHASH_ALL,
-                    parseInt(this.amount),
-                    transactionBuilder.signatureAlgorithms.SCHNORR
-                )
-
-                console.log('TX BUILDER - 4', transactionBuilder)
-
-                /* Build transaction. */
-                const tx = transactionBuilder.build()
-                console.log('TX BUILD', tx)
-
-                /* Set tx output to raw hex. */
-                const txHex = tx.toHex()
-                console.log('RAW HEX', txHex)
-
-                /* Set state. */
-                this.sendState = 'sending'
-
-                /* Broadcast transaction to network. */
-                this.bitbox.RawTransactions.sendRawTransaction(txHex)
-                    .then(
-                        (result) => {
-                            console.log('TX RESULT', result)
-
-                            /* Set notification. */
-                            this.setNotification('Sent successfully!')
-
-                            /* Set flag. */
-                            this.sendState = 'idle'
-                        },
-                        (err) => {
-                            console.error('TX SEND ERROR:', err)
-
-                            /* Set error. */
-                            this.setError(err.message ? err.message.split(';')[0] : err)
-
-                            /* Set flag. */
-                            this.sendState = 'idle'
-                        }
-                    )
-
-                // const data = {
-                //     address: cda.address,
-                //     timeoutAt: cda.timeoutAt,
-                //     value
-                // }
-
-                // if (cda.expectedAmount) {
-                //     data['expectedAmount'] = cda.expectedAmount
-                // }
-
-                // await $account.sendToCDA(data)
-
-                // history.update(($history) =>
-                //     $history.concat([{ address: cda.address.substr(0, 81), reference, receiver: cda.receiver, incoming: false }])
-                // )
-            } catch (err) {
-                console.error('TX SEND ERROR:', err)
-
-                /* Set error. */
-                this.setError(err.message ? err.message.split(';')[0] : err)
-
-                /* Set flag. */
-                this.sendState = 'idle'
-            }
+            /* Send crypto. */
+            this.sendCrypto({
+                receiver: this.receiver,
+                amount: this.amount,
+                unit: this.unit,
+            })
         },
 
         onPaste(_value) {
@@ -379,6 +213,13 @@ export default {
 
             /* Redirect to dashboard. */
             this.$router.push('dashboard')
+        },
+
+        updateAmount(_amount) {
+            // console.log('UPDATING AMOUNT', _amount)
+
+            /* Update amount. */
+            this.amount = _amount
         },
 
         setReceiver(_result) {
@@ -450,9 +291,22 @@ export default {
             }
         },
     },
-    created: function () {
-        /* Initialize BITBOX. */
-        this.initBitbox()
+    created: async function () {
+        /* Initialize balance display (values). */
+        this.walletBalance = {
+            value: 0,
+            rounded: 0,
+            unit: '',
+            fiat: 0
+        }
+
+        /* Retrieve current (wallet) balance. */
+        // FIXME: We don't need to request address.
+        this.walletBalance = await this.getBalance(
+            this.getAddress, this.marketPrice)
+
+        /* Update price tickers. */
+        this.updateTickers()
     },
     mounted: function () {
         /* Initialize send state. */

@@ -2,7 +2,7 @@
     <textarea
         placeholder="Recipient address"
         :value="address"
-        v-on:input="$emit('input', $event.target.value)"
+        @input="$emit('input', $event.target.value)"
     />
 </template>
 

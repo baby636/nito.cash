@@ -5,7 +5,7 @@
 
             <article>
                 <div class="animation">
-                    <Animation type="receive" />
+                    <Animation type="pay" />
                 </div>
 
                 <p>

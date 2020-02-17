@@ -3,25 +3,25 @@
         <input
             type="number"
             placeholder="Enter your amount"
-            v-bind:value="amount"
-            v-on:input="$emit('input', $event.target.value)"
+            :value="amount"
+            @input="updateAmount($event.target.value)"
         />
 
         <!-- <span>=1337.888</span> -->
-        <span v-if="amount">=1337.888</span>
+        <span v-if="amount">{{fiatDisplay}}</span>
         <!-- <span v-if="amountDisplay">={{ unit !== $marketPrice.currency ? marketValue.fiat : `${marketValue.rounded} ${marketValue.unit}` }}</span> -->
 
         <button
             @click.prevent.stop="dropdown = !dropdown">
-            {{unit}}
+            {{activeUnit}}
         </button>
 
         <nav :class="{ active: dropdown }">
             <button
                 v-for="item of units"
                 v-bind:key="item"
-                :class="{ active: unit === item }"
-                @click.prevent="unit = item">
+                :class="{ active: activeUnit === item }"
+                @click.prevent="selectedUnit = item">
                 {{item}}
             </button>
         </nav>
@@ -29,8 +29,11 @@
 </template>
 
 <script>
-// import { marketPrice } from '~/lib/market'
-// import { formatValue } from '~/lib/helpers'
+/* Initialize vuex. */
+import { mapState } from 'vuex'
+
+/* Initialize modules. */
+import numeral from 'numeral'
 
 export default {
     props: {
@@ -42,18 +45,103 @@ export default {
             dropdown: false,
             userAmount: null,
             marketValue: 0,
+            currentAmount: 0,
             units: ['satoshis', 'bits', 'mBCH', 'BCH', 'USD'],
+            selectedUnit: '',
         }
     },
     computed: {
-        //
+        ...mapState({
+            /* Blockchain */
+            marketPrice: state => state.blockchain.tickers.BCH.USD,
+        }),
+
+        // NOTE: We use `selectedUnit` to avoid mutating the parent's (unit) prop.
+        activeUnit: function () {
+            return this.selectedUnit ? this.selectedUnit : this.unit
+        },
+
+
+        fiatDisplay: function () {
+            /* Calculate satoshi value. */
+            const satoshiValue = this.marketPrice / 100000000
+
+            /* Initialize fiat value. */
+            let fiatValue = 0
+
+            console.log('UNIT', this.activeUnit)
+
+            /* Calculate the fiat value. */
+            switch(this.activeUnit.toUpperCase()) {
+            case 'SATOSHIS':
+                fiatValue = (satoshiValue * this.txAmount) / 100
+
+                if (fiatValue > 1) {
+                    fiatValue = numeral(fiatValue).format('$0,0.00')
+                } else {
+                    fiatValue = numeral(fiatValue).format('$0,0.00[000000]')
+                }
+                break
+            case 'BITS':
+                fiatValue = satoshiValue * this.txAmount
+
+                if (fiatValue > 1) {
+                    fiatValue = numeral(fiatValue).format('$0,0.00')
+                } else {
+                    fiatValue = numeral(fiatValue).format('$0,0.00[0000]')
+                }
+                break
+            case 'MBCH':
+                fiatValue = (satoshiValue * this.txAmount) * 1000
+
+                if (fiatValue > 1) {
+                    fiatValue = numeral(fiatValue).format('$0,0.00')
+                } else {
+                    fiatValue = numeral(fiatValue).format('$0,0.00[00]')
+                }
+                break
+            case 'BCH':
+                fiatValue = (satoshiValue * this.txAmount) * 1000000
+                fiatValue = numeral(fiatValue).format('$0,0.00')
+                break
+            case 'USD':
+                fiatValue = 0 // FIXME: Calculate USD value (plus allow for alt currencies).
+                fiatValue = numeral(fiatValue).format('$0,0.00')
+                break
+            default:
+                fiatValue = 0
+            }
+
+            /* Return formatted display. */
+            return fiatValue
+        },
+
+        // NOTE: We use `txAmount` to avoid mutating the parent's (amount) prop.
+        txAmount: {
+            get: function () {
+                return this.currentAmount ? this.currentAmount : this.amount
+            },
+            set: function (_val) {
+                this.currentAmount = _val
+            }
+        },
     },
     methods: {
-        //
+        /**
+         * Update Amount
+         */
+        updateAmount(_amount) {
+            // console.log('UPDATING AMOUNT', _amount)
+
+            /* Update input. */
+            this.txAmount = _amount
+
+            /* Emit to parent. */
+            this.$emit('amount-update', _amount)
+        },
     },
     created: function () {
-        // $: marketValue = formatValue(amount, $marketPrice, unit)
-        // $: units = ['i', 'Ki', 'Mi', 'Gi', 'Ti', $marketPrice ? $marketPrice.currency : 'USD']
+        //
     },
     beforeDestroy() {
         /* Set flag. */

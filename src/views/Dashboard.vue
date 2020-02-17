@@ -140,7 +140,6 @@ export default {
 
         /* Update price tickers. */
         this.updateTickers()
-
     },
     mounted: function () {
         //

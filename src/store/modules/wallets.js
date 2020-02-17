@@ -12,19 +12,27 @@ const state = {
     // NOTE: A complete record of ALL incoming and outgoing transactions.
     accountHistory: [],
 
-    // NOTE: A list of ALL active "receiver" account indexes.
-    activeAccounts: [0],
+    // NOTE: A list of the starting and ending indexes of ALL
+    //       active "receiver" accounts.
+    activeAccounts: {
+        start: 0,
+        end: 0,
+    },
 
-    // NOTE: A list of ALL active "change" account indexes.
-    changeAccounts: [0],
+    // NOTE: A list of the starting and ending indexes of ALL
+    //       active "change" accounts.
+    changeAccounts: {
+        start: 0,
+        end: 0,
+    },
 
     // NOTE: Based on (BIP-44) derivation paths.
     //       (m / purpose' / coin_type' / account' / change / address_index)
     derivationPath: {
-        bch: `m/44'/145'/0'`,
-        slp: `m/44'/245'/0'`,
-        slpr: `m/44'/2450'/0'`,
-        eth: `m/44'/60'/0'`,
+        bch: `m/44'/145'/0'`, // Bitcoin Cash
+        eth: `m/44'/60'/0'`, // Ethereum
+        slp: `m/44'/245'/0'`, // Simple Ledger Protocol (SLP)
+        slpr: `m/44'/2450'/0'`, // SLP Registered
     },
 
     // NOTE: Seeds may be imported from UUIDs embedded in the url,
@@ -231,6 +239,179 @@ const actions = {
             commit('setMasterMnemonic', mnemonic)
         } catch (err) {
             console.error(err)
+        }
+    },
+
+    async sendCrypto ({ dispatch, state }, _params) {
+        /* Set receiver. */
+        const receiver = _params.receiver
+
+        /* Set amount. */
+        const amount = _params.amount
+
+        /* Set unit. */
+        const unit = _params.unit
+
+        console.log('SENDING CRYPTO', receiver, amount, unit)
+
+        /* Initialize addresses. */
+        const addresses = []
+
+        /* Validate amount (sending to receiver). */
+        if (!amount) {
+            return dispatch(
+                'setError',
+                'Cannot send payment without amount',
+                { root: true }
+            )
+        }
+
+        try {
+            /* Initialize seed buffer. */
+            const seedBuffer = bitbox.Mnemonic.toSeed(state.masterMnemonic)
+            // console.log('SEED BUFFER', seedBuffer)
+
+            const hdNode = bitbox.HDNode.fromSeed(seedBuffer)
+            // console.log('HD NODE', hdNode)
+
+            /* Initialize child node. */
+            const childNode = hdNode.derivePath(`${state.derivationPath.bch}/0/0`)
+
+            const address = bitbox.HDNode.toCashAddress(childNode)
+            console.log('ADDRESS (of sender)', address)
+
+            // NOTE: Array with maximum of 20 legacy or cash addresses.
+            // TODO: Add support for "change" addresses.
+            if (address) {
+                addresses.push(address)
+            }
+
+            /* Retrieve unspent transaction outputs. */
+            const utxo = await bitbox.Address.utxo(addresses)
+            console.log('UTXOS', utxo)
+
+            /* Set ALL uxtos. */
+            const myInputs = utxo[0].utxos
+
+            /* Initialize transaction builder. */
+            const transactionBuilder = new bitbox.TransactionBuilder('mainnet')
+            console.log('TX BUILDER - 1', transactionBuilder)
+
+            /* Initialize utxo flag. */
+            let inputsAdded = false
+
+            /* Loop through ALL uxtos. */
+            myInputs.forEach(utxo => {
+                console.log('UXTO', utxo)
+
+                /* Validate input flag. */
+                if (!inputsAdded) {
+                    /* Add input with txid and index of vout. */
+                    transactionBuilder.addInput(utxo.txid, utxo.vout)
+
+                    console.log('ADDED UTXO', utxo.txid, utxo.vout, utxo.satoshis)
+
+                    // NOTE: Set the FULL UXTO as the amount.
+                    // FIXME: Add change address.
+                    this.amount = utxo.satoshis
+
+                    /* Set input flag. */
+                    inputsAdded = true
+                }
+            })
+
+            console.log('TX BUILDER - 2', transactionBuilder)
+
+            const byteCount = bitbox.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 })
+            console.log('BYTE COUNT', byteCount)
+
+            // amount to send to receiver. It's the original amount - 1 sat/byte for tx size
+            // const sendAmount = this.amount - byteCount
+            // console.log('SEND AMOUNT', sendAmount)
+
+            /* Validate send amount. */
+            // TODO: Validate BCH dust amount.
+            // if (sendAmount < 546) {
+            //     /* Set error. */
+            //     this.setError(`Amount is too low. Min: ${546 + byteCount} sats`)
+            //
+            //     /* Set flag. */
+            //     this.sendState = 'idle'
+            //
+            //     return
+            // }
+
+            // add output w/ address and amount to send
+            // transactionBuilder.addOutput(this.receiver, sendAmount)
+            // transactionBuilder.addOutput('bitcoincash:' + this.receiver, sendAmount)
+            // transactionBuilder.addOutput('bitcoincash:qpuax2tarq33f86wccwlx8ge7tad2wgvqgjqlwshpw', sendAmount)
+
+            // console.log('TX BUILDER - 3', transactionBuilder)
+
+            /* Set locktime (for immediate propagation). */
+            // transactionBuilder.setLockTime(0)
+
+            /* Set keypair. */
+            // const keyPair = bitbox.HDNode.toKeyPair(childNode)
+            // console.log('KEYPAIR', keyPair)
+
+            /* Initialize redeemscript. */
+            // let redeemScript
+
+            /* Sign the transaction input(s). */
+            // transactionBuilder.sign(
+            //     0, // vin
+            //     keyPair,
+            //     redeemScript,
+            //     transactionBuilder.hashTypes.SIGHASH_ALL,
+            //     parseInt(this.amount),
+            //     transactionBuilder.signatureAlgorithms.SCHNORR
+            // )
+
+            // console.log('TX BUILDER - 4', transactionBuilder)
+
+            /* Build transaction. */
+            // const tx = transactionBuilder.build()
+            // console.log('TX BUILD', tx)
+
+            /* Set tx output to raw hex. */
+            // const txHex = tx.toHex()
+            // console.log('RAW HEX', txHex)
+
+            /* Set state. */
+            // this.sendState = 'sending'
+
+            /* Broadcast transaction to network. */
+            // bitbox.RawTransactions.sendRawTransaction(txHex)
+            //     .then(
+            //         (result) => {
+            //             console.log('TX RESULT', result)
+            //
+            //             /* Set notification. */
+            //             this.setNotification('Sent successfully!')
+            //
+            //             /* Set flag. */
+            //             this.sendState = 'idle'
+            //         },
+            //         (err) => {
+            //             console.error('TX SEND ERROR:', err)
+            //
+            //             /* Set error. */
+            //             this.setError(err.message ? err.message.split(';')[0] : err)
+            //
+            //             /* Set flag. */
+            //             this.sendState = 'idle'
+            //         }
+            //     )
+        } catch (err) {
+            console.error('TX SEND ERROR:', err)
+
+            /* Set error. */
+            dispatch('setError', err.message ? err.message.split(';')[0] : err)
+
+            /* Set flag. */
+            // FIXME: Add this to the `system` module.
+            // this.sendState = 'idle'
         }
     },
 

@@ -55,8 +55,9 @@ const mutations = {
 }
 
 /* Export. */
+// NOTE: We DO NOT namespace here to allow for global use of `dispatch`.
 export default {
-    namespaced: true,
+    // namespaced: true,
     state,
     getters,
     actions,

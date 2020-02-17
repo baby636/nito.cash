@@ -26,6 +26,23 @@
 
                 <h2>{{walletBalance.fiat}}</h2>
 
+                <div class="divider" />
+
+                <h4>
+                    {{walletBalance.fiat}}
+                    <small>Bitcoin Cash</small>
+                </h4>
+
+                <h4>
+                    $0.00
+                    <small>Nito Cash</small>
+                </h4>
+
+                <h4>
+                    $0.00
+                    <small>HODL + Grow</small>
+                </h4>
+
                 <div>
                     <Button @click.native="loadHistory" label="Transaction history" secondary small />
                 </div>
@@ -195,7 +212,20 @@ header button {
 
 .balance h2 {
     font-size: 20px;
-    margin-bottom: 36px;
+    /* margin-bottom: 10px; */
+}
+
+.balance .divider {
+    width: 100%;
+    height: 3px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.balance h4 {
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 @media only screen and (max-height: 600px) {

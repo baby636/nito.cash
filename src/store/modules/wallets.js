@@ -6,7 +6,7 @@ import getChangeAccounts from './wallets/getters/getChangeAccounts'
 import getChangeAddress from './wallets/getters/getChangeAddress'
 
 /* Import modules (actions). */
-import addNewSeed from './wallets/actions/addNewSeed'
+import addImportedSeed from './wallets/actions/addImportedSeed'
 import createNewWallet from './wallets/actions/createNewWallet'
 import destroyWallet from './wallets/actions/destroyWallet'
 import sendCrypto from './wallets/actions/sendCrypto'
@@ -76,7 +76,7 @@ const getters = {
 
 /* Actions. */
 const actions = {
-    addNewSeed,
+    addImportedSeed,
     createNewWallet,
     destroyWallet,
     sendCrypto,

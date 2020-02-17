@@ -181,7 +181,7 @@ export default {
         ]),
 
         ...mapActions('wallets', [
-            'addNewSeed',
+            'addImportedSeed',
             'destroyWallet',
             'setMasterMnemonic',
             'setMasterSeed',

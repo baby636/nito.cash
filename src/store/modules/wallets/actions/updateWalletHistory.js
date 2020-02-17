@@ -2,9 +2,12 @@
 const bitbox = new window.BITBOX()
 
 /**
- * Update Account History
+ * Update Wallet History
+ *
+ * Retrieves ALL accounts held within this wallet, then
+ * updates the full history.
  */
-const updateAccountHistory = async ({ commit, state }) => {
+const updateWalletHistory = async ({ commit, dispatch, state }) => {
     // console.log('Updating account history')
 
     /* Initialize history. */
@@ -140,14 +143,18 @@ const updateAccountHistory = async ({ commit, state }) => {
 
                 /* Commit history. */
                 if (txIdx === transactions.length - 1) {
-                    commit('setAccountHistory', history)
+                    commit('setWalletHistory', history)
                 }
             })
         })
     } catch (err) {
         console.error('SET HISTORY ERROR:', err)
+
+        /* Set error. */
+        dispatch('setError',
+            err.message ? err.message.split(';')[0] : err, { root: true })
     }
 }
 
 /* Export module. */
-export default updateAccountHistory
+export default updateWalletHistory

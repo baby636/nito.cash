@@ -29,18 +29,18 @@
                 <div class="divider" />
 
                 <h4>
-                    {{walletBalance.fiat}}
                     <small>Cash Wallet</small>
+                    {{walletBalance.fiat}}
                 </h4>
 
                 <h4>
-                    $0.00
                     <small>Nito Wallet</small>
+                    $0.00
                 </h4>
 
                 <h4>
-                    $0.00
                     <small>Savings Wallet</small>
+                    $0.00
                 </h4>
 
                 <div>

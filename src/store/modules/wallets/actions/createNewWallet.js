@@ -47,8 +47,8 @@ const createNewWallet = ({ commit }) => {
         /* Set new master (private) key to wallet.. */
         commit('setMasterMnemonic', mnemonic)
 
-        /* Initialize account history. */
-        commit('setAccountHistory', [])
+        /* Initialize wallet history. */
+        commit('setWalletHistory', [])
 
         /* Initialize active accounts. */
         commit('setActiveAccounts', {

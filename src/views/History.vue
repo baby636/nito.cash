@@ -85,7 +85,7 @@ export default {
             marketPrice: state => state.blockchain.tickers.BCH.USD,
 
             /* Wallets */
-            walletAccountHistory: state => state.wallets.accountHistory,
+            walletHistory: state => state.wallets.history,
             walletImportedSeeds: state => state.wallets.importedSeeds,
             walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
@@ -105,7 +105,7 @@ export default {
     },
     methods: {
         ...mapActions('wallets', [
-            'setAccountHistory',
+            'updateWalletHistory',
         ]),
 
         ...mapActions([
@@ -169,8 +169,8 @@ export default {
             /* Initialize filtered. */
             const filtered =
                 this.tab === 'All'
-                    ? this.walletAccountHistory.filter((item) => item.hash)
-                    : this.walletAccountHistory.filter((item) =>
+                    ? this.walletHistory.filter((item) => item.hash)
+                    : this.walletHistory.filter((item) =>
                         item.hash && (
                             (this.tab === 'Sent' && !item.incoming) || (this.tab === 'Received' && item.incoming)
                         )
@@ -206,8 +206,8 @@ export default {
         },
     },
     created: function () {
-        /* Set account history. */
-        this.setAccountHistory()
+        /* Update wallet history. */
+        this.updateWalletHistory()
     },
     mounted: function () {
         //

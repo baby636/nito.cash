@@ -10,25 +10,21 @@ import addNewSeed from './wallets/actions/addNewSeed'
 import createNewWallet from './wallets/actions/createNewWallet'
 import destroyWallet from './wallets/actions/destroyWallet'
 import sendCrypto from './wallets/actions/sendCrypto'
-import updateAccountHistory from './wallets/actions/updateAccountHistory'
 import updateMasterMnemonic from './wallets/actions/updateMasterMnemonic'
 import updateMasterSeed from './wallets/actions/updateMasterSeed'
+import updateWalletHistory from './wallets/actions/updateWalletHistory'
 
 /* Import modules (mutations). */
-import setAccountHistory from './wallets/mutations/setAccountHistory'
 import setActiveAccounts from './wallets/mutations/setActiveAccounts'
 import setChangeAccounts from './wallets/mutations/setChangeAccounts'
 import setEmptyWallet from './wallets/mutations/setEmptyWallet'
 import setImportedSeeds from './wallets/mutations/setImportedSeeds'
 import setMasterMnemonic from './wallets/mutations/setMasterMnemonic'
 import setMasterSeed from './wallets/mutations/setMasterSeed'
+import setWalletHistory from './wallets/mutations/setWalletHistory'
 
 /* Initialize state. */
 const state = {
-    /* Initialize account history. */
-    // NOTE: A complete record of ALL incoming and outgoing transactions.
-    accountHistory: null,
-
     /* Initialize active accounts (index). */
     // NOTE: A list of the starting and ending indexes of ALL
     //       active "receiver" accounts.
@@ -48,6 +44,10 @@ const state = {
         slp: `m/44'/245'/0'`, // Simple Ledger Protocol (SLP)
         slpr: `m/44'/2450'/0'`, // SLP Registered
     },
+
+    /* Initialize wallet history. */
+    // NOTE: A complete record of ALL incoming and outgoing transactions.
+    history: null,
 
     /* Initialize imported (wallet) seeds. */
     // NOTE: Seeds may be imported from UUIDs embedded in the url,
@@ -80,20 +80,20 @@ const actions = {
     createNewWallet,
     destroyWallet,
     sendCrypto,
-    updateAccountHistory,
     updateMasterMnemonic,
     updateMasterSeed,
+    updateWalletHistory,
 }
 
 /* Mutations. */
 const mutations = {
-    setAccountHistory,
     setActiveAccounts,
     setChangeAccounts,
     setEmptyWallet,
     setImportedSeeds,
     setMasterMnemonic,
     setMasterSeed,
+    setWalletHistory,
 }
 
 /* Export. */

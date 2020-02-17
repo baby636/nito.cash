@@ -134,9 +134,8 @@ export default {
         }
 
         /* Retrieve current (wallet) balance. */
-        // FIXME: We don't need to request address.
-        this.walletBalance = await this.getBalance(
-            this.getAddress, this.marketPrice)
+        // FIXME: We "probably" don't need to request market price.
+        this.walletBalance = await this.getBalance(this.marketPrice)
 
         /* Update price tickers. */
         this.updateTickers()

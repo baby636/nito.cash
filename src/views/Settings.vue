@@ -175,7 +175,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions('system', [
+        ...mapActions([
             'setError',
             'setNotification',
         ]),

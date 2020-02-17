@@ -7,6 +7,9 @@ import formatValue from '@/libs/formatValue'
 /* Initialize BITBOX. */
 const bitbox = new window.BITBOX()
 
+/* Set dust amount. */
+const DUST_AMOUNT = 546
+
 /* Initialize state. */
 const state = {
     // NOTE: A complete record of ALL incoming and outgoing transactions.
@@ -98,13 +101,23 @@ const getters = {
     * NOTE: This function will accept ANY wallet address to retrieve the
     *       current balance (based on "supplied" market price).
     */
-    getBalance: (state, getters, rootState) => async (_address, _marketPrice) => {
-        // console.log('GET BALANCE (address)', _address)
-        // console.log('GET BALANCE (market price)', _marketPrice)
+    getBalance: (state, getters, rootState) => async (_marketPrice) => {
+        /* Set address. */
+        const address = getters.getAddress
+
+        /* Set (change) address. */
+        const changeAddress = getters.getChangeAddress
+
+        console.log('GET BALANCE (address)', address)
+        console.log('GET BALANCE (change address)', changeAddress)
+        console.log('GET BALANCE (market price)', _marketPrice)
 
         try {
             /* Retrieve address details. */
-            const details = await bitbox.Address.details(_address)
+            const details = await bitbox.Address.details([
+                address,
+                changeAddress,
+            ])
             console.log('ADDRESS DETAILS', JSON.stringify(details, null, 4))
 
             /* Initialize balance. */
@@ -112,11 +125,15 @@ const getters = {
 
             /* Set balance (in satoshis). */
             if (rootState.profile.showUnconfirmed) {
-                /* Both confirmed and unconfirmed. */
-                balance = details.balanceSat + details.unconfirmedBalanceSat
+                details.forEach((address) => {
+                    /* Both confirmed and unconfirmed. */
+                    balance += (address.balanceSat + address.unconfirmedBalanceSat)
+                })
             } else {
-                /* Confirmed ONLY. */
-                balance = details.balanceSat
+                details.forEach((address) => {
+                    /* Confirmed ONLY. */
+                    balance += address.balanceSat
+                })
             }
 
             /* Format balance (for display). */
@@ -140,6 +157,38 @@ const getters = {
         const currentAccountIndex = Math.max(...state.activeAccounts)
 
         return currentAccountIndex + 1
+    },
+
+    /**
+     * Get Change Address
+     *
+     * Returns the next available change address.
+     */
+    getChangeAddress: (state) => {
+        /* Initialize seed buffer. */
+        const seedBuffer = bitbox.Mnemonic.toSeed(state.masterMnemonic)
+        // console.log('SEED BUFFER', seedBuffer)
+
+        const hdNode = bitbox.HDNode.fromSeed(seedBuffer)
+        // console.log('HD NODE', hdNode)
+
+        /* Set change. */
+        // FIXME: This must be derived.
+        const change = 1
+
+        /* Set address index. */
+        // FIXME: This must be derived.
+        const addressIndex = 0
+
+        /* Initialize child node. */
+        const childNode = hdNode.derivePath(
+            `${state.derivationPath.bch}/${change}/${addressIndex}`)
+
+        const address = bitbox.HDNode.toCashAddress(childNode)
+        // console.log('CHANGE ADDRESS', address)
+
+        /* Return address. */
+        return address
     },
 
     /**
@@ -242,12 +291,12 @@ const actions = {
         }
     },
 
-    async sendCrypto ({ dispatch, state }, _params) {
+    async sendCrypto ({ dispatch, getters, state }, _params) {
         /* Set receiver. */
         const receiver = _params.receiver
 
         /* Set amount. */
-        const amount = _params.amount
+        const amount = parseInt(_params.amount)
 
         /* Set unit. */
         const unit = _params.unit
@@ -259,11 +308,8 @@ const actions = {
 
         /* Validate amount (sending to receiver). */
         if (!amount) {
-            return dispatch(
-                'setError',
-                'Cannot send payment without amount',
-                { root: true }
-            )
+            return dispatch('setError',
+                'Cannot send payment without amount', { root: true })
         }
 
         try {
@@ -297,117 +343,164 @@ const actions = {
             const transactionBuilder = new bitbox.TransactionBuilder('mainnet')
             console.log('TX BUILDER - 1', transactionBuilder)
 
-            /* Initialize utxo flag. */
-            let inputsAdded = false
+            /* Initialize send amount. */
+            let sendAmount = 0
+
+            switch(unit.toUpperCase()) {
+            case 'SATOSHIS':
+                sendAmount += amount
+                break
+            case 'BITS':
+                sendAmount += (amount * 100)
+                break
+            case 'MBCH':
+                sendAmount += (amount * 100000)
+                break
+            case 'BCH':
+                sendAmount += (amount * 100000000)
+                break
+            default:
+                sendAmount += amount
+            }
+            console.log('SEND AMOUNT', sendAmount)
+
+            // FIXME: How do we determine the number of outputs (incl. change)?
+            // const byteCount = bitbox.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 })
+            const byteCount = bitbox.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 2 })
+            console.log('BYTE COUNT', byteCount)
+
+            /* Add byte count to send amount. */
+            // NOTE: It's the original amount - 1 sat/byte for tx size
+            const txAmount = sendAmount + byteCount
+            console.log('TRANSACTION AMOUNT (incl bytes)', sendAmount)
+
+            /* Initialize utxo (value) total. */
+            let inputsTotal = 0
 
             /* Loop through ALL uxtos. */
             myInputs.forEach(utxo => {
                 console.log('UXTO', utxo)
 
                 /* Validate input flag. */
-                if (!inputsAdded) {
+                if (inputsTotal < txAmount) {
                     /* Add input with txid and index of vout. */
                     transactionBuilder.addInput(utxo.txid, utxo.vout)
 
                     console.log('ADDED UTXO', utxo.txid, utxo.vout, utxo.satoshis)
 
-                    // NOTE: Set the FULL UXTO as the amount.
-                    // FIXME: Add change address.
-                    this.amount = utxo.satoshis
-
-                    /* Set input flag. */
-                    inputsAdded = true
+                    /* Add input value to total. */
+                    inputsTotal += utxo.satoshis
                 }
             })
 
+            console.log('INPUTS TOTAL', inputsTotal)
             console.log('TX BUILDER - 2', transactionBuilder)
-
-            const byteCount = bitbox.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 })
-            console.log('BYTE COUNT', byteCount)
-
-            // amount to send to receiver. It's the original amount - 1 sat/byte for tx size
-            // const sendAmount = this.amount - byteCount
-            // console.log('SEND AMOUNT', sendAmount)
 
             /* Validate send amount. */
             // TODO: Validate BCH dust amount.
-            // if (sendAmount < 546) {
-            //     /* Set error. */
-            //     this.setError(`Amount is too low. Min: ${546 + byteCount} sats`)
-            //
-            //     /* Set flag. */
-            //     this.sendState = 'idle'
-            //
-            //     return
-            // }
+            if (sendAmount < DUST_AMOUNT) {
+                /* Set error. */
+                dispatch('setError',
+                    `Amount is too low. Min: ${DUST_AMOUNT + byteCount} sats`, { root: true })
 
-            // add output w/ address and amount to send
-            // transactionBuilder.addOutput(this.receiver, sendAmount)
-            // transactionBuilder.addOutput('bitcoincash:' + this.receiver, sendAmount)
-            // transactionBuilder.addOutput('bitcoincash:qpuax2tarq33f86wccwlx8ge7tad2wgvqgjqlwshpw', sendAmount)
+                /* Set flag. */
+                // FIXME: How can we display this on the UI?
+                // this.sendState = 'idle'
 
-            // console.log('TX BUILDER - 3', transactionBuilder)
+                return
+            }
+
+            /* Add output w/ address and amount to send. */
+            transactionBuilder.addOutput(receiver, sendAmount)
+            // transactionBuilder.addOutput(receiver, inputsTotal - byteCount)
+
+            /* Complete outputs (to change address). */
+            if (sendAmount < inputsTotal) {
+                /* Retrieve change address. */
+                const changeAddress = getters.getChangeAddress
+                console.log('CHANGE ADDRESS', changeAddress)
+
+                /* Calculate change amount. */
+                const changeAmount = inputsTotal - txAmount
+                console.log('CHANGE AMOUNT', changeAmount)
+
+                /* Add change output w/ change address. */
+                transactionBuilder.addOutput(changeAddress, changeAmount)
+            }
+
+            console.log('TX BUILDER - 3', transactionBuilder)
 
             /* Set locktime (for immediate propagation). */
-            // transactionBuilder.setLockTime(0)
+            transactionBuilder.setLockTime(0)
 
             /* Set keypair. */
-            // const keyPair = bitbox.HDNode.toKeyPair(childNode)
+            const keyPair = bitbox.HDNode.toKeyPair(childNode)
             // console.log('KEYPAIR', keyPair)
 
             /* Initialize redeemscript. */
-            // let redeemScript
+            let redeemScript
 
             /* Sign the transaction input(s). */
-            // transactionBuilder.sign(
-            //     0, // vin
-            //     keyPair,
-            //     redeemScript,
-            //     transactionBuilder.hashTypes.SIGHASH_ALL,
-            //     parseInt(this.amount),
-            //     transactionBuilder.signatureAlgorithms.SCHNORR
-            // )
+            // FIXME: Allow for multipe inputs.
+            transactionBuilder.sign(
+                0, // vin
+                keyPair,
+                redeemScript,
+                transactionBuilder.hashTypes.SIGHASH_ALL,
+                parseInt(inputsTotal),
+                transactionBuilder.signatureAlgorithms.SCHNORR
+            )
 
-            // console.log('TX BUILDER - 4', transactionBuilder)
+            console.log('TX BUILDER - 4', transactionBuilder)
 
             /* Build transaction. */
-            // const tx = transactionBuilder.build()
-            // console.log('TX BUILD', tx)
+            const tx = transactionBuilder.build()
+            console.log('TX BUILD', tx)
 
             /* Set tx output to raw hex. */
-            // const txHex = tx.toHex()
-            // console.log('RAW HEX', txHex)
+            const txHex = tx.toHex()
+            console.log('RAW HEX', txHex)
 
             /* Set state. */
             // this.sendState = 'sending'
 
             /* Broadcast transaction to network. */
-            // bitbox.RawTransactions.sendRawTransaction(txHex)
-            //     .then(
-            //         (result) => {
-            //             console.log('TX RESULT', result)
-            //
-            //             /* Set notification. */
-            //             this.setNotification('Sent successfully!')
-            //
-            //             /* Set flag. */
-            //             this.sendState = 'idle'
-            //         },
-            //         (err) => {
-            //             console.error('TX SEND ERROR:', err)
-            //
-            //             /* Set error. */
-            //             this.setError(err.message ? err.message.split(';')[0] : err)
-            //
-            //             /* Set flag. */
-            //             this.sendState = 'idle'
-            //         }
-            //     )
+            bitbox.RawTransactions.sendRawTransaction(txHex)
+                .then(
+                    (result) => {
+                        console.log('TX RESULT', result)
+
+                        /* Increment receiving wallet (index). */
+                        state.activeAccounts.end++
+
+                        /* Increment receiving wallet (index). */
+                        // FIXME: Verify that a change account was used.
+                        state.changeAccounts.end++
+
+                        /* Set notification. */
+                        dispatch('setNotification',
+                            'Sent successfully!', { root: true })
+
+                        /* Set flag. */
+                        // this.sendState = 'idle'
+                    },
+                    (err) => {
+                        console.error('TX SEND ERROR:', err)
+
+                        /* Set error. */
+                        dispatch('setError',
+                            err.message ? err.message.split(';')[0] : err, { root: true })
+
+                        /* Set flag. */
+                        // this.sendState = 'idle'
+                    }
+                )
         } catch (err) {
             console.error('TX SEND ERROR:', err)
 
             /* Set error. */
-            dispatch('setError', err.message ? err.message.split(';')[0] : err)
+            dispatch('setError',
+                err.message ? err.message.split(';')[0] : err, { root: true })
 
             /* Set flag. */
             // FIXME: Add this to the `system` module.

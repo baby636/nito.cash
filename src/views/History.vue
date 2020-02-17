@@ -108,7 +108,7 @@ export default {
             'setAccountHistory',
         ]),
 
-        ...mapActions('system', [
+        ...mapActions([
             'setError',
             'setNotification',
         ]),

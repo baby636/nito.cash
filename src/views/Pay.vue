@@ -170,13 +170,13 @@ export default {
         // },
     },
     methods: {
-        ...mapActions('blockchain', [
-            'updateTickers',
-        ]),
-
-        ...mapActions('system', [
+        ...mapActions([
             'setError',
             'setNotification',
+        ]),
+
+        ...mapActions('blockchain', [
+            'updateTickers',
         ]),
 
         ...mapActions('wallets', [

@@ -50,6 +50,39 @@ const createNewWallet = ({ commit }) => {
         /* Initialize wallet history. */
         commit('setWalletHistory', [])
 
+        /**
+         * (Wallet) Accounts Model
+         *
+         * active: Index of all "active" accounts (containing UXTOs).
+         * current: Index of the current "unused/receiving" account.
+         */
+        const accountsModel = {
+            /* BAI (stablecoin) */
+            bai: {
+                active: [],
+                current: 0,
+            },
+
+            /* Bitcoin Cash */
+            bch: {
+                active: [],
+                current: 0,
+            },
+
+            /* DAI (stablecoin) */
+            dai: {
+                active: [],
+                current: 0,
+            },
+
+            /* Nito (privacy) */
+            nito: {
+                active: [],
+                current: 0,
+            },
+        }
+        console.log('WALLET ACCOUNTS MODEL', accountsModel)
+
         /* Initialize receiving accounts. */
         commit('setReceivingAccounts', {
             start: 0,

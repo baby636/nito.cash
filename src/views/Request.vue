@@ -54,8 +54,7 @@ export default {
         }),
 
         ...mapGetters('wallets', [
-            'getAddress',
-            'getBalance',
+            'getWalletAddress',
         ]),
 
         displayAddress() {
@@ -140,7 +139,7 @@ export default {
     },
     created: function () {
         /* Set address. */
-        this.address = this.getAddress
+        this.address = this.getWalletAddress
     },
     mounted: function () {
         //

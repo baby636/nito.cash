@@ -1,6 +1,9 @@
 /* Import libraries. */
 // import telr from '../../api/telr'
 
+/* Import modules (getters). */
+import getAccountBalance from './blockchain/getters/getAccountBalance'
+
 /* Initialize BITBOX. */
 const bitbox = new window.BITBOX()
 
@@ -18,7 +21,7 @@ const state = {
 
 /* Getters. */
 const getters = {
-    //
+    getAccountBalance,
 }
 
 /* Actions. */

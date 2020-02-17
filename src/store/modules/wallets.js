@@ -1,9 +1,9 @@
 /* Import modules (getters). */
-import getAddress from './wallets/getters/getAddress'
-import getBalance from './wallets/getters/getBalance'
 import getChangeAccounts from './wallets/getters/getChangeAccounts'
 import getChangeAddress from './wallets/getters/getChangeAddress'
 import getReceivingAccounts from './wallets/getters/getReceivingAccounts'
+import getWalletAddress from './wallets/getters/getWalletAddress'
+import getWalletBalance from './wallets/getters/getWalletBalance'
 
 /* Import modules (actions). */
 import addImportedSeed from './wallets/actions/addImportedSeed'
@@ -67,11 +67,11 @@ const state = {
 
 /* Getters. */
 const getters = {
-    getAddress,
-    getBalance,
     getChangeAccounts,
     getChangeAddress,
     getReceivingAccounts,
+    getWalletAddress,
+    getWalletBalance,
 }
 
 /* Actions. */

@@ -2,9 +2,12 @@
 const bitbox = new window.BITBOX()
 
 /**
- * Get Address
+ * Get Wallet Address
+ *
+ * Returns the next avaialble "receiving" (account) address, 
+ * for the specified wallet type.
  */
-const getAddress = (state) => {
+const getWalletAddress = (state) => {
     /* Initialize seed buffer. */
     const seedBuffer = bitbox.Mnemonic.toSeed(state.masterMnemonic)
     // console.log('SEED BUFFER', seedBuffer)
@@ -32,4 +35,4 @@ const getAddress = (state) => {
 }
 
 /* Export module. */
-export default getAddress
+export default getWalletAddress

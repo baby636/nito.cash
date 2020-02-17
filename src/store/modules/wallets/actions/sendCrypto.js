@@ -140,8 +140,12 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
             const changeAmount = inputsTotal - txAmount
             console.log('CHANGE AMOUNT', changeAmount)
 
-            /* Add change output w/ change address. */
-            transactionBuilder.addOutput(changeAddress, changeAmount)
+            /* Validate change amount. */
+            // TODO: Should we adjust the number of outputs??
+            if (changeAmount >= DUST_AMOUNT) {
+                /* Add change output w/ change address. */
+                transactionBuilder.addOutput(changeAddress, changeAmount)
+            }
         }
 
         console.log('TX BUILDER - 3', transactionBuilder)
@@ -188,6 +192,7 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
 
                     /* Increment receiving wallet (index). */
                     // FIXME: Verify that a change account was used.
+// FIXME: DO NOT MUTATE HERE
                     state.changeAccounts.end++
 
                     /* Set notification. */

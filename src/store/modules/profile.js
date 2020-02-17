@@ -6,8 +6,8 @@ const state = {
     /* Application starts (count). */
     appStarts: 0,
 
-    /* Show unconfirmed transactions (flag). */
-    showUnconfirmed: true
+    /* Use unconfirmed transactions (flag). */
+    useUnconfirmed: true
 }
 
 /* Getters. */

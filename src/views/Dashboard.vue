@@ -30,17 +30,17 @@
 
                 <h4>
                     {{walletBalance.fiat}}
-                    <small>Bitcoin Cash</small>
+                    <small>Cash Wallet</small>
                 </h4>
 
                 <h4>
                     $0.00
-                    <small>Nito Cash</small>
+                    <small>Nito Wallet</small>
                 </h4>
 
                 <h4>
                     $0.00
-                    <small>HODL + Grow</small>
+                    <small>Savings Wallet</small>
                 </h4>
 
                 <div>

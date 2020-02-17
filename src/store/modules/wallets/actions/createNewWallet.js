@@ -50,8 +50,8 @@ const createNewWallet = ({ commit }) => {
         /* Initialize wallet history. */
         commit('setWalletHistory', [])
 
-        /* Initialize active accounts. */
-        commit('setActiveAccounts', {
+        /* Initialize receiving accounts. */
+        commit('setReceivingAccounts', {
             start: 0,
             end: 0,
         })

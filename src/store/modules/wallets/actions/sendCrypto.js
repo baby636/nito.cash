@@ -187,9 +187,6 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
                     console.log('TX RESULT', result)
 
                     /* Increment receiving wallet (index). */
-                    state.activeAccounts.end++
-
-                    /* Increment receiving wallet (index). */
                     // FIXME: Verify that a change account was used.
                     state.changeAccounts.end++
 

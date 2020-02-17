@@ -1,9 +1,9 @@
 /* Import modules (getters). */
-import getActiveAccounts from './wallets/getters/getActiveAccounts'
 import getAddress from './wallets/getters/getAddress'
 import getBalance from './wallets/getters/getBalance'
 import getChangeAccounts from './wallets/getters/getChangeAccounts'
 import getChangeAddress from './wallets/getters/getChangeAddress'
+import getReceivingAccounts from './wallets/getters/getReceivingAccounts'
 
 /* Import modules (actions). */
 import addImportedSeed from './wallets/actions/addImportedSeed'
@@ -15,21 +15,16 @@ import updateMasterSeed from './wallets/actions/updateMasterSeed'
 import updateWalletHistory from './wallets/actions/updateWalletHistory'
 
 /* Import modules (mutations). */
-import setActiveAccounts from './wallets/mutations/setActiveAccounts'
 import setChangeAccounts from './wallets/mutations/setChangeAccounts'
 import setEmptyWallet from './wallets/mutations/setEmptyWallet'
 import setImportedSeeds from './wallets/mutations/setImportedSeeds'
 import setMasterMnemonic from './wallets/mutations/setMasterMnemonic'
 import setMasterSeed from './wallets/mutations/setMasterSeed'
+import setReceivingAccounts from './wallets/mutations/setReceivingAccounts'
 import setWalletHistory from './wallets/mutations/setWalletHistory'
 
 /* Initialize state. */
 const state = {
-    /* Initialize active accounts (index). */
-    // NOTE: A list of the starting and ending indexes of ALL
-    //       active "receiver" accounts.
-    activeAccounts: null,
-
     /* Initialize change accounts (index). */
     // NOTE: A list of the starting and ending indexes of ALL
     //       active "change" accounts.
@@ -63,15 +58,20 @@ const state = {
     // NOTE: This is a 32-byte seed, which can be generated randomly,
     //       or by importing from an existing wallet.
     masterSeed: null,
+
+    /* Initialize receiving accounts (index). */
+    // NOTE: A list of the starting and ending indexes of ALL
+    //       active "receiving" accounts.
+    receivingAccounts: null,
 }
 
 /* Getters. */
 const getters = {
-    getActiveAccounts,
     getAddress,
     getBalance,
     getChangeAccounts,
     getChangeAddress,
+    getReceivingAccounts,
 }
 
 /* Actions. */
@@ -87,12 +87,12 @@ const actions = {
 
 /* Mutations. */
 const mutations = {
-    setActiveAccounts,
     setChangeAccounts,
     setEmptyWallet,
     setImportedSeeds,
     setMasterMnemonic,
     setMasterSeed,
+    setReceivingAccounts,
     setWalletHistory,
 }
 

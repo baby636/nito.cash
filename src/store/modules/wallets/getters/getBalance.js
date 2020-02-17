@@ -21,7 +21,7 @@ const getBalance = (state, getters, rootState) => async (_marketPrice) => {
     console.log('GET BALANCE (change address)', changeAddress)
     // console.log('GET BALANCE (market price)', _marketPrice)
 
-    console.log('GET BALANCE (active accounts)', state.activeAccounts)
+    console.log('GET BALANCE (receiving accounts)', state.receivingAccounts)
     console.log('GET BALANCE (change accounts)', state.changeAccounts)
 
     try {

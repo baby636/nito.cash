@@ -1,6 +1,6 @@
 /* Import libraries. */
 import { DUST_AMOUNT } from '@/libs/constants'
-import signInput from '@/libs/signInput'
+import signInputs from '@/libs/signInputs'
 
 /* Initialize BITBOX. */
 const bitbox = new window.BITBOX()
@@ -41,6 +41,7 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
             ...getters.getReceivingAccounts('bch'),
             ...getters.getChangeAccounts('bch')
         ]
+        console.log('ALL ACTIVE ACCOUNT ADDRESSES', addresses)
 
         /* Retrieve unspent transaction outputs. */
         const utxos = await bitbox.Address.utxo(addresses)
@@ -54,12 +55,33 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
             /* Validate UXTO(s). */
             // FIXME: Add support for multiple UXTOs per account address.
             if (utxo.utxos.length > 0) {
+                /* Set address. */
+                const address = utxo.cashAddress
+                // const address = utxo.cashAddress.slice(12), // sans prefix
+
+                /* Initialize path. */
+                let path = null
+
+                if (getters.getReceivingAccounts('bch').includes(address)) {
+                    path = `${state.derivationPath.bch}/0/0`
+                } else if (getters.getChangeAccounts('bch').includes(address)) {
+                    path = `${state.derivationPath.bch}/1/0`
+                } else {
+                    /* Set error. */
+                    dispatch('setError',
+                        `Oops! A wallet error occured`, { root: true })
+
+                    /* This should NEVER occur (fatal error). */
+                    throw `Oops! A wallet error occured [ ${address} ]
+                        ${JSON.stringify(getters.getReceivingAccounts('bch'), null, 4)}
+                        ${JSON.stringify(getters.getChangeAccounts('bch'), null, 4)}`
+                }
+
                 /* Add input to available pool. */
                 availableInputs.push({
-                    address: utxo.cashAddress,
-                    // address: utxo.cashAddress.slice(12), // sans prefix
-                    // FIXME: How do we determine the derivation path??
-                    path: `${state.derivationPath.bch}/1/0`,
+                    address,
+                    path,
+                    // FIXME: What about NON-ZERO index (eg. dividend payments)??
                     ...utxo.utxos[0]
                 })
             }
@@ -67,17 +89,23 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
 
         console.log('AVAILABLE INPUTS', availableInputs)
 
+        /* Validate available inputs. */
         if (availableInputs.length == 0) {
             /* Set error. */
             dispatch('setError',
-                `Your balance is too low.`, { root: true })
+                `You have no money to send`, { root: true })
 
             return
         }
 
+// TEMP: FOR DEVELOPMENT PURPOSES ONLY
+        if (availableInputs.length > 0) {
+            // return
+        }
+
         /* Initialize transaction builder. */
         const transactionBuilder = new bitbox.TransactionBuilder('mainnet')
-        console.log('TX BUILDER - 1', transactionBuilder)
+        // console.log('TX BUILDER - 1', transactionBuilder)
 
         /* Initialize send amount. */
         let sendAmount = 0
@@ -108,7 +136,7 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
         /* Add byte count to send amount. */
         // NOTE: It's the original amount - 1 sat/byte for tx size
         const txAmount = sendAmount + byteCount
-        console.log('TRANSACTION AMOUNT (incl bytes)', sendAmount)
+        console.log('TRANSACTION AMOUNT (incl bytes)', txAmount)
 
         /* Initialize utxo (value) total. */
         let inputsTotal = 0
@@ -130,7 +158,16 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
         })
 
         console.log('INPUTS TOTAL', inputsTotal)
-        console.log('TX BUILDER - 2', transactionBuilder)
+        // console.log('TX BUILDER - 2', transactionBuilder)
+
+        /* Validate total (value) of inputs. */
+        if (inputsTotal < txAmount) {
+            /* Set error. */
+            dispatch('setError',
+                `Your balance is too low.`, { root: true })
+
+            return
+        }
 
         /* Validate send amount. */
         // TODO: Validate BCH dust amount.
@@ -168,13 +205,13 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
             }
         }
 
-        console.log('TX BUILDER - 3', transactionBuilder)
+        // console.log('TX BUILDER - 3', transactionBuilder)
 
         /* Set locktime (for immediate propagation). */
         transactionBuilder.setLockTime(0)
 
         /* Sign input(s). */
-        signInput(transactionBuilder, hdNode, availableInputs)
+        signInputs(transactionBuilder, hdNode, availableInputs)
         console.log('(SIGNED) TX BUILDER', transactionBuilder)
 
         /* Build transaction. */
@@ -196,7 +233,9 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
 
                     /* Increment receiving wallet (index). */
                     // FIXME: Verify that a change account was used.
-                    dispatch('nextChange')
+                    dispatch('nextChange', 'bch')
+
+                    // TODO: Remove receiver account from active index.
 
                     /* Set notification. */
                     dispatch('setNotification',

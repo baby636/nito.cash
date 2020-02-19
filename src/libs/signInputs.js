@@ -2,9 +2,9 @@
 const bitbox = new window.BITBOX()
 
 /**
- * Sign Input
+ * Sign Inputs
  */
-const signInput = (_transactionBuilder, _hdNode, _inputs) => {
+const signInputs = (_transactionBuilder, _hdNode, _inputs) => {
     /* Set input. */
 // TEMP: FOR DEVELOPMENT PURPOSES ONLY
     const input = _inputs[0]
@@ -18,14 +18,14 @@ const signInput = (_transactionBuilder, _hdNode, _inputs) => {
     console.log('KEYPAIR', keyPair)
 
     /* Set (signing) amount. */
-// TEMP: FOR DEVELOPMENT PURPOSES ONLY
     const amount = parseInt(input.satoshis)
     console.log('SIGNING AMOUNT', amount)
 
     /* Set vin (number). */
-    // FIXME: This MUST be dynamic, to support multiple inputs from the
-    //        SAME receiving account (address).
-    //        ALSO, consider the possiblity of a "refund" to a "change" account.
+    // FIXME: This MUST be dynamic, to support NON-ZERO inputs for BOTH
+    //        receiving and change accounts.
+    //        eg. in the case of dividend payments, there would be
+    //        MANY receivers and the index would rarely be ZERO.
     const vin = 0
 
     /* Initialize redeemscript. */
@@ -45,4 +45,4 @@ const signInput = (_transactionBuilder, _hdNode, _inputs) => {
 }
 
 /* Export module. */
-export default signInput
+export default signInputs

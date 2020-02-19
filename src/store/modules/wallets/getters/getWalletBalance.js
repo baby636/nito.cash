@@ -66,7 +66,7 @@ const getWalletBalance = (state, getters, rootState) => async (_marketPrice) => 
         const childNode = hdNode.derivePath(path)
 
         const address = bitbox.HDNode.toCashAddress(childNode)
-        console.log('GET WALLET BALANCE (receiving address)', address)
+        console.log('GET WALLET BALANCE (change address)', address)
 
         /* Add to all change (pool). */
         allChange.push(address)

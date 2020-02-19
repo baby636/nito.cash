@@ -10,7 +10,7 @@ const bitbox = new window.BITBOX()
  * TODO: Add support for ALL wallet types: BAI, BCH, DAI, NITO
  */
 const getWalletAddress = (state) => {
-    console.log('GET WALLET ADDRESS (state)', state)
+    // console.log('GET WALLET ADDRESS (state)', state)
 
     /* Initialize seed buffer. */
     const seedBuffer = bitbox.Mnemonic.toSeed(state.masterMnemonic)
@@ -32,7 +32,7 @@ const getWalletAddress = (state) => {
         `${state.derivationPath.bch}/${change}/${currentIndex}`)
 
     const address = bitbox.HDNode.toCashAddress(childNode)
-    console.log('WALLET ADDRESS', address)
+    // console.log('WALLET ADDRESS', address)
 
     /* Return address. */
     return address

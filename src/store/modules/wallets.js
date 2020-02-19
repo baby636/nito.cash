@@ -10,6 +10,8 @@ import addImportedSeed from './wallets/actions/addImportedSeed'
 import createNewWallet from './wallets/actions/createNewWallet'
 import destroyWallet from './wallets/actions/destroyWallet'
 import initWallet from './wallets/actions/initWallet'
+import nextChange from './wallets/actions/nextChange'
+import nextReceiver from './wallets/actions/nextReceiver'
 import sendCrypto from './wallets/actions/sendCrypto'
 import updateMasterMnemonic from './wallets/actions/updateMasterMnemonic'
 import updateMasterSeed from './wallets/actions/updateMasterSeed'
@@ -21,6 +23,8 @@ import setEmptyWallet from './wallets/mutations/setEmptyWallet'
 import setImportedSeeds from './wallets/mutations/setImportedSeeds'
 import setMasterMnemonic from './wallets/mutations/setMasterMnemonic'
 import setMasterSeed from './wallets/mutations/setMasterSeed'
+import setNextChange from './wallets/mutations/setNextChange'
+import setNextReceiver from './wallets/mutations/setNextReceiver'
 import setReceivingAccounts from './wallets/mutations/setReceivingAccounts'
 import setWalletHistory from './wallets/mutations/setWalletHistory'
 
@@ -81,6 +85,8 @@ const actions = {
     createNewWallet,
     destroyWallet,
     initWallet,
+    nextChange,
+    nextReceiver,
     sendCrypto,
     updateMasterMnemonic,
     updateMasterSeed,
@@ -94,6 +100,8 @@ const mutations = {
     setImportedSeeds,
     setMasterMnemonic,
     setMasterSeed,
+    setNextChange,
+    setNextReceiver,
     setReceivingAccounts,
     setWalletHistory,
 }

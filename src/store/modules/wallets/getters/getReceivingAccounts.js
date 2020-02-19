@@ -3,7 +3,7 @@
  *
  * Returns (addresses for) ALL (in-use) receiving accounts.
  */
-const getReceivingAccounts = (state) => async (_walletType) => {
+const getReceivingAccounts = (state) => (_walletType) => {
     /* Set (receiving) accounts. */
     const accounts = state.receivingAccounts
 

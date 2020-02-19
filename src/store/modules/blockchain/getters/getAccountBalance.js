@@ -21,10 +21,10 @@ const getAccountBalance = (state, getters, rootState) => async (_account) => {
         /* Set balance (in satoshis). */
         if (rootState.profile.useUnconfirmed) {
             /* Both confirmed and unconfirmed. */
-            balance += (details.balanceSat + details.unconfirmedBalanceSat)
+            balance = (details.balanceSat + details.unconfirmedBalanceSat)
         } else {
             /* Confirmed ONLY. */
-            balance += details.balanceSat
+            balance = details.balanceSat
         }
 
         /* Return (satoshi) balance. */

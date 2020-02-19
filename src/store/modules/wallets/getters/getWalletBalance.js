@@ -15,21 +15,21 @@ const bitbox = new window.BITBOX()
 const getWalletBalance = (state, getters, rootState) => async (_marketPrice) => {
     // console.log('GET WALLET BALANCE (market price)', _marketPrice)
 
-    /* Set address. */
-    // FIXME: Retrieve ALL account addresses from getters.
-    const address = getters.getWalletAddress
-    console.log('GET WALLET BALANCE (address)', address)
+    /* Initialize receiving (account) addresses. */
+    const allReceiving = [getters.getWalletAddress]
+    console.log('GET WALLET BALANCE (allReceiving)', allReceiving)
+
+    /* Initialize change (account) addresses. */
+    const allChange = [getters.getChangeAddress]
+    console.log('GET WALLET BALANCE (allChange)', allChange)
+
     console.log('GET WALLET BALANCE (receiving accounts)', state.receivingAccounts)
     console.log('GET WALLET BALANCE (change accounts)', state.changeAccounts)
 
-    /* Set (change) address. */
-    const changeAddress = getters.getChangeAddress
-    console.log('GET WALLET BALANCE (change address)', changeAddress)
-
-    /* Set all accounts. */
+    /* Set ALL accounts. */
     const allAccounts = [
-        address,
-        changeAddress,
+        ...allReceiving,
+        ...allChange,
     ]
     console.log('GET WALLET BALANCE (all accounts)', allAccounts)
 

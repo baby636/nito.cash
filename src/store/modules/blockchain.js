@@ -37,6 +37,9 @@ const actions = {
             }, wsURL: ENDPOINT
         })
 
+        // TODO: Change this from `blocks` to `transactions` and monitor
+        //       for our `current` account; then update address (index).
+        //       https://developer.bitcoin.com/bitbox/docs/socket
         socket.listen('blocks', (message) => {
             console.log(message)
         })

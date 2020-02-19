@@ -4,15 +4,15 @@
 
 ## Your Crypto Wallets
 
-* [Cash Wallet]()
+* [Cash Wallet](wallets/cash.md)
     * [Where to buy BCH?]()
     * [Where to spend BCH?]()
 
-* [Nito Wallet](nito-wallet.md)
+* [Nito Wallet](wallets/nito.md)
     * [CashFusion]()
     * [Tornado Cash]()
 
-* [Savings Wallet](savings-wallet.md)
+* [Savings Wallet](wallets/savings.md)
     * [Stablecoins]()
     * [Decentralized Finance (DeFi)]()
     * [Compound Finance]()
@@ -27,3 +27,10 @@
 * [Changelog](CHANGELOG.md)
 * [Roadmap](ROADMAP.md)
 * [Contributing](CONTRIBUTING.md)
+
+## Legal
+
+* [Code of Conduct]()
+* [Terms of Use]()
+* [Privacy Notice]()
+* [Cookie Notice]()

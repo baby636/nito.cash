@@ -14,11 +14,13 @@ The goal for __[Nito.cash](https://nito.cash/)__ is to become the __MOST user-fr
 ### Planned
 
 - [ ] Improve QRCode UX on Android
+- [ ] Add i18n support (w/ Chinese)
 - [ ] Add basic security w/ an (optional) pin number
 - [ ] Enable dark mode
 - [ ] Enable browser notifications
 - [ ] Enable send & receive SLP tokens
 - [ ] Enable CashAccount support
+- [ ] Enable hardware wallet support (w/ Ledger)
 - [ ] Merchant-mode w/ simple cash register
 - [ ] Enable support for Dai (stablecoin)
 - [ ] Enable social key recovery ([BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) + [Shamir's secret sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing))

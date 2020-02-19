@@ -9,7 +9,7 @@
 
 - [x] Maximum Convenience: 9.5
 - [x] Excellent Privacy: 9.0
-- [x] Good Security: 7.0
+- [x] Pretty Good Security: 8.0
 
 ## Improving the on-boarding experience for newcomers
 

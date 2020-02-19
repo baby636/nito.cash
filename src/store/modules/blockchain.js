@@ -1,6 +1,9 @@
 /* Import libraries. */
 // import telr from '../../api/telr'
 
+/* Import modules (getters). */
+import getAccountBalance from './blockchain/getters/getAccountBalance'
+
 /* Initialize BITBOX. */
 const bitbox = new window.BITBOX()
 
@@ -18,11 +21,30 @@ const state = {
 
 /* Getters. */
 const getters = {
-    //
+    getAccountBalance,
 }
 
 /* Actions. */
 const actions = {
+    /**
+     * Initialize (Web) Socket
+     */
+    async initSocket() {
+        /* Initialize socket connection. */
+        const socket = new bitbox.Socket({
+            callback: () => {
+                console.log('connected')
+            }, wsURL: ENDPOINT
+        })
+
+        // TODO: Change this from `blocks` to `transactions` and monitor
+        //       for our `current` account; then update address (index).
+        //       https://developer.bitcoin.com/bitbox/docs/socket
+        socket.listen('blocks', (message) => {
+            console.log(message)
+        })
+    },
+
     /**
      * Update Tickers
      */
@@ -35,22 +57,6 @@ const actions = {
 
         /* Commit price to tickers. */
         commit('updateTickers', current)
-    },
-
-    /**
-     * Initialize Websocket
-     */
-    async initSocket() {
-        /* Initialize socket connection. */
-        const socket = new bitbox.Socket({
-            callback: () => {
-                console.log('connected')
-            }, wsURL: ENDPOINT
-        })
-
-        socket.listen('blocks', (message) => {
-            console.log(message)
-        })
     },
 
 }

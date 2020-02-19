@@ -29,18 +29,18 @@
                 <div class="divider" />
 
                 <h4>
-                    {{walletBalance.fiat}}
                     <small>Cash Wallet</small>
+                    {{walletBalance.fiat}}
                 </h4>
 
                 <h4>
-                    $0.00
                     <small>Nito Wallet</small>
+                    $0.00
                 </h4>
 
                 <h4>
-                    $0.00
                     <small>Savings Wallet</small>
+                    $0.00
                 </h4>
 
                 <div>
@@ -96,14 +96,11 @@ export default {
             marketPrice: state => state.blockchain.tickers.BCH.USD,
 
             /* Wallets */
-            walletImportedSeeds: state => state.wallets.importedSeeds,
-            walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
         }),
 
         ...mapGetters('wallets', [
-            'getAddress',
-            'getBalance',
+            'getWalletBalance',
         ]),
     },
     methods: {
@@ -152,7 +149,7 @@ export default {
 
         /* Retrieve current (wallet) balance. */
         // FIXME: We "probably" don't need to request market price.
-        this.walletBalance = await this.getBalance(this.marketPrice)
+        this.walletBalance = await this.getWalletBalance(this.marketPrice)
 
         /* Update price tickers. */
         this.updateTickers()

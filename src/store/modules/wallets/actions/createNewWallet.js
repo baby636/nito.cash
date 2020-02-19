@@ -47,20 +47,46 @@ const createNewWallet = ({ commit }) => {
         /* Set new master (private) key to wallet.. */
         commit('setMasterMnemonic', mnemonic)
 
-        /* Initialize account history. */
-        commit('setAccountHistory', [])
+        /* Initialize wallet history. */
+        commit('setWalletHistory', [])
 
-        /* Initialize active accounts. */
-        commit('setActiveAccounts', {
-            start: 0,
-            end: 0,
-        })
+        /**
+         * (Wallet) Accounts Model
+         *
+         * active: Index of all "active" accounts (containing UXTOs).
+         * current: Index of the current "unused/receiving" account.
+         */
+        const accountsModel = {
+            /* BAI (stablecoin) */
+            bai: {
+                active: [],
+                current: 0,
+            },
+
+            /* Bitcoin Cash */
+            bch: {
+                active: [],
+                current: 0,
+            },
+
+            /* DAI (stablecoin) */
+            dai: {
+                active: [],
+                current: 0,
+            },
+
+            /* Nito (privacy) */
+            nito: {
+                active: [],
+                current: 0,
+            },
+        }
+
+        /* Initialize receiving accounts. */
+        commit('setReceivingAccounts', accountsModel)
 
         /* Initialize change accounts. */
-        commit('setChangeAccounts', {
-            start: 0,
-            end: 0,
-        })
+        commit('setChangeAccounts', accountsModel)
 
         /* Initialize imported (wallet) seeds. */
         commit('setImportedSeeds', [])

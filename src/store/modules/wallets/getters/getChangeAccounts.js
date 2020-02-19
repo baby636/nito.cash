@@ -5,7 +5,7 @@
  */
 const getChangeAccounts = (state) => {
     /* Set current account index. */
-    const currentAccountIndex = Math.max(...state.activeAccounts)
+    const currentAccountIndex = Math.max(...state.changeAccounts)
 // FIXME: We need to return the addresses
     return currentAccountIndex + 1
 }

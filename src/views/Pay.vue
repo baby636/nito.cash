@@ -146,8 +146,7 @@ export default {
         }),
 
         ...mapGetters('wallets', [
-            'getAddress',
-            'getBalance',
+            'getWalletBalance',
         ]),
 
         // walletBalance() {
@@ -302,8 +301,7 @@ export default {
 
         /* Retrieve current (wallet) balance. */
         // FIXME: We don't need to request address.
-        this.walletBalance = await this.getBalance(
-            this.getAddress, this.marketPrice)
+        this.walletBalance = await this.getWalletBalance(this.marketPrice)
 
         /* Update price tickers. */
         this.updateTickers()

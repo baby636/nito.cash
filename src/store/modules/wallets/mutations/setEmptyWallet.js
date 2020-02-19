@@ -8,9 +8,6 @@ const destroyWallet = (state) => {
     /* Re-initialize account history. */
     state.accountHistory = null
 
-    /* Re-initialize active accounts (address) index. */
-    state.activeAccounts = null
-
     /* Re-initialize change (address) index. */
     state.changeAccounts = null
 
@@ -22,6 +19,9 @@ const destroyWallet = (state) => {
 
     /* Re-initialize master seed. */
     state.masterSeed = null
+
+    /* Re-initialize receiving accounts (address) index. */
+    state.receivingAccounts = null
 }
 
 /* Export module. */

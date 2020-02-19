@@ -58,7 +58,7 @@ export default {
     },
     methods: {
         ...mapActions('wallets', [
-            'addNewSeed',
+            'addImportedSeed',
             'createNewWallet',
             'setMasterMnemonic',
             'setMasterSeed',
@@ -92,7 +92,7 @@ export default {
                 /* Handle uuid wallet seeds. */
                 if (param.length === 36) {
                     /* Add sponsor wallet (private key) seed. */
-                    this.addNewSeed(param)
+                    this.addImportedSeed(param)
 
                     /* Sponsorship DOES exist. */
                     // NOTE: We must notify the user.

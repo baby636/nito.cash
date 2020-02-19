@@ -1,39 +1,35 @@
 /* Import modules (getters). */
-import getActiveAccounts from './wallets/getters/getActiveAccounts'
-import getAddress from './wallets/getters/getAddress'
-import getBalance from './wallets/getters/getBalance'
 import getChangeAccounts from './wallets/getters/getChangeAccounts'
 import getChangeAddress from './wallets/getters/getChangeAddress'
+import getReceivingAccounts from './wallets/getters/getReceivingAccounts'
+import getWalletAddress from './wallets/getters/getWalletAddress'
+import getWalletBalance from './wallets/getters/getWalletBalance'
 
 /* Import modules (actions). */
-import addNewSeed from './wallets/actions/addNewSeed'
+import addImportedSeed from './wallets/actions/addImportedSeed'
 import createNewWallet from './wallets/actions/createNewWallet'
 import destroyWallet from './wallets/actions/destroyWallet'
+import initWallet from './wallets/actions/initWallet'
+import nextChange from './wallets/actions/nextChange'
+import nextReceiver from './wallets/actions/nextReceiver'
 import sendCrypto from './wallets/actions/sendCrypto'
-import updateAccountHistory from './wallets/actions/updateAccountHistory'
 import updateMasterMnemonic from './wallets/actions/updateMasterMnemonic'
 import updateMasterSeed from './wallets/actions/updateMasterSeed'
+import updateWalletHistory from './wallets/actions/updateWalletHistory'
 
 /* Import modules (mutations). */
-import setAccountHistory from './wallets/mutations/setAccountHistory'
-import setActiveAccounts from './wallets/mutations/setActiveAccounts'
 import setChangeAccounts from './wallets/mutations/setChangeAccounts'
 import setEmptyWallet from './wallets/mutations/setEmptyWallet'
 import setImportedSeeds from './wallets/mutations/setImportedSeeds'
 import setMasterMnemonic from './wallets/mutations/setMasterMnemonic'
 import setMasterSeed from './wallets/mutations/setMasterSeed'
+import setNextChange from './wallets/mutations/setNextChange'
+import setNextReceiver from './wallets/mutations/setNextReceiver'
+import setReceivingAccounts from './wallets/mutations/setReceivingAccounts'
+import setWalletHistory from './wallets/mutations/setWalletHistory'
 
 /* Initialize state. */
 const state = {
-    /* Initialize account history. */
-    // NOTE: A complete record of ALL incoming and outgoing transactions.
-    accountHistory: null,
-
-    /* Initialize active accounts (index). */
-    // NOTE: A list of the starting and ending indexes of ALL
-    //       active "receiver" accounts.
-    activeAccounts: null,
-
     /* Initialize change accounts (index). */
     // NOTE: A list of the starting and ending indexes of ALL
     //       active "change" accounts.
@@ -49,6 +45,10 @@ const state = {
         slpr: `m/44'/2450'/0'`, // SLP Registered
     },
 
+    /* Initialize wallet history. */
+    // NOTE: A complete record of ALL incoming and outgoing transactions.
+    history: null,
+
     /* Initialize imported (wallet) seeds. */
     // NOTE: Seeds may be imported from UUIDs embedded in the url,
     //       as a querystring (https://nito.cash?<uuid>).
@@ -63,37 +63,47 @@ const state = {
     // NOTE: This is a 32-byte seed, which can be generated randomly,
     //       or by importing from an existing wallet.
     masterSeed: null,
+
+    /* Initialize receiving accounts (index). */
+    // NOTE: A list of the starting and ending indexes of ALL
+    //       active "receiving" accounts.
+    receivingAccounts: null,
 }
 
 /* Getters. */
 const getters = {
-    getActiveAccounts,
-    getAddress,
-    getBalance,
     getChangeAccounts,
     getChangeAddress,
+    getReceivingAccounts,
+    getWalletAddress,
+    getWalletBalance,
 }
 
 /* Actions. */
 const actions = {
-    addNewSeed,
+    addImportedSeed,
     createNewWallet,
     destroyWallet,
+    initWallet,
+    nextChange,
+    nextReceiver,
     sendCrypto,
-    updateAccountHistory,
     updateMasterMnemonic,
     updateMasterSeed,
+    updateWalletHistory,
 }
 
 /* Mutations. */
 const mutations = {
-    setAccountHistory,
-    setActiveAccounts,
     setChangeAccounts,
     setEmptyWallet,
     setImportedSeeds,
     setMasterMnemonic,
     setMasterSeed,
+    setNextChange,
+    setNextReceiver,
+    setReceivingAccounts,
+    setWalletHistory,
 }
 
 /* Export. */

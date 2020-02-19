@@ -234,8 +234,6 @@ export default {
 
         async destroy() {
             try {
-                console.log('Destroying wallet')
-
                 /* Request (total) wallet destruction. */
                 this.destroyWallet()
 

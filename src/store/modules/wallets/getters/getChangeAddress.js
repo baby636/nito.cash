@@ -14,13 +14,14 @@ const getChangeAddress = (state) => {
     const hdNode = bitbox.HDNode.fromSeed(seedBuffer)
     // console.log('HD NODE', hdNode)
 
-    /* Set change. */
-    // FIXME: This must be derived.
-    const change = 1
-
     /* Set address index. */
     // FIXME: This must be derived.
     const addressIndex = 0
+
+    /* Set change. */
+    // NOTE: BIP-32 path levels specify this will be `1` for change accounts.
+    //       (https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#path-levels)
+    const change = 1
 
     /* Initialize child node. */
     const childNode = hdNode.derivePath(

@@ -31,7 +31,7 @@ const getWalletBalance = (state, getters, rootState) => async (_marketPrice) => 
         address,
         changeAddress,
     ]
-    console.log('GET WALLET BALANCE (all accounts)', changeAddress)
+    console.log('GET WALLET BALANCE (all accounts)', allAccounts)
 
     try {
         /* Retrieve (ALL) account(s) details. */

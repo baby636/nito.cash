@@ -96,8 +96,6 @@ export default {
             marketPrice: state => state.blockchain.tickers.BCH.USD,
 
             /* Wallets */
-            walletImportedSeeds: state => state.wallets.importedSeeds,
-            walletMasterMnemonic: state => state.wallets.masterMnemonic,
             walletMasterSeed: state => state.wallets.masterSeed,
         }),
 

@@ -9,6 +9,7 @@ import getWalletBalance from './wallets/getters/getWalletBalance'
 import addImportedSeed from './wallets/actions/addImportedSeed'
 import createNewWallet from './wallets/actions/createNewWallet'
 import destroyWallet from './wallets/actions/destroyWallet'
+import initWallet from './wallets/actions/initWallet'
 import sendCrypto from './wallets/actions/sendCrypto'
 import updateMasterMnemonic from './wallets/actions/updateMasterMnemonic'
 import updateMasterSeed from './wallets/actions/updateMasterSeed'
@@ -79,6 +80,7 @@ const actions = {
     addImportedSeed,
     createNewWallet,
     destroyWallet,
+    initWallet,
     sendCrypto,
     updateMasterMnemonic,
     updateMasterSeed,

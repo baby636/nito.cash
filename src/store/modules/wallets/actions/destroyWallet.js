@@ -2,7 +2,7 @@
  * Destroy Wallet
  */
 const destroyWallet = ({ commit }) => {
-    console.log('Destroying wallet..')
+    console.info('Destroying wallet..')
 
     /* Commit empty wallet. */
     commit('setEmptyWallet')

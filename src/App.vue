@@ -6,12 +6,48 @@
 </template>
 
 <script>
+/* Initialize vuex. */
+import { mapActions, mapGetters } from 'vuex'
+
 /* Import components. */
 import { Notification } from '@/components'
 
 export default {
     components: {
         Notification
+    },
+    computed: {
+        ...mapGetters('wallets', [
+            'getReceivingAccounts',
+        ]),
+    },
+    methods: {
+        ...mapActions('blockchain', [
+            'initSocket',
+        ]),
+
+        ...mapActions('wallets', [
+            'initWallet',
+        ]),
+
+        /**
+         * Initialize (Application)
+         */
+        init() {
+            /* Initialize wallet. */
+            this.initWallet()
+
+            /* Initialize socket. */
+            // NOTE: Open connection to BITBOX.
+            this.initSocket()
+
+        },
+    },
+    created: function () {
+        console.log('Nito.cash initializing..')
+
+        /* Initialize application. */
+        this.init()
     },
 }
 </script>

@@ -27,21 +27,7 @@ const getters = {
 /* Actions. */
 const actions = {
     /**
-     * Update Tickers
-     */
-    async updateTickers ({ commit }) {
-        console.info('Updating price tickers..')
-
-        /* Retrieve current price. */
-        const current = await bitbox.Price.current('usd')
-        console.info('Current BCH/USD price', current)
-
-        /* Commit price to tickers. */
-        commit('updateTickers', current)
-    },
-
-    /**
-     * Initialize Websocket
+     * Initialize (Web) Socket
      */
     async initSocket() {
         /* Initialize socket connection. */
@@ -54,6 +40,20 @@ const actions = {
         socket.listen('blocks', (message) => {
             console.log(message)
         })
+    },
+
+    /**
+     * Update Tickers
+     */
+    async updateTickers ({ commit }) {
+        console.info('Updating price tickers..')
+
+        /* Retrieve current price. */
+        const current = await bitbox.Price.current('usd')
+        console.info('Current BCH/USD price', current)
+
+        /* Commit price to tickers. */
+        commit('updateTickers', current)
     },
 
 }

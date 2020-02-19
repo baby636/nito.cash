@@ -81,19 +81,12 @@ const createNewWallet = ({ commit }) => {
                 current: 0,
             },
         }
-        console.log('WALLET ACCOUNTS MODEL', accountsModel)
 
         /* Initialize receiving accounts. */
-        commit('setReceivingAccounts', {
-            start: 0,
-            end: 0,
-        })
+        commit('setReceivingAccounts', accountsModel)
 
         /* Initialize change accounts. */
-        commit('setChangeAccounts', {
-            start: 0,
-            end: 0,
-        })
+        commit('setChangeAccounts', accountsModel)
 
         /* Initialize imported (wallet) seeds. */
         commit('setImportedSeeds', [])

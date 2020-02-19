@@ -5,6 +5,43 @@ const bitbox = new window.BITBOX()
 const DUST_AMOUNT = 546
 
 /**
+ * Sign Input
+ */
+const signInput = (_transactionBuilder, _hdNode, _inputs) => {
+    /* Set input. */
+// TEMP: FOR DEVELOPMENT PURPOSES ONLY
+    const input = _inputs[0]
+    console.log('ADDRESS (of input)', input.address)
+
+    /* Initialize child node. */
+    const childNode = _hdNode.derivePath(input.path)
+
+    /* Set keypair. */
+    const keyPair = bitbox.HDNode.toKeyPair(childNode)
+    console.log('KEYPAIR', keyPair)
+
+    /* Set (signing) amount. */
+// TEMP: FOR DEVELOPMENT PURPOSES ONLY
+    const amount = parseInt(input.satoshis)
+    console.log('SIGNING AMOUNT', amount)
+
+    /* Initialize redeemscript. */
+    // TODO: Find out WHY the hell we need this here??
+    let redeemScript
+
+    /* Sign the transaction input(s). */
+    // FIXME: Allow for multipe inputs.
+    _transactionBuilder.sign(
+        0, // vin
+        keyPair,
+        redeemScript,
+        _transactionBuilder.hashTypes.SIGHASH_ALL,
+        amount,
+        _transactionBuilder.signatureAlgorithms.SCHNORR
+    )
+}
+
+/**
  * Send Crypto
  */
 const sendCrypto = async ({ dispatch, getters, state }, _params) => {
@@ -12,15 +49,13 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
     const receiver = _params.receiver
 
     /* Set amount. */
-    const amount = parseInt(_params.amount)
+    // NOTE: We allow for decimal (fractional) amounts.
+    const amount = parseFloat(_params.amount)
 
     /* Set unit. */
     const unit = _params.unit
 
     console.log('SENDING CRYPTO', receiver, amount, unit)
-
-    /* Initialize addresses. */
-    const addresses = []
 
     /* Validate amount (sending to receiver). */
     if (!amount) {
@@ -36,24 +71,44 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
         const hdNode = bitbox.HDNode.fromSeed(seedBuffer)
         // console.log('HD NODE', hdNode)
 
-        /* Initialize child node. */
-        const childNode = hdNode.derivePath(`${state.derivationPath.bch}/0/0`)
-
-        const address = bitbox.HDNode.toCashAddress(childNode)
-        console.log('ADDRESS (of sender)', address)
-
+        /* Initialize ALL (wallet) address. */
         // NOTE: Array with maximum of 20 legacy or cash addresses.
-        // TODO: Add support for "change" addresses.
-        if (address) {
-            addresses.push(address)
-        }
+        const addresses = [
+            ...getters.getReceivingAccounts('bch'),
+            ...getters.getChangeAccounts('bch')
+        ]
 
         /* Retrieve unspent transaction outputs. */
-        const utxo = await bitbox.Address.utxo(addresses)
-        console.log('UTXOS', utxo)
+        const utxos = await bitbox.Address.utxo(addresses)
+        console.log('UTXOS', utxos)
 
-        /* Set ALL uxtos. */
-        const myInputs = utxo[0].utxos
+        /* Initialize available inputs. */
+        const availableInputs = []
+
+        /* Add ALL (available) UTXOs. */
+        utxos.forEach(utxo => {
+            /* Validate UXTO(s). */
+            // FIXME: Add support for multiple UXTOs per account address.
+            if (utxo.utxos.length > 0) {
+                /* Add input to available pool. */
+                availableInputs.push({
+                    address: utxo.cashAddress.slice(12), // sans prefix
+                    // FIXME: How do we determine the derivation path??
+                    path: `${state.derivationPath.bch}/1/0`,
+                    ...utxo.utxos[0]
+                })
+            }
+        })
+
+        console.log('AVAILABLE INPUTS', availableInputs)
+
+        if (availableInputs.length == 0) {
+            /* Set error. */
+            dispatch('setError',
+                `Your balance is too low.`, { root: true })
+
+            return
+        }
 
         /* Initialize transaction builder. */
         const transactionBuilder = new bitbox.TransactionBuilder('mainnet')
@@ -94,18 +149,18 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
         let inputsTotal = 0
 
         /* Loop through ALL uxtos. */
-        myInputs.forEach(utxo => {
-            console.log('UXTO', utxo)
+        availableInputs.forEach(input => {
+            console.log('INPUT', input)
 
             /* Validate input flag. */
             if (inputsTotal < txAmount) {
                 /* Add input with txid and index of vout. */
-                transactionBuilder.addInput(utxo.txid, utxo.vout)
+                transactionBuilder.addInput(input.txid, input.vout)
 
-                console.log('ADDED UTXO', utxo.txid, utxo.vout, utxo.satoshis)
+                console.log('ADDED UTXO', input.txid, input.vout, input.satoshis)
 
                 /* Add input value to total. */
-                inputsTotal += utxo.satoshis
+                inputsTotal += input.satoshis
             }
         })
 
@@ -117,7 +172,7 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
         if (sendAmount < DUST_AMOUNT) {
             /* Set error. */
             dispatch('setError',
-                `Amount is too low. Min: ${DUST_AMOUNT + byteCount} sats`, { root: true })
+                `Amount is too low. Min: ${DUST_AMOUNT} sats`, { root: true })
 
             /* Set flag. */
             // FIXME: How can we display this on the UI?
@@ -153,33 +208,17 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
         /* Set locktime (for immediate propagation). */
         transactionBuilder.setLockTime(0)
 
-        /* Set keypair. */
-        const keyPair = bitbox.HDNode.toKeyPair(childNode)
-        // console.log('KEYPAIR', keyPair)
-
-        /* Initialize redeemscript. */
-        let redeemScript
-
-        /* Sign the transaction input(s). */
-        // FIXME: Allow for multipe inputs.
-        transactionBuilder.sign(
-            0, // vin
-            keyPair,
-            redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
-            parseInt(inputsTotal),
-            transactionBuilder.signatureAlgorithms.SCHNORR
-        )
-
-        console.log('TX BUILDER - 4', transactionBuilder)
+        /* Sign input(s). */
+        signInput(transactionBuilder, hdNode, availableInputs)
+        console.log('(SIGNED) TX BUILDER', transactionBuilder)
 
         /* Build transaction. */
         const tx = transactionBuilder.build()
-        console.log('TX BUILD', tx)
+        console.log('TRANSACTION BUILD', tx)
 
         /* Set tx output to raw hex. */
         const txHex = tx.toHex()
-        console.log('RAW HEX', txHex)
+        console.log('TRANSACTION BUILD (RAW HEX)', txHex)
 
         /* Set state. */
         // this.sendState = 'sending'
@@ -192,8 +231,7 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
 
                     /* Increment receiving wallet (index). */
                     // FIXME: Verify that a change account was used.
-// FIXME: DO NOT MUTATE HERE
-                    state.changeAccounts.end++
+                    dispatch('nextChange')
 
                     /* Set notification. */
                     dispatch('setNotification',

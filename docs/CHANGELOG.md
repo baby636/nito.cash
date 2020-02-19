@@ -1,11 +1,18 @@
 ## Changelog
 
+### v20.2.19
+
+[ipfs.io](https://ipfs.io/ipfs/QmVyvQaDqxDnXaVdDkFQNWxoeqtchd7ZVULhUGPZDrj2dk/) | [cloudflare-ipfs.com](https://cloudflare-ipfs.com/ipfs/QmVyvQaDqxDnXaVdDkFQNWxoeqtchd7ZVULhUGPZDrj2dk/) |
+[infura.io](https://ipfs.infura.io/ipfs/QmVyvQaDqxDnXaVdDkFQNWxoeqtchd7ZVULhUGPZDrj2dk/)
+
+- Enabled HD wallet account addresses for receiving and change
+
 ### v20.2.10
 
 [ipfs.io](https://ipfs.io/ipfs/QmWwVHvu71GgrU4BLNqR3ZpGfUA6UviRMfxar14mhVJuGD/) | [cloudflare-ipfs.com](https://cloudflare-ipfs.com/ipfs/QmWwVHvu71GgrU4BLNqR3ZpGfUA6UviRMfxar14mhVJuGD/) |
 [infura.io](https://ipfs.infura.io/ipfs/QmWwVHvu71GgrU4BLNqR3ZpGfUA6UviRMfxar14mhVJuGD/)
 
-- Enable send & receive BCH coins
+- Enabled send & receive BCH coins
 
 ### v20.1.28
 

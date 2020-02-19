@@ -1,10 +1,11 @@
 /* Import modules. */
-const numeral = require('numeral')
+// const numeral = require('numeral')
+import numeral from 'numeral'
 
 /**
  * Format BCH value to value units and calculate market value.
  */
-export default (satoshis, marketPrice, currency) => {
+const formatValue = (satoshis, marketPrice, currency) => {
     // console.log('CURRENCY', currency)
     // let value = getIotas(iotas, units, marketPrice)
     let value = satoshis
@@ -56,3 +57,6 @@ export default (satoshis, marketPrice, currency) => {
         fiat
     }
 }
+
+/* Export module. */
+export default formatValue

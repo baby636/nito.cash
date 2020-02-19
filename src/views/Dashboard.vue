@@ -68,9 +68,6 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 /* Import components. */
 import { Backup, Button, Footer, Import } from '@/components'
 
-/* Import libraries. */
-// import formatValue from '@/libs/formatValue'
-
 /* Import icons. */
 import '@/compiled-icons/cog'
 import '@/compiled-icons/fire'

@@ -7,28 +7,29 @@ const bitbox = new window.BITBOX()
 const initWallet = async ({ dispatch, getters, state}) => {
     console.info('Initializing wallet..')
 
-    /* Retrieve receiving accounts. */
+// TEMP: FOR DEVELOPMENT PURPOSES ONLY
     const receivingAccounts = state.receivingAccounts
-    console.log('LIST OF RECEIVING ACCOUNTS (BCH)', receivingAccounts)
+    console.log('DEBUG: ALL RECEIVING ACCOUNTS', receivingAccounts)
 
     const currentWalletAddress = getters.getWalletAddress
-    console.log('CURRENT WALLET ADDRESS', currentWalletAddress)
+    // console.log('CURRENT WALLET ADDRESS', currentWalletAddress)
 
     /* Retrieve (ALL) account(s) details. */
     const details = await bitbox.Address.details(currentWalletAddress)
-    console.log('DETAILS', details)
+    // console.log('DETAILS', details)
 
     /* Set transactions count. */
     const numTxs = details.transactions.length
 
     /* Validate (account) address usage. */
     if (numTxs > 0) {
-        console.log('WE NEED TO MOVE TO A NEW RECEIVING ADDRESS')
+        console.log(`[ ${currentWalletAddress} ] HAS ALREADY BEEN USED.`)
+        console.log('A new receiving address will be generated now..')
 
         /* Request next (receiving account) address. */
         dispatch('nextReceiver', 'bch')
     } else {
-        console.log('THIS WALLET ADDRESS IS GOOD TO GO!')
+        console.log(`[ ${currentWalletAddress} ] is ready to receive funds..`)
     }
 }
 

@@ -93,14 +93,10 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 
 /* Import components. */
 import { Address, Amount, Animation, Button, Footer, Modal, Spinner } from '@/components'
-// import { Berny, Button, Footer, Header, Spinner, View } from '~/components'
 
 /* Import QR Code scanner, with JS worker path. */
 import QrScanner from 'qr-scanner'
 QrScanner.WORKER_PATH = './js/qr-scanner-worker.min.js'
-
-// import { formatValue, getDomain, goto, parseLink, getIotas, getPlatform } from '~/lib/helpers'
-// import { account, balance, history, sendState } from '~/lib/account'
 
 export default {
     components: {
@@ -149,24 +145,6 @@ export default {
             'getWalletBalance',
         ]),
 
-        // walletBalance() {
-        //     // FIXME TEMPORARY FOR DEVELOPMENT PURPOSES ONLY
-        //     const amount = 1337
-        //     const rounded = Math.round(amount * 10) / 10 + (Math.round(amount * 10) / 10 === amount ? '' : '+')
-        //     const unit = 'sat'
-        //     const fiat = '$1.337'
-        //
-        //     /* Build current balance package. */
-        //     const balance = {
-        //         amount,
-        //         rounded,
-        //         unit,
-        //         fiat
-        //     }
-        //
-        //     return balance
-        //     // return walletBalance = formatValue($balance)
-        // },
     },
     methods: {
         ...mapActions([
@@ -222,18 +200,10 @@ export default {
         },
 
         setReceiver(_result) {
-            console.log('SET RECEIVER', _result)
+            // console.log('SET RECEIVER', _result)
 
             /* Set receiver. */
             this.receiver = _result
-
-            // if (result.expectedAmount) {
-            //     const value = formatValue(result.expectedAmount)
-            //     amount = value.value
-            //     unit = value.unit
-            // }
-
-            // reference = result.reference || ''
 
             if (this.camera) {
                 this.camera.stop()

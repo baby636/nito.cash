@@ -1,45 +1,9 @@
+/* Import libraries. */
+import { DUST_AMOUNT } from '@/libs/constants'
+import signInput from '@/libs/signInput'
+
 /* Initialize BITBOX. */
 const bitbox = new window.BITBOX()
-
-/* Set dust amount. */
-const DUST_AMOUNT = 546
-
-/**
- * Sign Input
- */
-const signInput = (_transactionBuilder, _hdNode, _inputs) => {
-    /* Set input. */
-// TEMP: FOR DEVELOPMENT PURPOSES ONLY
-    const input = _inputs[0]
-    console.log('ADDRESS (of input)', input.address)
-
-    /* Initialize child node. */
-    const childNode = _hdNode.derivePath(input.path)
-
-    /* Set keypair. */
-    const keyPair = bitbox.HDNode.toKeyPair(childNode)
-    console.log('KEYPAIR', keyPair)
-
-    /* Set (signing) amount. */
-// TEMP: FOR DEVELOPMENT PURPOSES ONLY
-    const amount = parseInt(input.satoshis)
-    console.log('SIGNING AMOUNT', amount)
-
-    /* Initialize redeemscript. */
-    // TODO: Find out WHY the hell we need this here??
-    let redeemScript
-
-    /* Sign the transaction input(s). */
-    // FIXME: Allow for multipe inputs.
-    _transactionBuilder.sign(
-        0, // vin
-        keyPair,
-        redeemScript,
-        _transactionBuilder.hashTypes.SIGHASH_ALL,
-        amount,
-        _transactionBuilder.signatureAlgorithms.SCHNORR
-    )
-}
 
 /**
  * Send Crypto
@@ -92,7 +56,8 @@ const sendCrypto = async ({ dispatch, getters, state }, _params) => {
             if (utxo.utxos.length > 0) {
                 /* Add input to available pool. */
                 availableInputs.push({
-                    address: utxo.cashAddress.slice(12), // sans prefix
+                    address: utxo.cashAddress,
+                    // address: utxo.cashAddress.slice(12), // sans prefix
                     // FIXME: How do we determine the derivation path??
                     path: `${state.derivationPath.bch}/1/0`,
                     ...utxo.utxos[0]

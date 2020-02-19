@@ -16,15 +16,62 @@ const getWalletBalance = (state, getters, rootState) => async (_marketPrice) => 
     // console.log('GET WALLET BALANCE (market price)', _marketPrice)
 
     /* Initialize receiving (account) addresses. */
-    const allReceiving = [getters.getWalletAddress]
-    console.log('GET WALLET BALANCE (allReceiving)', allReceiving)
+    const allReceiving = []
+    // console.log('GET WALLET BALANCE (receiving accounts)', state.receivingAccounts)
+
+    /* Add all active receiving account (addresses) to pool. */
+    state.receivingAccounts['bch'].active.forEach(index => {
+        /* Initialize seed buffer. */
+        const seedBuffer = bitbox.Mnemonic.toSeed(state.masterMnemonic)
+
+        /* Initialize HD node. */
+        const hdNode = bitbox.HDNode.fromSeed(seedBuffer)
+
+        /* Set change. */
+        const change = 0
+
+        /* Set derivation path. */
+        const path = `${state.derivationPath.bch}/${change}/${index}`
+
+        /* Initialize child node. */
+        const childNode = hdNode.derivePath(path)
+
+        const address = bitbox.HDNode.toCashAddress(childNode)
+        console.log('GET WALLET BALANCE (receiving address)', address)
+
+        /* Add to all receiving (pool). */
+        allReceiving.push(address)
+    })
+    // console.log('GET WALLET BALANCE (allReceiving)', allReceiving)
 
     /* Initialize change (account) addresses. */
-    const allChange = [getters.getChangeAddress]
-    console.log('GET WALLET BALANCE (allChange)', allChange)
+    const allChange = []
+    // console.log('GET WALLET BALANCE (change accounts)', state.changeAccounts)
 
-    console.log('GET WALLET BALANCE (receiving accounts)', state.receivingAccounts)
-    console.log('GET WALLET BALANCE (change accounts)', state.changeAccounts)
+    /* Add all active change account (addresses) to pool. */
+    state.changeAccounts['bch'].active.forEach(index => {
+        /* Initialize seed buffer. */
+        const seedBuffer = bitbox.Mnemonic.toSeed(state.masterMnemonic)
+
+        /* Initialize HD node. */
+        const hdNode = bitbox.HDNode.fromSeed(seedBuffer)
+
+        /* Set change. */
+        const change = 1
+
+        /* Set derivation path. */
+        const path = `${state.derivationPath.bch}/${change}/${index}`
+
+        /* Initialize child node. */
+        const childNode = hdNode.derivePath(path)
+
+        const address = bitbox.HDNode.toCashAddress(childNode)
+        console.log('GET WALLET BALANCE (receiving address)', address)
+
+        /* Add to all change (pool). */
+        allChange.push(address)
+    })
+    // console.log('GET WALLET BALANCE (allChange)', allChange)
 
     /* Set ALL accounts. */
     const allAccounts = [

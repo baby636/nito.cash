@@ -20,8 +20,8 @@ export default new Vuex.Store({
         blockchain,
         profile,
         system,
-        wallets
+        wallets,
     },
     plugins: [createPersistedState()],
-    strict: process.env.NODE_ENV !== 'production'
+    strict: process.env.NODE_ENV !== 'production',
 })

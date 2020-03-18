@@ -76,6 +76,7 @@ const createNewWallet = ({ commit }) => {
             },
 
             /* Nito (privacy) */
+            // NOTE: Utilizing protocol(s) CashShuffle and/or CashFusion.
             nito: {
                 active: [],
                 current: 0,

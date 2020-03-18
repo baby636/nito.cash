@@ -7,7 +7,7 @@ const state = {
     appStarts: 0,
 
     /* Use unconfirmed transactions (flag). */
-    useUnconfirmed: true
+    useUnconfirmed: true,
 }
 
 /* Getters. */
